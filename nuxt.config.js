@@ -37,7 +37,7 @@ export default {
    ** Plugins to load before mounting the App
    ** Doc: https://nuxtjs.org/docs/2.x/directory-structure/plugins
    */
-  plugins: [],
+  plugins: [{ src: "~/plugins/pwa-update.js", mode: "client" }],
 
   vuetify: {
     customVariables: ["~/scss/variables.scss"],
