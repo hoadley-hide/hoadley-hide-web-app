@@ -4,19 +4,20 @@ export default {
    ** Doc: https://vue-meta.nuxtjs.org/api/#metainfo-properties
    */
   head: {
-    title: "Nuxt.js starter for CSB",
+    title: "Monster Hunters - Hoadley Hide 2022",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
         hid: "description",
         name: "description",
-        content: "Official Nuxt.js starter for CodeSandBox"
+        content: "Hoadley Hide 2022: Monster Hunters"
       }
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
   srcDir: "src/",
+  target: "static",
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -46,14 +47,29 @@ export default {
     }
   },
 
+  /**
+   * https://pwa.nuxtjs.org
+   */
   pwa: {
+    /**
+     * https://pwa.nuxtjs.org/modules/manifest.html
+     */
     manifest: {
       name: "Hoadley Hide 2022: Monster Hunters",
-      lang: "en",
-      useWebmanifestExtension: false
+      description: "Hoadley Hide 2022: Monster Hunters",
+      theme_color: "#000000",
+      background_color: "#000000"
     },
-    workbox: {
-      /* workbox options */
+
+    /**
+     * https://pwa.nuxtjs.org/modules/meta.html#options
+     */
+    meta: {
+      name: false,
+      description: false,
+      author: false,
+      ogType: false,
+      nativeUI: true
     }
   }
 };
