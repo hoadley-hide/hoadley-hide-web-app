@@ -1,8 +1,8 @@
 {
-  "name": "codesandbox-nuxt",
-  "version": "1.0.0",
-  "description": "Nuxt starter for CodeSandBox",
-  "author": "Nuxt.js Team",
+  "name": "hoadley-hide-web-app",
+  "version": "0.0.1",
+  "description": "This is a basic compainion app to be used in conjunction with the Hoadley Hide Hiking event.",
+  "author": "Hoadley Hide Management Team",
   "private": true,
   "scripts": {
     "dev": "MINIMAL=1 nuxt",
