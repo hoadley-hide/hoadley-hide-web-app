@@ -52,7 +52,7 @@ export default {
           icon: "mdi-forum",
           text: "/stunts/DC-is-better-than-Marvel",
         },
-        { title: "Stunt 4", icon: "mdi-forum", text: "/stunts/stunt-4" },
+        { title: "Stunt 4", icon: "mdi-forum", text: "/stunts/test" },
       ],
     };
   },
