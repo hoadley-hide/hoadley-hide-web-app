@@ -1,0 +1,17 @@
+
+@font-face {
+  font-family: "Geizer";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Geizer"), url("~/fonts/Geizer.woff") format("woff"),
+    url("https://fonts.cdnfonts.com/s/16304/Geizer.woff") format("woff");
+}
+
+$body-font-family: Arial, Helvetica, sans-serif;
+$heading-font-family: 'Geizer', Arial, Helvetica, sans-serif;
+
+a {
+  text-decoration: none;
+}
+
+@import '~vuetify/src/styles/styles.sass';
