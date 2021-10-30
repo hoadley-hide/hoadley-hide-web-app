@@ -1,6 +1,6 @@
 # Hoadley Hide Web App
 
-This is a basic compainion app to be used in conjunction with the Hoadley Hide Hiking event.
+This is a basic companion app to be used in conjunction with the Hoadley Hide Hiking event.
 
 ## Build Setup
 

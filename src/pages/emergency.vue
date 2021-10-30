@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col xs="12" sm="6">
+    <v-col cols="12" sm="6">
       <v-card>
         <v-card-title> Emercency Contacts </v-card-title>
 
@@ -12,7 +12,7 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col xs="12" sm="6">
+    <v-col cols="12" sm="6">
       <v-card>
         <v-card-title>I don't have service!?</v-card-title>
 

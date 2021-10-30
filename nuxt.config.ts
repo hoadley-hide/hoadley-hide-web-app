@@ -1,6 +1,8 @@
 import { defineNuxtConfig } from "@nuxt/bridge";
 
 export default defineNuxtConfig({
+  srcDir: "src/",
+  target: "static",
   /*
    ** Headers of the page
    ** Doc: https://vue-meta.nuxtjs.org/api/#metainfo-properties
@@ -18,7 +20,6 @@ export default defineNuxtConfig({
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
-  srcDir: "src/",
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,

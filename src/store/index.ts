@@ -5,17 +5,24 @@ import { EventStage, GraphQL, Stunt } from "~/types";
 export const state = () => ({
   eventStages: [] as EventStage[],
   stunts: [] as Stunt[],
-  name: "Me",
+  monsterAcronyms: [
+    "Military Operational New Soldiers Trapped till Everybody Runs",
+    "Many Oodles of Nutty Stories Threatening Earth’s Reality",
+    "Martian Orbital Nuclear Spaceship for Terraforming into Earthlike Realm",
+    "Mostly Online New System for Terrible Electronic Rucksacks",
+    "Mining Operation for Nice Shiny Tiny Earth Rocks",
+    "Monsters Official Network of Safe Tourist Extracurricular Reprieves"
+  ],
 });
 
 export type RootState = ReturnType<typeof state>;
 
 export const getters: GetterTree<RootState, RootState> = {
-  name: (state) => state.name,
+  // name: (state) => state.name,
 };
 
 export const mutations: MutationTree<RootState> = {
-  CHANGE_NAME: (state, newName: string) => (state.name = newName),
+  // CHANGE_NAME: (state, newName: string) => (state.name = newName),
 };
 
 export const actions: ActionTree<RootState, RootState> = {

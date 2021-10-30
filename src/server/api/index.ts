@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from "http";
-import { GraphQL } from "~/src/types";
+import { GraphQL } from "~/types";
 const baseUrl = process.env.CMS_URL || console.error("missing CMS_URL") || "";
 const apikey = process.env.CMS_KEY || console.error("missing CMS_KEY") || "";
 

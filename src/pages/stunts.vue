@@ -1,26 +1,24 @@
 <template>
   <v-row>
-    <v-col xs="12" sm="6">
+    <v-col cols="12" sm="6">
       <v-card>
         <v-card-title>Stunts</v-card-title>
 
         <v-card-text>Browse the stunts locations and teams.</v-card-text>
       </v-card>
     </v-col>
-    <v-col xs="12" sm="12">
+    <v-col cols="12">
       <v-card>
         <v-card-text>
-          <v-tabs vertical>
+          <v-tabs center-active>
             <v-tab v-for="stunt in stunts" :key="stunt.title">
               <v-icon left>{{ stunt.icon }}</v-icon>
-             <span class="tab-title-left-align">{{ stunt.name }}</span>
+              <span class="tab-title-left-align">{{ stunt.name }}</span>
             </v-tab>
 
             <v-tab-item v-for="stunt in stunts" :key="stunt.title">
               <v-card flat>
-                <v-card-title>
-                  {{ stunt.title }}
-                </v-card-title>
+                <v-card-title>{{ stunt.title }}</v-card-title>
 
                 <v-card-text>
                   <p v-html="stunt.description"></p>
@@ -37,13 +35,13 @@
 <script>
 export default {
   data() {
-    return {}
+    return {};
   },
   computed: {
     stunts() {
-      return this.$store.state.stunts
-    }
-  }
+      return this.$store.state.stunts;
+    },
+  },
 };
 </script>
 

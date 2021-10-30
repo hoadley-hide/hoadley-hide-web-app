@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col xs="12" sm="6">
+    <v-col cols="12" sm="6">
       <v-card>
         <v-card-title>First Aid</v-card-title>
 
