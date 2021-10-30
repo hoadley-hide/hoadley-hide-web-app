@@ -1,0 +1,32 @@
+{
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "lib": ["dom", "es2015", "es2016"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "noImplicitAny": false,
+
+    "allowJs": true,
+    "checkJs": true,
+
+    "allowSyntheticDefaultImports": true,
+    "suppressImplicitAnyIndexErrors": true,
+
+    "experimentalDecorators": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "removeComments": true,
+    "sourceMap": true,
+    "pretty": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["src/*"],
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["./index.d.ts", "./**/*.ts", "./**/*.vue"],
+  "exclude": [".nuxt", ".vscode", "dist", "dist.js", "node_modules"]
+}

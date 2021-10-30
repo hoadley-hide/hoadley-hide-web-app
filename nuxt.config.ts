@@ -1,4 +1,6 @@
-export default {
+import { defineNuxtConfig } from "@nuxt/bridge";
+
+export default defineNuxtConfig({
   /*
    ** Headers of the page
    ** Doc: https://vue-meta.nuxtjs.org/api/#metainfo-properties
@@ -11,13 +13,13 @@ export default {
       {
         hid: "description",
         name: "description",
-        content: "Hoadley Hide 2022: Monster Hunters"
-      }
+        content: "Hoadley Hide 2022: Monster Hunters",
+      },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
   srcDir: "src/",
-  target: "static",
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -43,8 +45,8 @@ export default {
     customVariables: ["~/scss/variables.scss"],
     treeShake: true,
     theme: {
-      dark: true
-    }
+      dark: true,
+    },
   },
 
   /**
@@ -58,7 +60,7 @@ export default {
       name: "Hoadley Hide 2022: Monster Hunters",
       description: "Hoadley Hide 2022: Monster Hunters",
       theme_color: "#000000",
-      background_color: "#000000"
+      background_color: "#000000",
     },
 
     /**
@@ -69,7 +71,12 @@ export default {
       description: false,
       author: false,
       ogType: false,
-      nativeUI: true
-    }
-  }
-};
+      nativeUI: true,
+    },
+  },
+  privateRuntimeConfig: {
+    cmsUrl: process.env.CMS_URL,
+    cmsApiKey: process.env.CMS_KEY
+  },
+  publicRuntimeConfig: {},
+});
