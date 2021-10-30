@@ -13,7 +13,7 @@
           <v-tabs vertical>
             <v-tab v-for="stunt in stunts" :key="stunt.title">
               <v-icon left>{{ stunt.icon }}</v-icon>
-              {{ stunt.title }}
+             <span class="tab-title-left-align">{{ stunt.name }}</span>
             </v-tab>
 
             <v-tab-item v-for="stunt in stunts" :key="stunt.title">
@@ -23,9 +23,7 @@
                 </v-card-title>
 
                 <v-card-text>
-                  <p>
-                    {{ stunt.text }}
-                  </p>
+                  <p v-html="stunt.description"></p>
                 </v-card-text>
               </v-card>
             </v-tab-item>
@@ -39,22 +37,19 @@
 <script>
 export default {
   data() {
-    return {
-      stunts: [
-        {
-          title: "Stunt 1",
-          icon: "mdi-forum",
-          text: "/stunts/into-the-spiderverse",
-        },
-        { title: "Stunt 2", icon: "mdi-forum", text: "/stunts/marvel" },
-        {
-          title: "stunt 3",
-          icon: "mdi-forum",
-          text: "/stunts/DC-is-better-than-Marvel",
-        },
-        { title: "Stunt 4", icon: "mdi-forum", text: "/stunts/test" },
-      ],
-    };
+    return {}
   },
+  computed: {
+    stunts() {
+      return this.$store.state.stunts
+    }
+  }
 };
 </script>
+
+<style scoped>
+.tab-title-left-align {
+  width: 100%;
+  text-align: left;
+}
+</style>
