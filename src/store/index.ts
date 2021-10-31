@@ -47,13 +47,13 @@ export const actions: ActionTree<RootState, RootState> = {
       alert.equals(appAlert)
     );
 
-    const alert: AppAlert = (duplicateAlert) ? duplicateAlert : appAlert;
+    const alert: AppAlert = duplicateAlert ? duplicateAlert : appAlert;
 
     alert.setTimeout((alert) => {
       dispatch(`expireAlert`, alert);
     }, 5000);
 
-    if (appAlert.deduplicate && duplicateAlert){
+    if (appAlert.deduplicate && duplicateAlert) {
       // Deduplication is enabled & the alert is a duplicate.
       // Don't add a new alert.
       return;
@@ -97,5 +97,54 @@ export const actions: ActionTree<RootState, RootState> = {
       console.log(res);
       console.log(res.errors);
     }
+  },
+
+  async validateCode({ state }, { code }) {
+    const validCodes = [
+      {
+        name: "Event Stage",
+        prefix: "E",
+        codes: [
+          { code: "ADFFS", to: "/event/pre-event" },
+          { code: "AWESD", to: "/event/check-in" },
+          { code: "MKLWE", to: "/event/rogaining" },
+          { code: "PSDKJ", to: "/event/friday-night" },
+          { code: "NKWEO", to: "/event/the-capture" },
+        ],
+      },
+      {
+        name: "Stunt",
+        prefix: "S",
+        codes: [
+          { code: "ADFFS", to: "/stunts/1" },
+          { code: "AWESD", to: "/stunts/2" },
+          { code: "MKLWE", to: "/stunts/3" },
+          { code: "PSDKJ", to: "/stunts/4" },
+          { code: "NKWEO", to: "/stunts/5" },
+        ],
+      },
+      {
+        name: "Partol",
+        prefix: "P",
+        codes: [
+          { code: "ADFFS", to: "/patrol/1" },
+          { code: "AWESD", to: "/patrol/2" },
+          { code: "MKLWE", to: "/patrol/3" },
+          { code: "PSDKJ", to: "/patrol/4" },
+          { code: "NKWEO", to: "/patrol/5" },
+        ],
+      },
+    ];
+
+    const compiledCodes = validCodes.flatMap((codeBlock) => {
+      return codeBlock.codes.map((c) => ({
+        code: `${codeBlock.prefix}${c.code}`,
+        to: c.to,
+      }));
+    });
+
+    const matchedCode = compiledCodes.find((route) => route.code === code);
+
+    return matchedCode?.to || null;
   },
 };

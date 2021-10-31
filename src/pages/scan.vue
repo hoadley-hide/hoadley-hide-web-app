@@ -4,47 +4,51 @@
       <v-card>
         <v-card-title>Scan QR code</v-card-title>
 
-        <client-only v-if="!qrCodeError" placeholder="Loading...">
+        <v-card-text v-if="codeQueryParam !== null"
+          >Valid query param detected, processing...</v-card-text
+        >
+
+        <client-only v-else-if="!readerError" placeholder="Loading...">
           <qrcode-stream
             @decode="onDecode"
             @init="onInit"
             :track="paintOutline"
           >
           </qrcode-stream>
+
+          <v-card-text v-if="readerResult">{{ readerResult }}</v-card-text>
+          <v-card-text v-else>Looking for QR Code...</v-card-text>
         </client-only>
 
         <v-card-text v-else>
-          <p class="error--text">{{ qrCodeError }}</p>
-          <v-btn link @click.stop="resetQrCodeError" color="error">
+          <p class="error--text">{{ readerError }}</p>
+          <v-btn link @click.stop="resetReaderError" color="error">
             Retry Camera
           </v-btn>
           <v-text-field
-            v-model="manualCode"
+            v-model="codeManual"
             label="Code"
             prefix="HH22:"
-            :append-outer-icon="manualCode ? `mdi-check` : ``"
+            :append-outer-icon="codeManual ? `mdi-check` : ``"
             @click:append-outer="validateManualInput"
             clearable
           ></v-text-field>
-        </v-card-text>
-
-        <v-card-text>
-          {{ decodedString }}
         </v-card-text>
       </v-card>
     </v-col>
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
 
 export default {
   data() {
     return {
-      decodedString: "",
-      manualCode: "",
-      qrCodeError: null,
+      codeQueryParam: "" as string | null,
+      codeManual: "",
+      readerResult: "",
+      readerError: null,
     };
   },
   mounted() {
@@ -52,10 +56,24 @@ export default {
       { to: "/", label: "Home" },
       { to: null, label: "Scan" },
     ]);
+
+    this.parseQueryParam();
   },
   methods: {
-    resetQrCodeError() {
-      this.qrCodeError = null;
+    async parseQueryParam() {
+      const validCode = await this.$store.dispatch("validateCode", {
+        code: this.$route.query.code,
+      });
+
+      if (!validCode) {
+        this.codeQueryParam = null;
+        return;
+      }
+
+      this.$router.push(validCode);
+    },
+    resetReaderError() {
+      this.readerError = null;
     },
     async onInit(promise) {
       try {
@@ -74,7 +92,7 @@ export default {
             "ERROR: Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.",
         };
 
-        this.qrCodeError =
+        this.readerError =
           errorCodeMap[error.name] || `ERROR: Camera error (${error.name})`;
       }
     },
@@ -95,17 +113,37 @@ export default {
         ctx.stroke();
       }
     },
-    onDecode(decodedString) {
-      this.decodedString = decodedString;
+    async onDecode(readerResult) {
+      this.readerResult = readerResult;
 
-      const baseUrl = "https://hoadley-hide.netlify.app";
-      if (this.decodedString.startsWith(baseUrl)) {
-        const routePath = this.decodedString.replace(baseUrl, "");
-        this.$router.push({ path: routePath });
+      try {
+        const url = new URL(readerResult);
+        const code = url.searchParams.get("code");
+
+        const validCode = await this.$store.dispatch("validateCode", {
+          code: code,
+        });
+        if (validCode) {
+          this.$router.push(validCode);
+        }
+      } catch (e) {
+        if (
+          typeof e === "string" &&
+          /TypeError: URL constructor: .+ is not a valid URL/.test(e)
+        ) {
+          // Not a valid URL. Skip.
+          return;
+        }
+        throw e;
       }
     },
-    validateManualInput() {
-      alert(this.manualCode);
+    async validateManualInput() {
+      const validCode = await this.$store.dispatch("validateCode", {
+        code: this.codeManual,
+      });
+      if (validCode) {
+        this.$router.push(validCode);
+      }
     },
   },
 };
