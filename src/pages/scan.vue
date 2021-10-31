@@ -110,3 +110,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.qrcode-stream-wrapper {
+  height: 50vh;
+}
+</style>
