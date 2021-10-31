@@ -92,6 +92,7 @@ export default {
         { title: "Home", icon: "mdi-view-dashboard", to: "/" },
         { title: "Stunts", icon: "mdi-view-dashboard", to: "/stunts" },
         { title: "About", icon: "mdi-forum", to: "/about" },
+        { title: "Scan", icon: "mdi-qrcode", to: "/scan" },
       ],
       monsterAcronymIndex: 0,
     };

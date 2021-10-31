@@ -40,7 +40,10 @@ export default defineNuxtConfig({
    ** Plugins to load before mounting the App
    ** Doc: https://nuxtjs.org/docs/2.x/directory-structure/plugins
    */
-  plugins: [{ src: "~/plugins/pwa-update.js", mode: "client" }],
+  plugins: [
+    { src: "~/plugins/pwa-update.js", mode: "client" },
+    { src: "~/plugins/vue-qrcode-reader.ts", mode: "client" },
+  ],
 
   vuetify: {
     customVariables: ["~/scss/variables.scss"],

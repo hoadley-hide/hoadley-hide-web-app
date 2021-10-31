@@ -10,6 +10,7 @@
     "start": "node .output/server/index.mjs"
   },
   "dependencies": {
+    "vue-qrcode-reader": "^3.0.6",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
