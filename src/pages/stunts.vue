@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import { setBreadcrumbs } from "~/common/helper-factories";
+
 export default {
   data() {
     return {};
@@ -41,6 +43,12 @@ export default {
     stunts() {
       return this.$store.state.stunts;
     },
+  },
+  mounted() {
+    setBreadcrumbs(this.$store, [
+      { to: "/", label: "Home" },
+      { to: null, label: "Stunts" },
+    ]);
   },
 };
 </script>

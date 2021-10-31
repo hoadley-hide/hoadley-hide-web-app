@@ -77,7 +77,7 @@ export default defineNuxtConfig({
   },
   privateRuntimeConfig: {
     cmsUrl: process.env.CMS_URL,
-    cmsApiKey: process.env.CMS_KEY
+    cmsApiKey: process.env.CMS_KEY,
   },
   publicRuntimeConfig: {},
 });

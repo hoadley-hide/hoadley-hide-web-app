@@ -22,7 +22,14 @@
 </template>
 
 <script>
+import { setBreadcrumbs } from "~/common/helper-factories";
+
 export default {
-  layout: "default",
+  mounted() {
+    setBreadcrumbs(this.$store, [
+      { to: "/", label: "Home" },
+      { to: null, label: "About" },
+    ]);
+  },
 };
 </script>

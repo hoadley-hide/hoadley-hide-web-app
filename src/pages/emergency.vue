@@ -2,12 +2,12 @@
   <v-row>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title> Emercency Contacts </v-card-title>
+        <v-card-title>Emergency Contacts</v-card-title>
 
         <v-card-text>
           <a href="tel:0419286499">
             <v-icon>mdi-phone</v-icon>
-            Call the Hoadley Hide Emercency Number
+            Call the Hoadley Hide Emergency Number
           </a>
         </v-card-text>
       </v-card>
@@ -32,7 +32,14 @@
 </template>
 
 <script>
+import { setBreadcrumbs } from "~/common/helper-factories";
+
 export default {
-  layout: "default",
+  mounted() {
+    setBreadcrumbs(this.$store, [
+      { to: "/", label: "Home" },
+      { to: null, label: "Emergency" },
+    ]);
+  },
 };
 </script>
