@@ -22,16 +22,24 @@ export async function simpleAllGraphQL<Raw, Data>(
   variables: any,
   mappingFn: (item: Raw) => Data
 ): Promise<GraphQL<typeof key, Data[]>> {
-  const response = await fetch(baseUrl, {
-    method: "post",
-    body: JSON.stringify({
-      query: query,
-      variables: variables,
-    }),
-    headers: {
-      Authorization: `Bearer ${apikey}`,
-    },
-  });
+  let response: Response | null = null;
+  try {
+    response = await fetch(baseUrl, {
+      method: "post",
+      body: JSON.stringify({
+        query: query,
+        variables: variables,
+      }),
+      headers: {
+        Authorization: `Bearer ${apikey}`,
+      },
+    });
+  } catch (e) {
+    return Promise.resolve({
+      errors: [{ message: "An unknown error occurred: request failed" }],
+      extensions: { requestId: "000000" },
+    });
+  }
 
   const result: GraphQL<typeof key, Raw[]> = await response.json();
 
