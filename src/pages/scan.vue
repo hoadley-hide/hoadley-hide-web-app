@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title>Scan QR code</v-card-title>
+        <v-card-title class="text-h2">Scan QR code</v-card-title>
 
         <v-card-text v-if="codeQueryParam !== null"
           >Valid query param detected, processing...</v-card-text

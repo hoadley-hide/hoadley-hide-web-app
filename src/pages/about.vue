@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title>About Hoadley Hide</v-card-title>
+        <v-card-title class="text-h2">About Hoadley Hide</v-card-title>
 
         <v-card-text>
           An annual Scouting activity (started back in 1952). It is a

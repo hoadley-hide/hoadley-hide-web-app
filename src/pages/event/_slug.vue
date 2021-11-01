@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title>{{ eventStage.name }}</v-card-title>
+        <v-card-title class="text-h3">{{ eventStage.name }}</v-card-title>
         <v-card-subtitle>
           Nominal stage start:
           {{ eventStage.startTime | datetime }}
@@ -13,8 +13,8 @@
     </v-col>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title class="d-flex flex-nowrap">
-          <v-icon left>mdi-qrcode</v-icon>
+        <v-card-title class="text-h4 d-flex flex-nowrap">
+          <v-icon left large>mdi-qrcode</v-icon>
           <span>Share this stage</span>
         </v-card-title>
         <v-card-text class="d-flex justify-space-around">
@@ -54,6 +54,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-</style>

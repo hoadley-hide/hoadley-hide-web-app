@@ -2,10 +2,7 @@
   <v-row>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title>
-          <v-icon left>{{ stunt.icon }}</v-icon>
-          {{ stunt.name }}
-        </v-card-title>
+        <v-card-title class="text-h3">{{ stunt.name }}</v-card-title>
 
         <v-card-text v-html="stunt.description"></v-card-text>
 
@@ -14,8 +11,8 @@
     </v-col>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title class="d-flex flex-nowrap">
-          <v-icon left>mdi-qrcode</v-icon>
+        <v-card-title class="text-h4 d-flex flex-nowrap">
+          <v-icon left large>mdi-qrcode</v-icon>
           <span>Share this stage</span>
         </v-card-title>
         <v-card-text class="d-flex justify-space-around">

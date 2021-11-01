@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title>Stages</v-card-title>
+        <v-card-title class="text-h2">Stages</v-card-title>
 
         <v-card-text>Where are we up to in the event?</v-card-text>
         <v-card-text class="warning--text">

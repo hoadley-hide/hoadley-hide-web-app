@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title>Emergency Contacts</v-card-title>
+        <v-card-title class="text-h3">Emergency Contacts</v-card-title>
 
         <v-card-text>
           <a href="tel:0419286499">
@@ -14,7 +14,7 @@
     </v-col>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title>I don't have service!?</v-card-title>
+        <v-card-title class="text-h4">I don't have service!?</v-card-title>
 
         <v-card-text>
           Stay put, study the map, retrace your steps to the last stunt you were

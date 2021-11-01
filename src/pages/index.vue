@@ -1,8 +1,19 @@
 <template>
   <div>
     <v-card>
-      <v-card-title>M.O.N.S.T.E.R Guild</v-card-title>
-      <v-card-subtitle>What's the worst that could happen?</v-card-subtitle>
+      <v-card-title
+        class="
+          text-h2 text-center text-sm-left
+          d-flex
+          justify-space-around justify-sm-start
+        "
+      >
+        <span class="pr-3">M.O.N.S.T.E.R</span>
+        <span>Guild</span>
+      </v-card-title>
+      <v-card-subtitle class="text-subtitle-1 font-italic">
+        What's the worst that could happen?
+      </v-card-subtitle>
 
       <v-card-text>
         <p>
@@ -57,9 +68,7 @@ export default {
     };
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
-      { to: null, label: "Home" },
-    ]);
+    setBreadcrumbs(this.$store, [{ to: null, label: "Home" }]);
   },
 };
 </script>
