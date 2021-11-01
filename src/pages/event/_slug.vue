@@ -18,18 +18,7 @@
           <span>Share this stage</span>
         </v-card-title>
         <v-card-text class="d-flex justify-space-around">
-          <client-only>
-            <vue-qr
-              :correctLevel="3"
-              :text="qrCodeUrl"
-              :size="500"
-              :margin="20"
-              :logoSrc="`/hh-qr-code-logo-192x192.png`"
-              :logoScale="0.3"
-              :logoCornerRadius="0"
-              class="qr-code-image"
-            ></vue-qr>
-          </client-only>
+          <qr-code :url="qrCodeUrl"></qr-code>
         </v-card-text>
       </v-card>
     </v-col>
@@ -38,8 +27,10 @@
 
 <script>
 import { setBreadcrumbs } from "~/common/helper-factories";
+import lazy from "~/components/lazy.vue";
 
 export default {
+  components: { lazy },
   validate({ params, store }) {
     return store.getters.eventStage(params.slug);
   },
@@ -65,11 +56,4 @@ export default {
 </script>
 
 <style scoped>
-.qr-code-image {
-  width: 50vh;
-  height: 50vh;
-  max-width: 300px;
-  max-height: 300px;
-  border-radius: 4px;
-}
 </style>

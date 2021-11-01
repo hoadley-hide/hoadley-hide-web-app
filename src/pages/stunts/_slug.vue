@@ -19,18 +19,7 @@
           <span>Share this stage</span>
         </v-card-title>
         <v-card-text class="d-flex justify-space-around">
-          <client-only>
-            <vue-qr
-              :correctLevel="3"
-              :text="qrCodeUrl"
-              :size="500"
-              :margin="20"
-              :logoSrc="`/cropped-hhemblem-colour-hires-youtube-192x192.png`"
-              :logoScale="0.3"
-              :logoCornerRadius="0"
-              class="qr-code-image"
-            ></vue-qr>
-          </client-only>
+          <qr-code :url="qrCodeUrl"></qr-code>
         </v-card-text>
       </v-card>
     </v-col>
