@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" absolute temporary>
+    <v-navigation-drawer v-model="drawer" fixed temporary>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>Hoadley Hide 2022</v-list-item-title>
@@ -90,6 +90,7 @@ export default {
       drawer: false,
       items: [
         { title: "Home", icon: "mdi-view-dashboard", to: "/" },
+        { title: "Stages", icon: "mdi-seat", to: "/event" },
         { title: "Stunts", icon: "mdi-view-dashboard", to: "/stunts" },
         { title: "About", icon: "mdi-forum", to: "/about" },
         { title: "Scan", icon: "mdi-qrcode", to: "/scan" },

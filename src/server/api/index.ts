@@ -4,13 +4,17 @@ const baseUrl = process.env.CMS_URL || console.error("missing CMS_URL") || "";
 const apikey = process.env.CMS_KEY || console.error("missing CMS_KEY") || "";
 
 export default async (_req: IncomingMessage, res: ServerResponse) => {
-  const returnable = {
-    paths: ["/stunts"],
-  };
-
-  res.statusCode = 200;
-  return returnable;
+  res.statusCode = 404;
 };
+
+export const EntityType = {
+  Stunt: { prefix: "S", length: 5 },
+  EventStage: { prefix: "E", length: 5 },
+};
+
+export function generateShortId(entityType, id: string) {
+  return entityType.prefix + id.slice(id.length - entityType.length);
+}
 
 export async function simpleAllGraphQL<Raw, Data>(
   key: string,

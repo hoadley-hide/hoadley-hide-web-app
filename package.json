@@ -10,6 +10,8 @@
     "start": "node .output/server/index.mjs"
   },
   "dependencies": {
+    "luxon": "^2.0.2",
+    "vue-qr": "^3.2.2",
     "vue-qrcode-reader": "^3.0.6",
     "vuex": "^3.6.2"
   },

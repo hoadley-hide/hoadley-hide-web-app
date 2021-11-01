@@ -41,7 +41,9 @@ export default defineNuxtConfig({
    ** Doc: https://nuxtjs.org/docs/2.x/directory-structure/plugins
    */
   plugins: [
+    { src: "~/plugins/filters.ts" },
     { src: "~/plugins/pwa-update.js", mode: "client" },
+    { src: "~/plugins/vue-qr.ts", mode: "client" },
     { src: "~/plugins/vue-qrcode-reader.ts", mode: "client" },
   ],
 

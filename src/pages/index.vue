@@ -46,13 +46,13 @@ export default {
           icon: "mdi-view-dashboard",
           to: "/stunts",
         },
-        { title: "What can I do next?", icon: "mdi-forum", to: "/friday" },
+        { title: "What can I do next?", icon: "mdi-seat", to: "/event" },
         {
           title: "My feet are hurting...",
-          icon: "mdi-forum",
+          icon: "mdi-medical-bag",
           to: "/first-aid",
         },
-        { title: "About", icon: "mdi-forum", to: "/about" },
+        { title: "About", icon: "mdi-information", to: "/about" },
       ],
     };
   },

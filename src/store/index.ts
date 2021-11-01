@@ -2,13 +2,14 @@ import Vue from "vue";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 import { AppAlert } from "~/common/alert";
 import { AppBreadcrumb } from "~/common/breadcrumb";
-import { EventStage, GraphQL, Stunt } from "~/types";
+import { EventStage, GraphQL, ScannedCode, Stunt } from "~/types";
 
 export const state = () => ({
   alerts: [] as AppAlert[],
   breadcrumbs: [] as AppBreadcrumb[],
   eventStages: [] as EventStage[],
   stunts: [] as Stunt[],
+  scannedCodes: [] as ScannedCode[],
   monsterAcronyms: [
     "Military Operational New Soldiers Trapped till Everybody Runs",
     "Many Oodles of Nutty Stories Threatening Earth’s Reality",
@@ -24,6 +25,23 @@ export type RootState = ReturnType<typeof state>;
 export const getters: GetterTree<RootState, RootState> = {
   alerts: (state) => state.alerts,
   breadcrumbs: (state) => state.breadcrumbs,
+  stunt: (state) => (slug) => state.stunts.find((stunt) => stunt.slug === slug),
+  eventStage: (state) => (slug) => state.eventStages.find((stage) => stage.slug === slug),
+  compiledCodes: (state) => {
+    const compiledCodes = [
+      ...state.eventStages.map((stage) => ({
+        code: stage.shortId.toUpperCase(),
+        to: `/event/${stage.slug}`,
+      })),
+      ...state.stunts.map((stunt) => ({
+        code: stunt.shortId.toUpperCase(),
+        to: `/stunts/${stunt.slug}`,
+      })),
+      // TODO: Patrol codes.
+    ];
+
+    return compiledCodes;
+  },
 };
 
 export const mutations: MutationTree<RootState> = {
@@ -99,51 +117,14 @@ export const actions: ActionTree<RootState, RootState> = {
     }
   },
 
-  async validateCode({ state }, { code }) {
-    const validCodes = [
-      {
-        name: "Event Stage",
-        prefix: "E",
-        codes: [
-          { code: "ADFFS", to: "/event/pre-event" },
-          { code: "AWESD", to: "/event/check-in" },
-          { code: "MKLWE", to: "/event/rogaining" },
-          { code: "PSDKJ", to: "/event/friday-night" },
-          { code: "NKWEO", to: "/event/the-capture" },
-        ],
-      },
-      {
-        name: "Stunt",
-        prefix: "S",
-        codes: [
-          { code: "ADFFS", to: "/stunts/1" },
-          { code: "AWESD", to: "/stunts/2" },
-          { code: "MKLWE", to: "/stunts/3" },
-          { code: "PSDKJ", to: "/stunts/4" },
-          { code: "NKWEO", to: "/stunts/5" },
-        ],
-      },
-      {
-        name: "Partol",
-        prefix: "P",
-        codes: [
-          { code: "ADFFS", to: "/patrol/1" },
-          { code: "AWESD", to: "/patrol/2" },
-          { code: "MKLWE", to: "/patrol/3" },
-          { code: "PSDKJ", to: "/patrol/4" },
-          { code: "NKWEO", to: "/patrol/5" },
-        ],
-      },
-    ];
+  async validateCode({ getters }, { code }: { code: string }) {
+    if (!code) {
+      return null;
+    }
 
-    const compiledCodes = validCodes.flatMap((codeBlock) => {
-      return codeBlock.codes.map((c) => ({
-        code: `${codeBlock.prefix}${c.code}`,
-        to: c.to,
-      }));
-    });
-
-    const matchedCode = compiledCodes.find((route) => route.code === code);
+    const matchedCode = getters.compiledCodes.find(
+      (route) => route.code === code.toUpperCase()
+    );
 
     return matchedCode?.to || null;
   },
