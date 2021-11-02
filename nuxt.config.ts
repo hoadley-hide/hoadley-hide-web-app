@@ -7,23 +7,18 @@ const version = JSON.parse(packageJson).version || 0;
 
 export default defineNuxtConfig({
   srcDir: "src/",
-  target: "static",
+  target: "server",
   /*
    ** Headers of the page
    ** Doc: https://vue-meta.nuxtjs.org/api/#metainfo-properties
    */
   head: {
     title: "Monster Hunters - Hoadley Hide 2022",
-    meta: [
-      { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      {
-        hid: "description",
-        name: "description",
-        content: "Hoadley Hide 2022: Monster Hunters",
-      },
+    meta: [],
+    link: [
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      { rel: "preload", as: "image", href: "/hh-qr-code-logo-192x192.png" },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
 
   build: {
@@ -74,24 +69,29 @@ export default defineNuxtConfig({
    * https://pwa.nuxtjs.org
    */
   pwa: {
+    icon: {
+      fileName: "hhemblem-colour-hires-youtube.png",
+    },
     /**
      * https://pwa.nuxtjs.org/modules/manifest.html
      */
     manifest: {
       name: "Hoadley Hide 2022: Monster Hunters",
+      short_name: "Hoadley Hide",
       description: "Hoadley Hide 2022: Monster Hunters",
       theme_color: "#000000",
       background_color: "#000000",
+      start_url: "https://hoadley-hide.netlify.app",
     },
 
     /**
      * https://pwa.nuxtjs.org/modules/meta.html#options
      */
     meta: {
-      name: false,
-      description: false,
+      name: "Hoadley Hide 2022: Monster Hunters",
+      description: "Hoadley Hide 2022: Monster Hunters",
       author: false,
-      ogType: false,
+      ogHost: "https://hoadley-hide.netlify.app",
       nativeUI: true,
     },
   },
