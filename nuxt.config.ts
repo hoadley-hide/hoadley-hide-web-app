@@ -1,4 +1,9 @@
 import { defineNuxtConfig } from "@nuxt/bridge";
+import fs from "fs";
+import webpack from "webpack";
+
+const packageJson = fs.readFileSync("./package.json").toString();
+const version = JSON.parse(packageJson).version || 0;
 
 export default defineNuxtConfig({
   srcDir: "src/",
@@ -19,6 +24,16 @@ export default defineNuxtConfig({
       },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+  },
+
+  build: {
+    plugins: [
+      new webpack.DefinePlugin({
+        "process.env": {
+          PACKAGE_VERSION: JSON.stringify(version),
+        },
+      }),
+    ],
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components

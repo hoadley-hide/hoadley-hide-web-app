@@ -18,11 +18,13 @@ export const state = () => ({
     "Mining Operation for Nice Shiny Tiny Earth Rocks",
     "Monsters Official Network of Safe Tourist Extracurricular Reprieves",
   ],
+  packageVersion: process.env.PACKAGE_VERSION || '0'
 });
 
 export type RootState = ReturnType<typeof state>;
 
 export const getters: GetterTree<RootState, RootState> = {
+  appVersion: (state) => state.packageVersion,
   alerts: (state) => state.alerts,
   breadcrumbs: (state) => state.breadcrumbs,
   stunt: (state) => (slug) => state.stunts.find((stunt) => stunt.slug === slug),
