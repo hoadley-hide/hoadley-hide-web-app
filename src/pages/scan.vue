@@ -40,6 +40,7 @@
 </template>
 
 <script lang="ts">
+// https://gruhn.github.io/vue-qrcode-reader/
 import { setBreadcrumbs } from "~/common/helper-factories";
 
 export default {

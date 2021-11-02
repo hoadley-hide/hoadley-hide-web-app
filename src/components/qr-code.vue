@@ -18,6 +18,7 @@
 </template>
 
 <script lang="ts">
+// https://github.com/Binaryify/vue-qr
 export default {
   props: ["url"],
 };
