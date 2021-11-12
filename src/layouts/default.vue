@@ -4,7 +4,7 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>Hoadley Hide 2022</v-list-item-title>
-          <v-list-item-subtitle>v{{buildNumber}}</v-list-item-subtitle>
+          <v-list-item-subtitle>v{{ buildNumber }}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
@@ -101,7 +101,7 @@ export default {
   },
   computed: {
     buildNumber() {
-      return process.env.PACKAGE_VERSION || 'Unknown'
+      return process.env.PACKAGE_VERSION || "Unknown";
     },
     monsterAcronyms() {
       return this.$store.state.monsterAcronyms;
@@ -119,7 +119,6 @@ export default {
 };
 </script>
 
-
 <style lang="scss" scoped>
 @import "~vuetify/src/styles/styles.sass";
 .app-title {
@@ -132,12 +131,3 @@ export default {
   }
 }
 </style>
-@import "~vuetify/src/styles/styles.sass";
-.app-title {
-  font-family: $heading-font-family;
-  letter-spacing: 0.2rem;
-  font-size: xx-large;
-  a {
-    color: unset;
-  }
-}

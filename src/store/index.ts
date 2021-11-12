@@ -18,7 +18,7 @@ export const state = () => ({
     "Mining Operation for Nice Shiny Tiny Earth Rocks",
     "Monsters Official Network of Safe Tourist Extracurricular Reprieves",
   ],
-  packageVersion: process.env.PACKAGE_VERSION || '0'
+  packageVersion: process.env.PACKAGE_VERSION || "0",
 });
 
 export type RootState = ReturnType<typeof state>;
