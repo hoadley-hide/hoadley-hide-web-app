@@ -1,7 +1,9 @@
 <template>
   <v-row>
     <v-col cols="12" sm="6">
-      <qr-code-scan @valid-code="routeValidCode"></qr-code-scan>
+      <qr-code-scan @valid-code="routeValidCode">
+        <v-card-title class="text-h2">Scan QR code</v-card-title>
+      </qr-code-scan>
     </v-col>
   </v-row>
 </template>

@@ -51,3 +51,11 @@ export interface GraphQL<K extends string, T> {
 export interface ScannedCode {
   code: string;
 }
+
+export type AppUserType = "patrol" | "stunt" | "admin";
+export interface AppUser {
+  id: string;
+  type: AppUserType;
+  shortId: string;
+  name: string;
+}

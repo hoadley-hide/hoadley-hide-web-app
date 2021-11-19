@@ -2,7 +2,7 @@ import Vue from "vue";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 import { AppAlert } from "~/common/alert";
 import { AppBreadcrumb } from "~/common/breadcrumb";
-import { EventStage, GraphQL, ScannedCode, Stunt } from "~/types";
+import { AppUser, EventStage, GraphQL, ScannedCode, Stunt } from "~/types";
 
 export const state = () => ({
   alerts: [] as AppAlert[],
@@ -18,18 +18,25 @@ export const state = () => ({
     "Mining Operation for Nice Shiny Tiny Earth Rocks",
     "Monsters Official Network of Safe Tourist Extracurricular Reprieves",
   ],
-  hasChromeUserReadWarning: false as boolean,
+  hasPermissionWarningBeenRead: false as boolean,
   packageVersion: process.env.PACKAGE_VERSION || "0",
+  user: null as AppUser | null,
 });
 
 export type RootState = ReturnType<typeof state>;
 
 export const getters: GetterTree<RootState, RootState> = {
+  // Util getters
   appVersion: (state) => state.packageVersion,
   alerts: (state) => state.alerts,
   breadcrumbs: (state) => state.breadcrumbs,
+  // Content getters
   stunt: (state) => (slug) => state.stunts.find((stunt) => stunt.slug === slug),
-  eventStage: (state) => (slug) => state.eventStages.find((stage) => stage.slug === slug),
+  eventStage: (state) => (slug) =>
+    state.eventStages.find((stage) => stage.slug === slug),
+  // User getters
+  user: (state) => state.user,
+  // QR Codes
   compiledCodes: (state) => {
     const compiledCodes = [
       ...state.eventStages.map((stage) => ({
@@ -57,8 +64,8 @@ export const mutations: MutationTree<RootState> = {
   setBreadcrumbs: (state, breadcrumbs: AppBreadcrumb[]) => {
     Vue.set(state, "breadcrumbs", breadcrumbs);
   },
-  chromeUserHasReadWarning: (state) => {
-    state.hasChromeUserReadWarning = true;
+  permissionWarningHasBeenRead: (state) => {
+    state.hasPermissionWarningBeenRead = true;
   },
 };
 

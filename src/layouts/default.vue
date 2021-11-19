@@ -45,6 +45,8 @@
     <v-main>
       <breadcrumbs></breadcrumbs>
 
+      <user-not-set v-if="userSetupRequired"></user-not-set>
+
       <v-container>
         <Nuxt />
       </v-container>
@@ -108,6 +110,21 @@ export default {
     },
     monsterAcronym() {
       return this.monsterAcronyms[this.monsterAcronymIndex];
+    },
+    userSetupRequired() {
+      const isPageSetup = ["/user/stunt/setup", "/user/patrol/setup"].includes(
+        this.$route.path
+      );
+      if (isPageSetup) {
+        return false;
+      }
+
+      const isUserDefined = !!this.$store.getters.user;
+      if (isUserDefined) {
+        return false;
+      }
+
+      return true;
     },
   },
   watch: {

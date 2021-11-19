@@ -1,20 +1,21 @@
 <template>
   <v-card class="qr-code-container">
-    <v-card-title class="text-h2">Scan QR code</v-card-title>
+    <slot></slot>
 
     <lazy>
       <client-only placeholder="Loading...">
-        <span v-if="showChromeWarning">
+        <span v-if="showPermissionWarning">
           <v-alert type="warning" tile>
             <v-row align="center" class="w-full">
               <v-col cols="12" lg="8">
-                <strong>Chrome users:</strong><br />
                 We are about to ask you for permission to use your camera. If
                 you do not grant permission the first time, you'll have to grant
                 access manually in the future.
               </v-col>
               <v-col>
-                <v-btn @click="chromeUserHasReadWarning()">I Understand</v-btn>
+                <v-btn @click="permissionWarningHasBeenRead()">
+                  I Understand
+                </v-btn>
               </v-col>
             </v-row>
           </v-alert>
@@ -33,7 +34,11 @@
               @decode="onDecode"
               @init="onInit"
               :track="paintOutline"
-            ></qrcode-stream>
+            >
+              <v-btn link @click.stop="closeScanner" color="info">
+                Use manual input
+              </v-btn>
+            </qrcode-stream>
 
             <v-card-text v-if="readerResult">{{ readerResult }}</v-card-text>
             <v-card-text v-else>Looking for QR Code...</v-card-text>
@@ -49,6 +54,14 @@
             @click:append-outer="validateManualInput"
             clearable
           ></v-text-field>
+          <v-btn
+            v-if="scannerClosed"
+            link
+            @click.stop="openScanner"
+            color="info"
+          >
+            Open scanner
+          </v-btn>
         </v-card-text>
       </client-only>
     </lazy>
@@ -65,6 +78,7 @@ export default {
   data() {
     return {
       codeManual: "",
+      scannerClosed: false,
       readerResult: "",
       readerError: null,
     };
@@ -72,24 +86,31 @@ export default {
   mounted() {},
   computed: {
     showScanner() {
-      return !this.manualPromptFirst && !this.showChromeWarning;
+      return (
+        !this.scannerClosed &&
+        !this.manualPromptFirst &&
+        !this.showPermissionWarning
+      );
     },
     showManualEntry() {
-      return !!this.readerError || this.manualPromptFirst;
+      return this.scannerClosed || !!this.readerError || this.manualPromptFirst;
     },
-    showChromeWarning() {
-      return (
-        this.$browserDetect?.isChrome &&
-        !this.$store.state.hasChromeUserReadWarning
-      );
+    showPermissionWarning() {
+      return !this.$store.state.hasPermissionWarningBeenRead;
     },
   },
   methods: {
-    chromeUserHasReadWarning() {
-      this.$store.commit("chromeUserHasReadWarning");
+    permissionWarningHasBeenRead() {
+      this.$store.commit("permissionWarningHasBeenRead");
     },
     resetReaderError() {
       this.readerError = null;
+    },
+    openScanner() {
+      this.scannerClosed = false;
+    },
+    closeScanner() {
+      this.scannerClosed = true;
     },
     async onInit(promise) {
       try {
