@@ -18,6 +18,7 @@ export const state = () => ({
     "Mining Operation for Nice Shiny Tiny Earth Rocks",
     "Monsters Official Network of Safe Tourist Extracurricular Reprieves",
   ],
+  hasChromeUserReadWarning: false as boolean,
   packageVersion: process.env.PACKAGE_VERSION || "0",
 });
 
@@ -55,6 +56,9 @@ export const mutations: MutationTree<RootState> = {
   },
   setBreadcrumbs: (state, breadcrumbs: AppBreadcrumb[]) => {
     Vue.set(state, "breadcrumbs", breadcrumbs);
+  },
+  chromeUserHasReadWarning: (state) => {
+    state.hasChromeUserReadWarning = true;
   },
 };
 

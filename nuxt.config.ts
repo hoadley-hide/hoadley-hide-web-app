@@ -39,7 +39,11 @@ export default defineNuxtConfig({
    ** Doc: https://modules.nuxtjs.org
    */
   modules: [],
-  buildModules: ["@nuxtjs/vuetify", "@nuxtjs/pwa"],
+  buildModules: [
+    "@nuxtjs/vuetify",
+    "@nuxtjs/pwa",
+    "vue-browser-detect-plugin/nuxt",
+  ],
   /*
    ** Global CSS
    ** Doc: https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-css
