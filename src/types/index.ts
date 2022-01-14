@@ -42,6 +42,34 @@ export interface StuntRaw {
   location: string;
 }
 
+export interface PatrolMember {
+  rego?: string;
+  fullname: string;
+  formation: string;
+}
+
+export interface Patrol {
+  id: string;
+  shortId: string;
+  name: string;
+  slug: string;
+  patrolNumber: string;
+  members: PatrolMember[];
+}
+
+export interface PatrolMemberRaw {
+  rego?: string;
+  fullname: string;
+  formation: string;
+}
+
+export interface PatrolRaw {
+  id: string;
+  name: string;
+  slug: string;
+  patrolNumber: string;
+  members: PatrolMemberRaw[];
+}
 export interface GraphQL<K extends string, T> {
   data?: Record<K, T>;
   errors?: { message: string }[];

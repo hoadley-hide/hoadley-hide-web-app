@@ -95,6 +95,7 @@ export default {
         { title: "Home", icon: "mdi-view-dashboard", to: "/" },
         { title: "Stages", icon: "mdi-seat", to: "/event" },
         { title: "Stunts", icon: "mdi-view-dashboard", to: "/stunts" },
+        { title: "Patrols", icon: "mdi-account-group", to: "/patrols" },
         { title: "About", icon: "mdi-forum", to: "/about" },
         { title: "Scan", icon: "mdi-qrcode", to: "/scan" },
       ],

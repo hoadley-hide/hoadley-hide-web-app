@@ -2,13 +2,22 @@ import Vue from "vue";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 import { AppAlert } from "~/common/alert";
 import { AppBreadcrumb } from "~/common/breadcrumb";
-import { AppUser, EventStage, GraphQL, ScannedCode, Stunt } from "~/types";
+import {
+  AppUser,
+  AppUserType,
+  EventStage,
+  GraphQL,
+  Patrol,
+  ScannedCode,
+  Stunt,
+} from "~/types";
 
 export const state = () => ({
   alerts: [] as AppAlert[],
   breadcrumbs: [] as AppBreadcrumb[],
   eventStages: [] as EventStage[],
   stunts: [] as Stunt[],
+  patrols: [] as Patrol[],
   scannedCodes: [] as ScannedCode[],
   monsterAcronyms: [
     "Military Operational New Soldiers Trapped till Everybody Runs",
@@ -31,23 +40,41 @@ export const getters: GetterTree<RootState, RootState> = {
   alerts: (state) => state.alerts,
   breadcrumbs: (state) => state.breadcrumbs,
   // Content getters
-  stunt: (state) => (slug) => state.stunts.find((stunt) => stunt.slug === slug),
-  eventStage: (state) => (slug) =>
-    state.eventStages.find((stage) => stage.slug === slug),
+  stunt: (state) => (slugOrId) =>
+    state.stunts.find(
+      (stunt) => stunt.slug === slugOrId || stunt.shortId === slugOrId
+    ),
+  patrol: (state) => (slugOrId) =>
+    state.patrols.find(
+      (patrol) => patrol.slug === slugOrId || patrol.shortId === slugOrId
+    ),
+  eventStage: (state) => (slugOrId) =>
+    state.eventStages.find(
+      (stage) => stage.slug === slugOrId || stage.shortId === slugOrId
+    ),
   // User getters
   user: (state) => state.user,
   // QR Codes
   compiledCodes: (state) => {
     const compiledCodes = [
       ...state.eventStages.map((stage) => ({
+        _type: "stage",
+        shortId: stage.shortId,
         code: stage.shortId.toUpperCase(),
         to: `/event/${stage.slug}`,
       })),
       ...state.stunts.map((stunt) => ({
+        _type: "stunt",
+        shortId: stunt.shortId,
         code: stunt.shortId.toUpperCase(),
         to: `/stunts/${stunt.slug}`,
       })),
-      // TODO: Patrol codes.
+      ...state.patrols.map((patrol) => ({
+        _type: "patrol",
+        shortId: patrol.shortId,
+        code: patrol.shortId.toUpperCase(),
+        to: `/patrols/${patrol.slug}`,
+      })),
     ];
 
     return compiledCodes;
@@ -66,6 +93,15 @@ export const mutations: MutationTree<RootState> = {
   },
   permissionWarningHasBeenRead: (state) => {
     state.hasPermissionWarningBeenRead = true;
+  },
+  setStunts: (state, stunts) => {
+    Vue.set(state, "stunts", stunts);
+  },
+  setPatrols: (state, patrols) => {
+    Vue.set(state, "patrols", patrols);
+  },
+  setEventStages: (state, eventStages) => {
+    Vue.set(state, "eventStages", eventStages);
   },
 };
 
@@ -101,30 +137,45 @@ export const actions: ActionTree<RootState, RootState> = {
 
   async initialiseAll({ dispatch }) {
     await dispatch("initialiseStunts");
+    await dispatch("initialisePatrols");
     await dispatch("initialiseEventStages");
   },
-  async initialiseStunts({ state }) {
+  async initialiseStunts({ commit }) {
     try {
       const result: GraphQL<"stunts", Stunt> = await $fetch("/api/stunts");
       if (result && result.data) {
-        Vue.set(state, "stunts", result.data.stunts);
+        commit("setStunts", result.data.stunts);
       }
     } catch (e) {
-      const res: GraphQL<"stunts", Stunt> = await e.response.json();
+      const res: GraphQL<"stunts", Stunt> = await e.response;
       console.log(res);
       console.log(res.errors);
     }
   },
-  async initialiseEventStages({ state }) {
+  async initialisePatrols({ commit }) {
+    try {
+      const result: GraphQL<"patrols", EventStage> = await $fetch(
+        "/api/patrols"
+      );
+      if (result && result.data) {
+        commit("setPatrols", result.data.patrols);
+      }
+    } catch (e) {
+      const res: GraphQL<"patrols", EventStage> = await e.response;
+      console.log(res);
+      console.log(res.errors);
+    }
+  },
+  async initialiseEventStages({ commit }) {
     try {
       const result: GraphQL<"eventStages", EventStage> = await $fetch(
         "/api/event-stages"
       );
       if (result && result.data) {
-        Vue.set(state, "eventStages", result.data.eventStages);
+        commit("setEventStages", result.data.eventStages);
       }
     } catch (e) {
-      const res: GraphQL<"eventStages", EventStage> = await e.response.json();
+      const res: GraphQL<"eventStages", EventStage> = await e.response;
       console.log(res);
       console.log(res.errors);
     }
