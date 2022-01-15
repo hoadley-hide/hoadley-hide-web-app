@@ -94,6 +94,28 @@ export const mutations: MutationTree<RootState> = {
   permissionWarningHasBeenRead: (state) => {
     state.hasPermissionWarningBeenRead = true;
   },
+  persistUser: (
+    state,
+    opts: { _type: "patrol"; patrol: Patrol } | { _type: "stunt"; stunt: Stunt }
+  ) => {
+    if (opts._type === "patrol") {
+      const appUser: AppUser = {
+        id: opts.patrol.id,
+        _type: opts._type as AppUserType,
+        shortId: opts.patrol.shortId,
+        name: opts.patrol.name,
+      };
+      Vue.set(state, "user", appUser);
+    } else if (opts._type === "stunt") {
+      const appUser: AppUser = {
+        id: opts.stunt.id,
+        _type: opts._type as AppUserType,
+        shortId: opts.stunt.shortId,
+        name: opts.stunt.name,
+      };
+      Vue.set(state, "user", appUser);
+    }
+  },
   setStunts: (state, stunts) => {
     Vue.set(state, "stunts", stunts);
   },
@@ -186,10 +208,26 @@ export const actions: ActionTree<RootState, RootState> = {
       return null;
     }
 
-    const matchedCode = getters.compiledCodes.find(
-      (route) => route.code === code.toUpperCase()
-    );
+    const matchedCode = getters.compiledCodes.find((route) => {
+      return route.code === code.toUpperCase();
+    });
 
-    return matchedCode?.to || null;
+    return matchedCode || null;
+  },
+  async persistUser(
+    { commit, getters },
+    opts: { patrolId: string } | { stuntId: string }
+  ) {
+    if ("patrolId" in opts) {
+      commit("persistUser", {
+        _type: "patrol",
+        patrol: getters.patrol(opts.patrolId),
+      });
+    } else if ("stuntId" in opts) {
+      commit("persistUser", {
+        _type: "stunt",
+        stunt: getters.stunt(opts.stuntId),
+      });
+    }
   },
 };

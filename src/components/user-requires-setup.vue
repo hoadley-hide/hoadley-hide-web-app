@@ -4,7 +4,11 @@
       <v-col class="pb-0 text-center">
         <v-card>
           <v-card-text class="text-body-2 font-weight-black success--text">
-            Let us know who you are!
+            Hello Traveller!
+          </v-card-text>
+          <v-card-text class="text-body-2">
+            Welcome to our humble village. In a moment we will show you around,
+            but first, who are you?
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>

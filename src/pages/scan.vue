@@ -23,8 +23,8 @@ export default {
     ]);
   },
   methods: {
-    async routeValidCode(validCode) {
-      this.$router.push(validCode);
+    async routeValidCode(validEntity) {
+      this.$router.push(validEntity.to);
     },
   },
 };

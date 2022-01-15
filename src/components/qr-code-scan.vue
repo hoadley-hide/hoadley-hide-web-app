@@ -8,9 +8,15 @@
           <v-alert type="warning" tile>
             <v-row align="center" class="w-full">
               <v-col cols="12" lg="8">
-                We are about to ask you for permission to use your camera. If
-                you do not grant permission the first time, you'll have to grant
-                access manually in the future.
+                We are about to ask you for permission to use your camera.
+                <br />
+                <br />
+                If you do not grant permission the first time, you'll have to
+                grant access manually in the future.
+                <br />
+                <br />
+                We recommend ticking "Remember this desicion" so we don't have
+                to ask in future.
               </v-col>
               <v-col>
                 <v-btn @click="permissionWarningHasBeenRead()">
@@ -30,14 +36,20 @@
           </v-card-text>
 
           <span v-else>
+            <v-btn
+              text
+              block
+              class="w-full"
+              @click.stop="closeScanner"
+              color="info"
+            >
+              Use manual input
+            </v-btn>
             <qrcode-stream
               @decode="onDecode"
               @init="onInit"
               :track="paintOutline"
             >
-              <v-btn link @click.stop="closeScanner" color="info">
-                Use manual input
-              </v-btn>
             </qrcode-stream>
 
             <v-card-text v-if="readerResult">{{ readerResult }}</v-card-text>
@@ -46,6 +58,16 @@
         </span>
 
         <v-card-text v-if="showManualEntry">
+          <v-btn
+            v-if="scannerClosed"
+            text
+            block
+            class="w-full"
+            @click.stop="openScanner"
+            color="info"
+          >
+            Open scanner
+          </v-btn>
           <v-text-field
             v-model="codeManual"
             label="Code"
@@ -54,14 +76,6 @@
             @click:append-outer="validateManualInput"
             clearable
           ></v-text-field>
-          <v-btn
-            v-if="scannerClosed"
-            link
-            @click.stop="openScanner"
-            color="info"
-          >
-            Open scanner
-          </v-btn>
         </v-card-text>
       </client-only>
     </lazy>

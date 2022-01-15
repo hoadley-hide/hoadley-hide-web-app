@@ -16,6 +16,8 @@
           :key="item.title"
           link
           nuxt
+          :href="item.href"
+          :target="item.href ? '_blank' : ''"
           :to="item.to"
         >
           <v-list-item-icon>
@@ -45,7 +47,7 @@
     <v-main>
       <breadcrumbs></breadcrumbs>
 
-      <user-not-set v-if="userSetupRequired"></user-not-set>
+      <user-requires-setup v-if="userSetupRequired"></user-requires-setup>
 
       <v-container>
         <Nuxt />
@@ -98,6 +100,12 @@ export default {
         { title: "Patrols", icon: "mdi-account-group", to: "/patrols" },
         { title: "About", icon: "mdi-forum", to: "/about" },
         { title: "Scan", icon: "mdi-qrcode", to: "/scan" },
+        { title: "Data Activity", icon: "mdi-refresh", to: "/data" },
+        {
+          title: "Upload Photos",
+          icon: "mdi-image-plus",
+          href: "https://cloud.snowdrift.com.au/s/ogsYfAe4Er4cDa9",
+        },
       ],
       monsterAcronymIndex: 0,
     };

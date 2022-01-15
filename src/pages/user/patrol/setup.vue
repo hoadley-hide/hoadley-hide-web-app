@@ -7,9 +7,9 @@
           <template v-for="(step, index) in availableSteps">
             <v-stepper-step
               :key="`${index}-step`"
-              :complete="currentStep > index"
+              :complete="currentStep > index + 1"
               :step="index + 1"
-              :editable="currentStep > index"
+              :editable="currentStep === index"
             >
               {{ step.title }}
             </v-stepper-step>
@@ -24,93 +24,38 @@
         <!-- Content items -->
         <v-stepper-items>
           <!-- Step 1 -->
-          <v-stepper-content step="1">
-            <v-card>
-              <v-card-title class="text-h4">
-                Setting up your Patrol
-              </v-card-title>
-              <v-card-text>
-                <v-list>
-                  <v-list-item
-                    v-for="action in availableSteps"
-                    :key="action.label"
-                  >
-                    <v-list-item-icon>
-                      <v-icon>{{ action.icon }}</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      {{ action.label }}
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list>
-              </v-card-text>
-            </v-card>
-
-            <v-btn class="mt-6" color="primary" @click="nextStep(1)">
-              Get Started
-            </v-btn>
-          </v-stepper-content>
+          <setup-patrol-step-1
+            :available-steps="availableSteps"
+            @next-step="nextStep(1)"
+          ></setup-patrol-step-1>
 
           <!-- Step 2 -->
-          <v-stepper-content step="2">
-            <qr-code-scan v-if="currentStep === 2" @valid-code="routeValidCode">
-              <v-card-title class="text-h4">
-                Scan your patrol's QR Code
-              </v-card-title>
-            </qr-code-scan>
-
-            <v-btn class="mt-6" color="primary" @click="nextStep(2)">
-              Continue
-            </v-btn>
-          </v-stepper-content>
+          <setup-patrol-step-2
+            :step-active="currentStep === 2"
+            @next-step="nextStep(2)"
+            @patrol-data="handlePatrol"
+          ></setup-patrol-step-2>
 
           <!-- Step 3 -->
-          <v-stepper-content step="3">
-            <v-card>
-              <v-card-title class="text-h4">
-                Confim all of you're Patrol is here!
-              </v-card-title>
-              <v-card-text>
-                <v-list>
-                  <v-list-item
-                    v-for="action in patrolMembers"
-                    :key="action.label"
-                  >
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        {{ action.fullname }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle>
-                        {{ action.formation }}
-                      </v-list-item-subtitle>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list>
-              </v-card-text>
-            </v-card>
-
-            <v-btn color="primary" @click="nextStep(3)">Okie!</v-btn>
-          </v-stepper-content>
+          <setup-patrol-step-3
+            :patrol="patrol"
+            @next-step="nextStep(3)"
+          ></setup-patrol-step-3>
 
           <!-- Step 4 -->
-          <v-stepper-content step="4">
-            <v-card class="mb-12" tile>
-              <v-card-title class="text-h4">
-                Take a photo of your Patrol!
-              </v-card-title>
-              <v-card-text> Photz plz </v-card-text>
-            </v-card>
-
-            <v-btn color="primary" @click="nextStep(4)">Got them!</v-btn>
-          </v-stepper-content>
+          <setup-patrol-step-4
+            :patrol="patrol"
+            @next-step="nextStep(4)"
+          ></setup-patrol-step-4>
         </v-stepper-items>
       </v-stepper>
     </v-col>
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
+import { Patrol } from "~/types/index";
 
 export default {
   data() {
@@ -135,35 +80,10 @@ export default {
         {
           icon: "mdi-camera",
           title: "Take a photo",
-          label: "Take a photo of you're patrol!",
+          label: "Take a photo of your patrol!",
         },
       ],
-      patrolMembers: [
-        {
-          fullname: "Dirk Arends",
-          formation: "Keith Farquhar Rovers",
-        },
-        {
-          fullname: "Cheese Anderson",
-          formation: "Victorian Venturer Council",
-        },
-        {
-          fullname: "Paige Baddeley",
-          formation: "Leichhardt Rovers",
-        },
-        {
-          fullname: "Charlie O'Neil",
-          formation: "Venturers",
-        },
-        {
-          fullname: "Lucy",
-          formation: "Venturers",
-        },
-        {
-          fullname: "Jessy Lang",
-          formation: "Boss Hurst Rovers",
-        },
-      ],
+      patrolId: null,
     };
   },
   mounted() {
@@ -181,14 +101,25 @@ export default {
       }
     },
   },
-
+  computed: {
+    patrol() {
+      if (!this.patrolId) {
+        return null;
+      }
+      return this.$store.getters.patrol(this.patrolId);
+    },
+  },
   methods: {
     nextStep(index) {
       if (index === this.availableSteps.length) {
-        this.currentStep = 1;
+        this.$router.push(`/patrols/${this.patrol.slug}`);
       } else {
         this.currentStep = index + 1;
       }
+    },
+    async handlePatrol(patrolData: Patrol) {
+      this.patrolId = patrolData.shortId;
+      this.$store.dispatch("persistUser", { patrolId: this.patrolId });
     },
   },
 };

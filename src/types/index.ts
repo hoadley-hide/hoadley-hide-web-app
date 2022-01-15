@@ -83,7 +83,7 @@ export interface ScannedCode {
 export type AppUserType = "patrol" | "stunt" | "admin";
 export interface AppUser {
   id: string;
-  type: AppUserType;
+  _type: AppUserType;
   shortId: string;
   name: string;
 }
