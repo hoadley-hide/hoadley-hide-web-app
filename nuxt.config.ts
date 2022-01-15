@@ -59,6 +59,7 @@ export default defineNuxtConfig({
     { src: "~/plugins/pwa-update.js", mode: "client" },
     { src: "~/plugins/vue-qr.ts", mode: "client" },
     { src: "~/plugins/vue-qrcode-reader.ts", mode: "client" },
+    { src: "~/plugins/persistedState.client.js", mode: "client" },
   ],
 
   vuetify: {

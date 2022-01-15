@@ -14,7 +14,8 @@
     "vue-browser-detect-plugin": "^0.1.18",
     "vue-qr": "^3.2.2",
     "vue-qrcode-reader": "^3.0.6",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@nuxt/bridge": "npm:@nuxt/bridge-edge",
