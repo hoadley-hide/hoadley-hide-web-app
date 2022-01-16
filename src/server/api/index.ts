@@ -13,8 +13,9 @@ export const EntityType = {
   Patrol: { prefix: "P", length: 5 },
 };
 
-export function generateShortId(entityType, id: string) {
-  return entityType.prefix + id.slice(id.length - entityType.length);
+export function generateCode(entityType, id: string) {
+  const code = entityType.prefix + id.slice(id.length - entityType.length);
+  return code.toUpperCase();
 }
 
 export async function simpleAllGraphQL<Raw, Data>(

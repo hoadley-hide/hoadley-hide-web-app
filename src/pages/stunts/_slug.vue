@@ -38,7 +38,7 @@ export default {
       return this.$store.getters.stunt(this.$route.params.slug);
     },
     qrCodeUrl() {
-      return `https://hoadley-hide.netlify.app/scan?code=${this.stunt.shortId}`;
+      return `https://hoadley-hide.netlify.app/scan?code=${this.stunt.code}`;
     },
   },
   mounted() {

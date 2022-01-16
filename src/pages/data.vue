@@ -9,6 +9,31 @@
     </v-col>
     <v-col cols="12" sm="6">
       <v-card>
+        <v-card-title class="text-h3">Scanned Codes</v-card-title>
+
+        <v-card-text>
+          <v-list>
+            <v-list-item
+              v-for="scannedCode in scannedCodes"
+              v-bind:key="scannedCode.time"
+            >
+              {{ scannedCode.code }}
+            </v-list-item>
+            <v-list-item v-if="scannedCodes.length === 0">
+              <i>No codes scanned</i>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+
+        <v-card-text v-if="scannedCodes.length !== 0">
+          <v-btn color="info" @click="clearScannedCodes">
+            Clear scanned codes
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-col>
+    <v-col cols="12" sm="6">
+      <v-card>
         <v-card-title class="text-h3">Refetch data</v-card-title>
 
         <v-card-text>
@@ -21,14 +46,20 @@
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
+import { ScannedCode } from "~/types";
 
 export default {
   data() {
     return {
       loading: false,
     };
+  },
+  computed: {
+    scannedCodes(): ScannedCode {
+      return this.$store.getters.scannedCodes;
+    },
   },
   mounted() {
     setBreadcrumbs(this.$store, [
@@ -37,6 +68,9 @@ export default {
     ]);
   },
   methods: {
+    async clearScannedCodes() {
+      this.$store.dispatch("clearScannedCodes");
+    },
     async refreshData() {
       this.loading = true;
       await this.$store.dispatch("initialiseAll");

@@ -42,7 +42,7 @@ export default {
       return this.$store.getters.eventStage(this.$route.params.slug);
     },
     qrCodeUrl() {
-      return `https://hoadley-hide.netlify.app/scan?code=${this.eventStage.shortId}`;
+      return `https://hoadley-hide.netlify.app/scan?code=${this.eventStage.code}`;
     },
   },
   mounted() {

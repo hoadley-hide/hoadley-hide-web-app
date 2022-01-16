@@ -11,7 +11,7 @@ export default {
   props: ["stepActive"],
   methods: {
     async handleValidCode(scannedData) {
-      const patrol = this.$store.getters.patrol(scannedData.shortId);
+      const patrol = this.$store.getters.patrol(scannedData.code);
       if (!patrol) {
         console.log("not a valid patrol");
         return;

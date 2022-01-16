@@ -7,7 +7,7 @@
         <v-card-text>Patrol Number: #{{ patrol.patrolNumber }}</v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" sm="6" v-if="patrol.shortId === activeUser.shortId">
+    <v-col cols="12" sm="6" v-if="patrol.code === activeUser.code">
       <v-card>
         <v-card-text>
           <strong>This is your Patrol.</strong> You can share this QR code with
@@ -47,7 +47,7 @@ export default {
       return this.$store.getters.user;
     },
     qrCodeUrl() {
-      return `https://hoadley-hide.netlify.app/scan?code=${this.patrol.shortId}`;
+      return `https://hoadley-hide.netlify.app/scan?code=${this.patrol.code}`;
     },
   },
   mounted() {

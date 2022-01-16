@@ -118,7 +118,7 @@ export default {
       }
     },
     async handlePatrol(patrolData: Patrol) {
-      this.patrolId = patrolData.shortId;
+      this.patrolId = patrolData.code;
       this.$store.dispatch("persistUser", { patrolId: this.patrolId });
     },
   },

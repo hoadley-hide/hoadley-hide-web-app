@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { EventStage, EventStageRaw } from "~/types";
-import { EntityType, generateShortId, simpleAllGraphQL } from ".";
+import { EntityType, generateCode, simpleAllGraphQL } from ".";
 
 export default async (_req: IncomingMessage, res: ServerResponse) => {
   const fields = `{
@@ -17,9 +17,10 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     {},
     (stage): EventStage => ({
       id: stage.id,
-      shortId: generateShortId(EntityType.EventStage, stage.id),
+      code: generateCode(EntityType.EventStage, stage.id),
       name: stage.name,
       slug: stage.slug,
+      path: `/event/${stage.slug}`,
       description: stage.description.html,
       descriptionText: stage.description.text,
       startTime: stage.startTime,

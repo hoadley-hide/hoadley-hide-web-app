@@ -8,6 +8,10 @@ import {
   EventStage,
   GraphQL,
   Patrol,
+  QrCodeLookup,
+  QrCodeLookupPatrol,
+  QrCodeLookupStage,
+  QrCodeLookupStunt,
   ScannedCode,
   Stunt,
 } from "~/types";
@@ -39,42 +43,51 @@ export const getters: GetterTree<RootState, RootState> = {
   appVersion: (state) => state.packageVersion,
   alerts: (state) => state.alerts,
   breadcrumbs: (state) => state.breadcrumbs,
+  scannedCodes: (state) => state.scannedCodes,
+  hasCodeBeenScanned:
+    (state) =>
+    (code): ScannedCode | undefined => {
+      return state.scannedCodes.find((scanned) => scanned.code === code);
+    },
   // Content getters
   stunt: (state) => (slugOrId) =>
     state.stunts.find(
-      (stunt) => stunt.slug === slugOrId || stunt.shortId === slugOrId
+      (stunt) => stunt.slug === slugOrId || stunt.code === slugOrId
     ),
   patrol: (state) => (slugOrId) =>
     state.patrols.find(
-      (patrol) => patrol.slug === slugOrId || patrol.shortId === slugOrId
+      (patrol) => patrol.slug === slugOrId || patrol.code === slugOrId
     ),
   eventStage: (state) => (slugOrId) =>
     state.eventStages.find(
-      (stage) => stage.slug === slugOrId || stage.shortId === slugOrId
+      (stage) => stage.slug === slugOrId || stage.code === slugOrId
     ),
   // User getters
   user: (state) => state.user,
   // QR Codes
   compiledCodes: (state) => {
-    const compiledCodes = [
-      ...state.eventStages.map((stage) => ({
-        _type: "stage",
-        shortId: stage.shortId,
-        code: stage.shortId.toUpperCase(),
-        to: `/event/${stage.slug}`,
-      })),
-      ...state.stunts.map((stunt) => ({
-        _type: "stunt",
-        shortId: stunt.shortId,
-        code: stunt.shortId.toUpperCase(),
-        to: `/stunts/${stunt.slug}`,
-      })),
-      ...state.patrols.map((patrol) => ({
-        _type: "patrol",
-        shortId: patrol.shortId,
-        code: patrol.shortId.toUpperCase(),
-        to: `/patrols/${patrol.slug}`,
-      })),
+    const compiledCodes: QrCodeLookup[] = [
+      ...state.eventStages.map(
+        (stage): QrCodeLookupStage => ({
+          _type: "stage",
+          code: stage.code,
+          stage,
+        })
+      ),
+      ...state.stunts.map(
+        (stunt): QrCodeLookupStunt => ({
+          _type: "stunt",
+          code: stunt.code,
+          stunt,
+        })
+      ),
+      ...state.patrols.map(
+        (patrol): QrCodeLookupPatrol => ({
+          _type: "patrol",
+          code: patrol.code,
+          patrol,
+        })
+      ),
     ];
 
     return compiledCodes;
@@ -92,7 +105,16 @@ export const mutations: MutationTree<RootState> = {
     Vue.set(state, "breadcrumbs", breadcrumbs);
   },
   permissionWarningHasBeenRead: (state) => {
-    state.hasPermissionWarningBeenRead = true;
+    Vue.set(state, "hasPermissionWarningBeenRead", true);
+  },
+  recordCodeScan: (state, scannedCode: QrCodeLookup) => {
+    Vue.set(state.scannedCodes, state.scannedCodes.length, {
+      time: new Date(),
+      code: scannedCode.code,
+    });
+  },
+  clearScannedCodes: (state) => {
+    Vue.set(state, "scannedCodes", []);
   },
   persistUser: (
     state,
@@ -102,7 +124,7 @@ export const mutations: MutationTree<RootState> = {
       const appUser: AppUser = {
         id: opts.patrol.id,
         _type: opts._type as AppUserType,
-        shortId: opts.patrol.shortId,
+        code: opts.patrol.code,
         name: opts.patrol.name,
       };
       Vue.set(state, "user", appUser);
@@ -110,7 +132,7 @@ export const mutations: MutationTree<RootState> = {
       const appUser: AppUser = {
         id: opts.stunt.id,
         _type: opts._type as AppUserType,
-        shortId: opts.stunt.shortId,
+        code: opts.stunt.code,
         name: opts.stunt.name,
       };
       Vue.set(state, "user", appUser);
@@ -203,7 +225,7 @@ export const actions: ActionTree<RootState, RootState> = {
     }
   },
 
-  async validateCode({ getters }, { code }: { code: string }) {
+  async validateCode({ getters }, code: string) {
     if (!code) {
       return null;
     }
@@ -214,6 +236,14 @@ export const actions: ActionTree<RootState, RootState> = {
 
     return matchedCode || null;
   },
+
+  async recordCodeScan({ commit }, lookup: QrCodeLookup) {
+    commit("recordCodeScan", lookup);
+  },
+  async clearScannedCodes({ commit }) {
+    commit("clearScannedCodes");
+  },
+
   async persistUser(
     { commit, getters },
     opts: { patrolId: string } | { stuntId: string }

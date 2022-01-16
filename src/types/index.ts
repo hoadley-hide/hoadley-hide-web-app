@@ -1,8 +1,9 @@
 export interface EventStage {
   id: string;
-  shortId: string;
+  code: string;
   name: string;
   slug: string;
+  path: string;
   description: string;
   descriptionText: string;
   startTime: string;
@@ -21,9 +22,10 @@ export interface EventStageRaw {
 
 export interface Stunt {
   id: string;
-  shortId: string;
+  code: string;
   name: string;
   slug: string;
+  path: string;
   icon: string;
   description: string;
   descriptionText: string;
@@ -50,9 +52,10 @@ export interface PatrolMember {
 
 export interface Patrol {
   id: string;
-  shortId: string;
+  code: string;
   name: string;
   slug: string;
+  path: string;
   patrolNumber: string;
   members: PatrolMember[];
 }
@@ -84,6 +87,30 @@ export type AppUserType = "patrol" | "stunt" | "admin";
 export interface AppUser {
   id: string;
   _type: AppUserType;
-  shortId: string;
+  code: string;
   name: string;
 }
+
+interface QrCodeLookupBase {
+  code: string;
+}
+
+export interface QrCodeLookupStage extends QrCodeLookupBase {
+  _type: "stage";
+  stage: EventStage;
+}
+
+export interface QrCodeLookupStunt extends QrCodeLookupBase {
+  _type: "stunt";
+  stunt: Stunt;
+}
+
+export interface QrCodeLookupPatrol extends QrCodeLookupBase {
+  _type: "patrol";
+  patrol: Patrol;
+}
+
+export type QrCodeLookup =
+  | QrCodeLookupStage
+  | QrCodeLookupStunt
+  | QrCodeLookupPatrol;

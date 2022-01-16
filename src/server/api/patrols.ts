@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { Patrol, PatrolRaw } from "~/types";
-import { EntityType, generateShortId, simpleAllGraphQL } from ".";
+import { EntityType, generateCode, simpleAllGraphQL } from ".";
 
 export default async (_req: IncomingMessage, res: ServerResponse) => {
   const fields = `{
@@ -16,9 +16,10 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     {},
     (patrol): Patrol => ({
       id: patrol.id,
-      shortId: generateShortId(EntityType.Patrol, patrol.id),
+      code: generateCode(EntityType.Patrol, patrol.id),
       name: patrol.name,
       slug: patrol.slug,
+      path: `/patrols/${patrol.slug}`,
       patrolNumber: patrol.patrolNumber,
       members: [
         {
