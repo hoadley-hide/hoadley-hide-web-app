@@ -20,9 +20,6 @@
       </v-card-text>
     </v-card>
 
-    <v-btn block class="mt-6" color="primary" @click="$emit('next-step')">
-      Okie! All Here
-    </v-btn>
     <v-btn
       block
       class="mt-6"
@@ -34,6 +31,10 @@
       <br />
       something isnt right
     </v-btn>
+    <v-btn block class="mt-6" color="primary" @click="$emit('next-step')">
+      Okie! All Here
+    </v-btn>
+
     <v-dialog v-model="memberMismatchWarning" width="500">
       <v-card>
         <v-card-title class="text-h5"> Something the matter? </v-card-title>

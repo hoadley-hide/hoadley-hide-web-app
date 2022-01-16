@@ -116,6 +116,11 @@ export const mutations: MutationTree<RootState> = {
   clearScannedCodes: (state) => {
     Vue.set(state, "scannedCodes", []);
   },
+  resetApp: (state) => {
+    Vue.set(state, "user", null);
+    Vue.set(state, "scannedCodes", []);
+    Vue.set(state, "hasPermissionWarningBeenRead", false);
+  },
   persistUser: (
     state,
     opts: { _type: "patrol"; patrol: Patrol } | { _type: "stunt"; stunt: Stunt }
@@ -242,6 +247,10 @@ export const actions: ActionTree<RootState, RootState> = {
   },
   async clearScannedCodes({ commit }) {
     commit("clearScannedCodes");
+  },
+
+  async resetApp({ commit }) {
+    commit("resetApp");
   },
 
   async persistUser(

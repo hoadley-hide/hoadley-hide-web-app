@@ -37,9 +37,18 @@
         <v-card-title class="text-h3">Refetch data</v-card-title>
 
         <v-card-text>
-          <v-btn color="error" @click="refreshData" :loading="loading">
+          <v-btn color="warning" @click="refreshData" :loading="loading">
             Refresh local data
           </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-col>
+    <v-col cols="12" sm="6">
+      <v-card>
+        <v-card-title class="text-h3">Reset app</v-card-title>
+
+        <v-card-text>
+          <v-btn color="error" @click="resetApp"> Reset app data </v-btn>
         </v-card-text>
       </v-card>
     </v-col>
@@ -75,6 +84,10 @@ export default {
       this.loading = true;
       await this.$store.dispatch("initialiseAll");
       this.loading = false;
+    },
+    async resetApp() {
+      await this.$store.dispatch("resetApp");
+      this.$router.push("/");
     },
   },
 };

@@ -7,7 +7,11 @@
         <v-card-text>Patrol Number: #{{ patrol.patrolNumber }}</v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" sm="6" v-if="patrol.code === activeUser.code">
+    <v-col
+      cols="12"
+      sm="6"
+      v-if="activeUser && patrol.code === activeUser.code"
+    >
       <v-card>
         <v-card-text>
           <strong>This is your Patrol.</strong> You can share this QR code with
