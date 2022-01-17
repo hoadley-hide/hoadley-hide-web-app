@@ -99,6 +99,13 @@ export default defineNuxtConfig({
       ogHost: "https://hoadley-hide.netlify.app",
       nativeUI: true,
     },
+
+    /**
+     * https://pwa.nuxtjs.org/modules/workbox.html#options
+     */
+    workbox: {
+      enabled: true,
+    },
   },
   privateRuntimeConfig: {
     cmsUrl: process.env.CMS_URL,

@@ -128,6 +128,56 @@ export default {
       monsterAcronymIndex: 0,
     };
   },
+  mounted() {
+    /**
+     * In 3.0.0 of @nuxtjs/pwa, a change was made to not prefetch all bundles on
+     * app initialisation and instead rely on Nuxt's new Smart Fetch feature
+     * which rel=preload's bundles as links to those pages become visible.
+     *
+     * While a great benefit for most use cases, this change is not conducive
+     * to fully offline-capable applications because they need all the bundles cached
+     * before the user goes to each and every page.[1]
+     *
+     * Some people suggest downgrading to 2.6.0 of @nuxtjs/pwa but this did not work
+     * for me as the sw.js script was suddenly inaccessible after downgrading. [2]
+     * It was getting generated correctly, the bundles were listed in the sw.js
+     * script but would return a 404 when trying to browse to it.
+     *
+     * I investigated adding a workbox plugin to the sw.js script but the script seems
+     * to be generated before webpack performs any bundling and thus the names of the
+     * JS bundles are not known.
+     *
+     * The SSR'd HTML does include links to all JS bundles in the form of rel=preload
+     * and rel=prefetch <link> tags. Vue SSR/Nuxt does provide two functions to help a
+     * developer label scripts, styles, fonts, and images with the correct <link rel=>
+     * attributes but, despite following the example of [3] the resultant HTML
+     * did not change.
+     *
+     * Ultimately the snippet below was born; a dynamic snippet that converts all
+     * rel=prefetch links to rel=preload. It also "uses" the preloaded content to avoid
+     * Chome producing a warning about content not being used within a few seconds of
+     * being preloaded.
+     *
+     * There may be a need in the future to expand this snippet to preload other content
+     * eg fonts and styles, but for now, this seems to solve my issue.
+     *
+     * [1] https://github.com/nuxt-community/pwa-module/issues/306
+     * [2] https://github.com/nuxt-community/pwa-module/issues/24
+     * [3] https://github.com/nuxt/nuxt.js/issues/1508#issuecomment-325655533
+     * [4] https://github.com/nuxt/nuxt.js/issues/1838
+     */
+    document.querySelectorAll("link[rel=prefetch]").forEach((el) => {
+      if (el.getAttribute("href")?.endsWith(".js")) {
+        el.setAttribute("as", "script");
+        el.setAttribute("rel", "preload");
+
+        const newScriptTag = document.createElement("script");
+        newScriptTag.setAttribute("src", el.getAttribute("href") ?? "");
+        newScriptTag.setAttribute("defer", "true");
+        document.querySelector("body")?.appendChild(newScriptTag);
+      }
+    });
+  },
   computed: {
     buildNumber() {
       return process.env.PACKAGE_VERSION || "Unknown";
