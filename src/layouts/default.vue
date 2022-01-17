@@ -76,7 +76,7 @@
 
     <v-footer app padless absolute>
       <v-row no-gutters>
-        <v-col cols="12" sm="6">
+        <v-col md="6" class="d-none d-md-flex">
           <v-card
             flat
             tile
@@ -87,13 +87,13 @@
             <v-card-text class="white--text">{{ monsterAcronym }}</v-card-text>
           </v-card>
         </v-col>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" md="6">
           <v-card
             flat
             tile
             width="100%"
             height="100%"
-            class="text-center text-sm-right"
+            class="text-center text-md-right"
           >
             <v-card-text class="white--text">
               {{ new Date().getFullYear() }} —
