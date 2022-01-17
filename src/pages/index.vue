@@ -16,9 +16,7 @@
       </v-card-subtitle>
 
       <v-card-text>
-        <p>
-          Today, you arrive at our humble settlement. Let me show you around.
-        </p>
+        <p>Today, you arrive at our humble village. Let me show you around.</p>
       </v-card-text>
 
       <v-card-text>
@@ -54,10 +52,14 @@ export default {
       links: [
         {
           title: "Check which stunts are open",
-          icon: "mdi-view-dashboard",
+          icon: "mdi-map-clock",
           to: "/stunts",
         },
-        { title: "What can I do next?", icon: "mdi-seat", to: "/event" },
+        {
+          title: "What can I do next?",
+          icon: "mdi-shield-sword",
+          to: "/event",
+        },
         {
           title: "My feet are hurting...",
           icon: "mdi-medical-bag",

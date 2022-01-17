@@ -5,10 +5,6 @@
         <v-card-title class="text-h2">Stages</v-card-title>
 
         <v-card-text>Where are we up to in the event?</v-card-text>
-        <v-card-text class="warning--text">
-          Note: Access to items on this page will only be shown after the QR
-          code has been scanned
-        </v-card-text>
       </v-card>
     </v-col>
     <v-col cols="12">
@@ -33,15 +29,20 @@
                 </div>
               </div>
             </v-list-item>
+            <v-list-item v-if="eventStages.length === 0">
+              <i>You have not discovered any stages</i>
+            </v-list-item>
           </v-list>
+          <v-btn block color="success" to="/scan">Open scanner</v-btn>
         </v-card-text>
       </v-card>
     </v-col>
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
+import { EventStage } from "~/types";
 
 export default {
   data() {
@@ -49,7 +50,9 @@ export default {
   },
   computed: {
     eventStages() {
-      return this.$store.state.eventStages;
+      return this.$store.state.eventStages.filter((stage: EventStage) =>
+        this.$store.getters.hasCodeBeenScanned(stage.code)
+      );
     },
   },
   mounted() {

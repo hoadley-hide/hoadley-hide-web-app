@@ -26,8 +26,9 @@
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
+import { Patrol } from "~/types";
 
 export default {
   data() {
@@ -35,7 +36,9 @@ export default {
   },
   computed: {
     patrols() {
-      return this.$store.state.patrols;
+      return this.$store.state.patrols.filter((patrol: Patrol) =>
+        this.$store.getters.hasCodeBeenScanned(patrol.code)
+      );
     },
   },
   mounted() {

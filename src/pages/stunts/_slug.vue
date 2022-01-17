@@ -9,7 +9,7 @@
         <v-card-text>Find this stunt: {{ stunt.location }}</v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" sm="6">
+    <v-col cols="12" sm="6" v-if="activeUser && activeUser._type !== 'patrol'">
       <v-card>
         <v-card-title class="text-h4 d-flex flex-nowrap">
           <v-icon left large>mdi-qrcode</v-icon>
@@ -39,6 +39,9 @@ export default {
     },
     qrCodeUrl() {
       return `https://hoadley-hide.netlify.app/scan?code=${this.stunt.code}`;
+    },
+    activeUser() {
+      return this.$store.getters.user;
     },
   },
   mounted() {

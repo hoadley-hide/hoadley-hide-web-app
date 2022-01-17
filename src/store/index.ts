@@ -30,6 +30,8 @@ export const state = () => ({
     "Mostly Online New System for Terrible Electronic Rucksacks",
     "Mining Operation for Nice Shiny Tiny Earth Rocks",
     "Monsters Official Network of Safe Tourist Extracurricular Reprieves",
+    "Masters On News Station Timings Elmore Region",
+    "Mystic Oranges Never Stay to Enlighten Royals",
   ],
   hasPermissionWarningBeenRead: false as boolean,
   packageVersion: process.env.PACKAGE_VERSION || "0",
