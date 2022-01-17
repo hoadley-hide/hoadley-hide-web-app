@@ -63,7 +63,31 @@ export const getters: GetterTree<RootState, RootState> = {
       (stage) => stage.slug === slugOrId || stage.code === slugOrId
     ),
   // User getters
-  user: (state) => state.user,
+  user: (
+    state,
+    getters
+  ): (AppUser & { entity: Stunt | EventStage | Patrol }) | null => {
+    if (!state.user) {
+      return null;
+    }
+
+    const entity: QrCodeLookup = getters.compiledCodes.find(
+      (lookup: QrCodeLookup) => lookup.code === state.user?.code
+    );
+
+    if (!entity) {
+      return null;
+    }
+
+    switch (entity._type) {
+      case "stage":
+        return { ...state.user, entity: entity.stage };
+      case "stunt":
+        return { ...state.user, entity: entity.stunt };
+      case "patrol":
+        return { ...state.user, entity: entity.patrol };
+    }
+  },
   // QR Codes
   compiledCodes: (state) => {
     const compiledCodes: QrCodeLookup[] = [

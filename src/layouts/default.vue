@@ -10,6 +10,22 @@
 
       <v-divider></v-divider>
 
+      <client-only>
+        <span v-if="activeUser">
+          <v-list-item :to="activeUser.entity.path">
+            <v-list-item-icon>
+              <v-icon>mdi-account-details</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>Profile</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+        </span>
+      </client-only>
+
       <v-list dense>
         <v-list-item
           v-for="item in items"
@@ -47,7 +63,9 @@
     <v-main>
       <breadcrumbs></breadcrumbs>
 
-      <user-requires-setup v-if="userSetupRequired"></user-requires-setup>
+      <client-only>
+        <user-requires-setup v-if="userSetupRequired"></user-requires-setup>
+      </client-only>
 
       <v-container>
         <Nuxt />
@@ -134,6 +152,9 @@ export default {
       }
 
       return true;
+    },
+    activeUser() {
+      return this.$store.getters.user;
     },
   },
   watch: {
