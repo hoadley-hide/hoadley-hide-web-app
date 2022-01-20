@@ -1,7 +1,18 @@
+import { RuntimeConfig } from "@/nuxt.config";
 import type { IncomingMessage, ServerResponse } from "http";
 import { GraphQL } from "~/types";
 const baseUrl = process.env.CMS_URL || console.error("missing CMS_URL") || "";
 const apikey = process.env.CMS_KEY || console.error("missing CMS_KEY") || "";
+
+export const nuxtConfig = {
+  NUXT_NO_SSR: process.env.NUXT_NO_SSR as unknown as boolean,
+  NUXT_STATIC_BASE: process.env.NUXT_STATIC_BASE as unknown as string,
+  NUXT_STATIC_VERSION: process.env.NUXT_STATIC_VERSION as unknown as string,
+  NUXT_FULL_STATIC: process.env.NUXT_FULL_STATIC as unknown as boolean,
+  NITRO_PRESET: process.env.NITRO_PRESET as unknown as string,
+  RUNTIME_CONFIG: process.env.RUNTIME_CONFIG as unknown as RuntimeConfig,
+  DEBUG: process.env.DEBUG as unknown as boolean,
+};
 
 export default async (_req: IncomingMessage, res: ServerResponse) => {
   res.statusCode = 404;

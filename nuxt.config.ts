@@ -3,7 +3,7 @@ import fs from "fs";
 import webpack from "webpack";
 
 const packageJson = fs.readFileSync("./package.json").toString();
-const version = JSON.parse(packageJson).version || 0;
+const version = JSON.parse(packageJson).version || "Unknown";
 
 export default defineNuxtConfig({
   srcDir: "src/",
@@ -18,16 +18,6 @@ export default defineNuxtConfig({
     link: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
       { rel: "preload", as: "image", href: "/hh-qr-code-logo-192x192.png" },
-    ],
-  },
-
-  build: {
-    plugins: [
-      new webpack.DefinePlugin({
-        "process.env": {
-          PACKAGE_VERSION: JSON.stringify(version),
-        },
-      }),
     ],
   },
 
@@ -111,5 +101,22 @@ export default defineNuxtConfig({
     cmsUrl: process.env.CMS_URL,
     cmsApiKey: process.env.CMS_KEY,
   },
-  publicRuntimeConfig: {},
+  publicRuntimeConfig: {
+    version: version,
+  },
 });
+
+export interface RuntimeConfig {
+  public: {
+    _app: {
+      basePath: string;
+      assetsPath: string;
+      cdnURL: string;
+    };
+    version: string;
+  };
+  private: {
+    cmsUrl: string;
+    cmsApiKey: string;
+  };
+}

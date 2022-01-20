@@ -184,7 +184,7 @@ export default {
   },
   computed: {
     buildNumber() {
-      return process.env.PACKAGE_VERSION || "Unknown";
+      return this.$config.version || "Unknown";
     },
     monsterAcronyms() {
       return this.$store.state.monsterAcronyms;
