@@ -73,6 +73,31 @@ export interface PatrolRaw {
   patrolNumber: string;
   members: PatrolMemberRaw[];
 }
+
+export interface WikiArticle {
+  id: string;
+  code: string;
+  name: string;
+  shortName: string;
+  slug: string;
+  path: string;
+  content: string;
+  contentText: string;
+  tags: string[];
+}
+
+export interface WikiArticleRaw {
+  id: string;
+  name: string;
+  shortName: string;
+  slug: string;
+  content: {
+    html: string;
+    text: string;
+  };
+  tags: string[];
+}
+
 export interface GraphQL<K extends string, T> {
   data?: Record<K, T>;
   errors?: { message: string }[];
@@ -110,7 +135,13 @@ export interface QrCodeLookupPatrol extends QrCodeLookupBase {
   patrol: Patrol;
 }
 
+export interface QrCodeLookupWikiArticle extends QrCodeLookupBase {
+  _type: "wiki";
+  wikiArticle: WikiArticle;
+}
+
 export type QrCodeLookup =
   | QrCodeLookupStage
   | QrCodeLookupStunt
-  | QrCodeLookupPatrol;
+  | QrCodeLookupPatrol
+  | QrCodeLookupWikiArticle;

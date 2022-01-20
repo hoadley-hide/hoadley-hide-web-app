@@ -22,6 +22,7 @@ export const EntityType = {
   Stunt: { prefix: "S", length: 5 },
   EventStage: { prefix: "E", length: 5 },
   Patrol: { prefix: "P", length: 5 },
+  WikiArticle: { prefix: "W", length: 5 },
 };
 
 export function generateCode(entityType, id: string) {

@@ -113,7 +113,7 @@ export default {
       drawer: false,
       items: [
         { title: "Home", icon: "mdi-home", to: "/" },
-        { title: "Wiki", icon: "mdi-forum", to: "/about" },
+        { title: "Wiki", icon: "mdi-forum", to: "/wiki" },
         { title: "The Adventure", icon: "mdi-shield-sword", to: "/event" },
         { title: "Stunts", icon: "mdi-map", to: "/stunts" },
         {

@@ -12,8 +12,10 @@ import {
   QrCodeLookupPatrol,
   QrCodeLookupStage,
   QrCodeLookupStunt,
+  QrCodeLookupWikiArticle,
   ScannedCode,
   Stunt,
+  WikiArticle,
 } from "~/types";
 
 export const state = () => ({
@@ -22,6 +24,7 @@ export const state = () => ({
   eventStages: [] as EventStage[],
   stunts: [] as Stunt[],
   patrols: [] as Patrol[],
+  wikiArticles: [] as WikiArticle[],
   scannedCodes: [] as ScannedCode[],
   monsterAcronyms: [
     "Military Operational New Soldiers Trapped till Everybody Runs",
@@ -64,6 +67,11 @@ export const getters: GetterTree<RootState, RootState> = {
     state.eventStages.find(
       (stage) => stage.slug === slugOrId || stage.code === slugOrId
     ),
+  wikiArticle: (state) => (slugOrId) =>
+    state.wikiArticles.find(
+      (wikiArticle) =>
+        wikiArticle.slug === slugOrId || wikiArticle.code === slugOrId
+    ),
   // User getters
   user: (
     state,
@@ -82,12 +90,12 @@ export const getters: GetterTree<RootState, RootState> = {
     }
 
     switch (entity._type) {
-      case "stage":
-        return { ...state.user, entity: entity.stage };
       case "stunt":
         return { ...state.user, entity: entity.stunt };
       case "patrol":
         return { ...state.user, entity: entity.patrol };
+      default:
+        return null;
     }
   },
   // QR Codes
@@ -112,6 +120,13 @@ export const getters: GetterTree<RootState, RootState> = {
           _type: "patrol",
           code: patrol.code,
           patrol,
+        })
+      ),
+      ...state.wikiArticles.map(
+        (wikiArticle): QrCodeLookupWikiArticle => ({
+          _type: "wiki",
+          code: wikiArticle.code,
+          wikiArticle,
         })
       ),
     ];
@@ -178,6 +193,9 @@ export const mutations: MutationTree<RootState> = {
   setEventStages: (state, eventStages) => {
     Vue.set(state, "eventStages", eventStages);
   },
+  setWikiArticles: (state, wikiArticles) => {
+    Vue.set(state, "wikiArticles", wikiArticles);
+  },
 };
 
 export const actions: ActionTree<RootState, RootState> = {
@@ -214,6 +232,7 @@ export const actions: ActionTree<RootState, RootState> = {
     await dispatch("initialiseStunts");
     await dispatch("initialisePatrols");
     await dispatch("initialiseEventStages");
+    await dispatch("initialiseWikiArticles");
   },
   async initialiseStunts({ commit }) {
     try {
@@ -251,6 +270,20 @@ export const actions: ActionTree<RootState, RootState> = {
       }
     } catch (e) {
       const res: GraphQL<"eventStages", EventStage> = await e.response;
+      console.log(res);
+      console.log(res.errors);
+    }
+  },
+  async initialiseWikiArticles({ commit }) {
+    try {
+      const result: GraphQL<"wikiArticles", WikiArticle> = await $fetch(
+        "/api/wiki-articles"
+      );
+      if (result && result.data) {
+        commit("setWikiArticles", result.data.wikiArticles);
+      }
+    } catch (e) {
+      const res: GraphQL<"wikiArticles", WikiArticle> = await e.response;
       console.log(res);
       console.log(res.errors);
     }
