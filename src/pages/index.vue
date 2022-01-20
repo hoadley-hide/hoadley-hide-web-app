@@ -9,6 +9,7 @@
         "
       >
         <span class="pr-3">M.O.N.S.T.E.R</span>
+        <span>Hunters</span>
         <span>Guild</span>
       </v-card-title>
       <v-card-subtitle class="text-subtitle-1 font-italic">

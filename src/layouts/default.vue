@@ -112,13 +112,17 @@ export default {
     return {
       drawer: false,
       items: [
-        { title: "Home", icon: "mdi-view-dashboard", to: "/" },
-        { title: "Stages", icon: "mdi-seat", to: "/event" },
-        { title: "Stunts", icon: "mdi-view-dashboard", to: "/stunts" },
-        { title: "Patrols", icon: "mdi-account-group", to: "/patrols" },
-        { title: "About", icon: "mdi-forum", to: "/about" },
-        { title: "Scan", icon: "mdi-qrcode", to: "/scan" },
-        { title: "Data Activity", icon: "mdi-refresh", to: "/data" },
+        { title: "Home", icon: "mdi-home", to: "/" },
+        { title: "Wiki", icon: "mdi-forum", to: "/about" },
+        { title: "The Adventure", icon: "mdi-shield-sword", to: "/event" },
+        { title: "Stunts", icon: "mdi-map", to: "/stunts" },
+        {
+          title: "Patrols you've met",
+          icon: "mdi-account-group",
+          to: "/patrols",
+        },
+        { title: "Scan QR Code", icon: "mdi-qrcode", to: "/scan" },
+        { title: "Data & Activity", icon: "mdi-refresh", to: "/data" },
         {
           title: "Upload Photos",
           icon: "mdi-image-plus",
