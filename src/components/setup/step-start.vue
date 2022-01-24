@@ -1,9 +1,11 @@
 <template>
   <v-stepper-content step="1">
     <v-card>
-      <v-card-title class="text-h4"> Setting up your Patrol </v-card-title>
+      <v-card-title class="text-h4">
+        Setting up your {{ entity.toUpperCase() }}
+      </v-card-title>
       <v-card-text class="success--text">
-        Together we will set up your Patrol
+        Together we will set up your {{ entity }}
       </v-card-text>
       <v-card-text>
         <v-list>
@@ -27,7 +29,6 @@
 
 <script lang="ts">
 export default {
-  name: "patrol-step-one",
-  props: ["availableSteps"],
+  props: ["entity", "availableSteps"],
 };
 </script>

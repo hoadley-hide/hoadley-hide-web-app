@@ -2,7 +2,7 @@
   <v-stepper-content step="4">
     <v-card class="mb-12" tile>
       <v-card-title class="text-h4">
-        Take a photo of your Patrol!
+        Take a photo of your {{ entity.toUpperCase() }}!
       </v-card-title>
       <v-card-text>
         Capture the moment! During Hoadley Hide you will be able to upload your
@@ -21,8 +21,8 @@
         </v-btn>
       </v-card-text>
       <v-card-text>
-        If you want to upload photos later, you can always access this link from
-        the main menu.
+        To access later, <code>Upload Photos</code> can be uploaded via the main
+        menu.
       </v-card-text>
     </v-card>
 
@@ -32,6 +32,6 @@
 
 <script lang="ts">
 export default {
-  props: ["stepActive"],
+  props: ["entity"],
 };
 </script>

@@ -25,29 +25,23 @@
         <v-stepper-items>
           <!-- Step 1 -->
           <setup-step-start
-            entity="patrol"
+            entity="stunt"
             :available-steps="availableSteps"
             @next-step="nextStep(1)"
           ></setup-step-start>
 
           <!-- Step 2 -->
           <setup-step-scan-qr-code
-            entity="patrol"
+            entity="stunt"
             :step-active="currentStep === 2"
             @next-step="nextStep(2)"
-            @patrol-data="handlePatrol"
+            @stunt-data="handleStunt"
           ></setup-step-scan-qr-code>
 
           <!-- Step 3 -->
-          <setup-step-patrol-members
-            :patrol="patrol"
-            @next-step="nextStep(3)"
-          ></setup-step-patrol-members>
-
-          <!-- Step 4 -->
           <setup-step-upload-photos
-            entity="patrol"
-            @next-step="nextStep(4)"
+            entity="stunt"
+            @next-step="nextStep(3)"
           ></setup-step-upload-photos>
         </v-stepper-items>
       </v-stepper>
@@ -72,27 +66,22 @@ export default {
         {
           icon: "mdi-qrcode",
           title: "Scan QR Code",
-          label: "Scan your patrol's QR Code",
-        },
-        {
-          icon: "mdi-account-group",
-          title: "Confirm patrol members",
-          label: "Confirm all your patrol members are here",
+          label: "Scan your stunts's QR Code",
         },
         {
           icon: "mdi-camera",
           title: "Take a photo",
-          label: "Take a photo of your patrol!",
+          label: "Take a photo of your stunt team!",
         },
       ],
-      patrolId: null,
+      stuntId: null,
     };
   },
   mounted() {
     setBreadcrumbs(this.$store, [
       { to: "/", label: "Home" },
       { to: "/user", label: "User" },
-      { to: "/user/patrol", label: "Patrol" },
+      { to: "/user/stunt", label: "Stunt" },
       { to: null, label: "Setup" },
     ]);
   },
@@ -104,24 +93,24 @@ export default {
     },
   },
   computed: {
-    patrol() {
-      if (!this.patrolId) {
+    stunt() {
+      if (!this.stuntId) {
         return null;
       }
-      return this.$store.getters.patrol(this.patrolId);
+      return this.$store.getters.stunt(this.stuntId);
     },
   },
   methods: {
     nextStep(index) {
       if (index === this.availableSteps.length) {
-        this.$router.push(`/patrols/${this.patrol.slug}`);
+        this.$router.push(`/stunts/${this.stunt.slug}`);
       } else {
         this.currentStep = index + 1;
       }
     },
-    async handlePatrol(patrolData: Patrol) {
-      this.patrolId = patrolData.code;
-      this.$store.dispatch("persistUser", { patrolId: this.patrolId });
+    async handleStunt(stuntData: Patrol) {
+      this.stuntId = stuntData.code;
+      this.$store.dispatch("persistUser", { stuntId: this.stuntId });
     },
   },
 };
