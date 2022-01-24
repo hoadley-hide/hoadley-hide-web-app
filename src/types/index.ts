@@ -7,6 +7,10 @@ export interface EventStage {
   description: string;
   descriptionText: string;
   startTime: string;
+  instructions: {
+    html: string;
+    text: string;
+  }[];
 }
 
 export interface EventStageRaw {
@@ -18,6 +22,10 @@ export interface EventStageRaw {
     text: string;
   };
   startTime: string;
+  instructions: {
+    html: string;
+    text: string;
+  }[];
 }
 
 export interface Stunt {

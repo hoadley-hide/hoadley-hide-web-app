@@ -11,6 +11,18 @@
         <v-card-text v-html="eventStage.description"> </v-card-text>
       </v-card>
     </v-col>
+
+    <v-col
+      cols="12"
+      sm="6"
+      v-for="instruction in eventStage.instructions"
+      v-bind:key="instruction.html"
+    >
+      <v-card>
+        <v-card-text v-html="instruction.html"> </v-card-text>
+      </v-card>
+    </v-col>
+
     <v-col cols="12" sm="6">
       <v-card>
         <v-card-title class="text-h4 d-flex flex-nowrap">
