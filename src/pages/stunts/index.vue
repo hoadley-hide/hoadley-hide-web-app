@@ -19,6 +19,9 @@
               <v-icon left>{{ stunt.icon }}</v-icon>
               <span class="tab-title-left-align">{{ stunt.name }}</span>
             </v-list-item>
+            <v-list-item v-if="stunts.length === 0">
+              <i>You have not discovered any stunts</i>
+            </v-list-item>
           </v-list>
         </v-card-text>
       </v-card>
@@ -26,8 +29,9 @@
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
+import { AppUser, Stunt } from "~/types";
 
 export default {
   data() {
@@ -35,7 +39,21 @@ export default {
   },
   computed: {
     stunts() {
-      return this.$store.state.stunts;
+      if (!this.activeUser) {
+        return [];
+      }
+      if (this.activeUser._type === "patrol") {
+        return this.$store.state.stunts.filter((stunt: Stunt) =>
+          this.$store.getters.hasCodeBeenScanned(stunt.code)
+        );
+      } else if (this.activeUser._type === "stunt") {
+        return this.$store.state.stunts;
+      } else if (this.activeUser._type === "admin") {
+        return this.$store.state.stunts;
+      }
+    },
+    activeUser(): AppUser | null {
+      return this.$store.getters.user;
     },
   },
   mounted() {

@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { Patrol } from "~/types";
+import { AppUser, Patrol } from "~/types";
 
 export default {
   data() {
@@ -36,9 +36,21 @@ export default {
   },
   computed: {
     patrols() {
-      return this.$store.state.patrols.filter((patrol: Patrol) =>
-        this.$store.getters.hasCodeBeenScanned(patrol.code)
-      );
+      if (!this.activeUser) {
+        return [];
+      }
+      if (this.activeUser._type === "patrol") {
+        return this.$store.state.patrols.filter((patrol: Patrol) =>
+          this.$store.getters.hasCodeBeenScanned(patrol.code)
+        );
+      } else if (this.activeUser._type === "stunt") {
+        return this.$store.state.patrols;
+      } else if (this.activeUser._type === "admin") {
+        return this.$store.state.patrols;
+      }
+    },
+    activeUser(): AppUser | null {
+      return this.$store.getters.user;
     },
   },
   mounted() {

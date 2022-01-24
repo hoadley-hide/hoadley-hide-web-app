@@ -8,9 +8,7 @@
           justify-space-around justify-sm-start
         "
       >
-        <span class="pr-3">M.O.N.S.T.E.R</span>
-        <span>Hunters</span>
-        <span>Guild</span>
+        M.O.N.S.T.E.R Hunters Guild
       </v-card-title>
       <v-card-subtitle class="text-subtitle-1 font-italic">
         What's the worst that could happen?
@@ -35,6 +33,7 @@
 
             <v-list-item-content>
               <v-list-item-title>{{ item.title }}</v-list-item-title>
+              <v-list-item-subtitle>{{ item.subtitle }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -52,21 +51,24 @@ export default {
       drawer: false,
       links: [
         {
-          title: "Check which stunts are open",
+          title: "Stunts",
+          subtitle: "See the stunts you've visited",
           icon: "mdi-map-clock",
           to: "/stunts",
         },
         {
-          title: "What can I do next?",
+          title: "The Adventure",
+          subtitle: "What comes next?",
           icon: "mdi-shield-sword",
           to: "/event",
         },
         {
-          title: "My feet are hurting...",
+          title: "First Aid",
+          subtitle: "My feet are hurting...",
           icon: "mdi-medical-bag",
           to: "/first-aid",
         },
-        { title: "About", icon: "mdi-information", to: "/about" },
+        { title: "Wiki", icon: "mdi-information", to: "/wiki" },
       ],
     };
   },

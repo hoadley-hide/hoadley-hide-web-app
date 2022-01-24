@@ -2,9 +2,9 @@
   <v-row>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title class="text-h2">Stages</v-card-title>
+        <v-card-title class="text-h2">The Adventure</v-card-title>
 
-        <v-card-text>Where are we up to in the event?</v-card-text>
+        <v-card-text>Where are we up to in Hoadley Hide?</v-card-text>
       </v-card>
     </v-col>
     <v-col cols="12">
@@ -30,7 +30,7 @@
               </div>
             </v-list-item>
             <v-list-item v-if="eventStages.length === 0">
-              <i>You have not discovered any stages</i>
+              <i>You have not discovered any adventures</i>
             </v-list-item>
           </v-list>
           <v-btn block color="success" to="/scan">Open scanner</v-btn>
@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { EventStage } from "~/types";
+import { AppUser, EventStage } from "~/types";
 
 export default {
   data() {
@@ -50,15 +50,27 @@ export default {
   },
   computed: {
     eventStages() {
-      return this.$store.state.eventStages.filter((stage: EventStage) =>
-        this.$store.getters.hasCodeBeenScanned(stage.code)
-      );
+      if (!this.activeUser) {
+        return [];
+      }
+      if (this.activeUser._type === "patrol") {
+        return this.$store.state.eventStages.filter((stage: EventStage) =>
+          this.$store.getters.hasCodeBeenScanned(stage.code)
+        );
+      } else if (this.activeUser._type === "stunt") {
+        return this.$store.state.eventStages;
+      } else if (this.activeUser._type === "admin") {
+        return this.$store.state.eventStages;
+      }
+    },
+    activeUser(): AppUser | null {
+      return this.$store.getters.user;
     },
   },
   mounted() {
     setBreadcrumbs(this.$store, [
       { to: "/", label: "Home" },
-      { to: null, label: "Event" },
+      { to: null, label: "The Adventure" },
     ]);
   },
 };

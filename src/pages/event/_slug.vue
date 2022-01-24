@@ -60,7 +60,7 @@ export default {
   mounted() {
     setBreadcrumbs(this.$store, [
       { to: "/", label: "Home" },
-      { to: "/event", label: "Event" },
+      { to: "/event", label: "The Adventure" },
       { to: null, label: this.eventStage.name },
     ]);
   },
