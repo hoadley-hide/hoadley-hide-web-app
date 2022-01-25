@@ -24,9 +24,6 @@ export default {
     wikiArticle() {
       return this.$store.getters.wikiArticle(this.$route.params.slug);
     },
-    qrCodeUrl() {
-      return `https://hoadley-hide.netlify.app/scan?code=${this.wikiArticle.code}`;
-    },
   },
   mounted() {
     setBreadcrumbs(this.$store, [

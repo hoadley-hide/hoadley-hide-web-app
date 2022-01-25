@@ -8691,6 +8691,11 @@ pretty-time@^1.1.0:
   resolved "https://registry.yarnpkg.com/pretty-time/-/pretty-time-1.1.0.tgz#ffb7429afabb8535c346a34e41873adf3d74dd0e"
   integrity sha512-28iF6xPQrP8Oa6uxE6a1biz+lWeTOAPKggvjB8HAs6nVMKZwf5bG++632Dx614hIWgUPkgivRfG+a8uAXGTIbA==
 
+printd@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/printd/-/printd-1.5.0.tgz#423a22253c8fb3ddef227985db6bae13bf5a6ed9"
+  integrity sha512-dg8QXTbhkZgy1Qxvatt62C4LqIJlCkIJpZK97lEth1N+l3fNAu5YljPi6lsJGsBr8MmN5q20p1jSBJTMTt9tqg==
+
 printj@~1.1.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/printj/-/printj-1.1.2.tgz#d90deb2975a8b9f600fb3a1c94e3f4c53c78a222"

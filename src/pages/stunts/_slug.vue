@@ -16,7 +16,13 @@
           <span>Share this stage</span>
         </v-card-title>
         <v-card-text class="d-flex justify-space-around">
-          <qr-code :url="qrCodeUrl"></qr-code>
+          <qr-code
+            :entity="{
+              code: stunt.code,
+              path: stunt.path,
+              name: stunt.name,
+            }"
+          ></qr-code>
         </v-card-text>
       </v-card>
     </v-col>
@@ -36,9 +42,6 @@ export default {
   computed: {
     stunt() {
       return this.$store.getters.stunt(this.$route.params.slug);
-    },
-    qrCodeUrl() {
-      return `https://hoadley-hide.netlify.app/scan?code=${this.stunt.code}`;
     },
     activeUser() {
       return this.$store.getters.user;

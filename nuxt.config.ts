@@ -46,10 +46,11 @@ export default defineNuxtConfig({
    */
   plugins: [
     { src: "~/plugins/filters.ts" },
+    { src: "~/plugins/persistedState.client.js", mode: "client" },
+    { src: "~/plugins/printd.client.ts", mode: "client" },
     { src: "~/plugins/pwa-update.js", mode: "client" },
     { src: "~/plugins/vue-qr.ts", mode: "client" },
     { src: "~/plugins/vue-qrcode-reader.ts", mode: "client" },
-    { src: "~/plugins/persistedState.client.js", mode: "client" },
   ],
 
   vuetify: {
@@ -103,6 +104,7 @@ export default defineNuxtConfig({
   },
   publicRuntimeConfig: {
     version: version,
+    baseUrl: "https://hoadley-hide.netlify.app",
   },
 });
 
@@ -114,6 +116,7 @@ export interface RuntimeConfig {
       cdnURL: string;
     };
     version: string;
+    baseUrl: string;
   };
   private: {
     cmsUrl: string;

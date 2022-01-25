@@ -30,7 +30,13 @@
           <span>Share this stage</span>
         </v-card-title>
         <v-card-text class="d-flex justify-space-around">
-          <qr-code :url="qrCodeUrl"></qr-code>
+          <qr-code
+            :entity="{
+              code: eventStage.code,
+              path: eventStage.path,
+              name: eventStage.name,
+            }"
+          ></qr-code>
         </v-card-text>
       </v-card>
     </v-col>
@@ -52,9 +58,6 @@ export default {
   computed: {
     eventStage() {
       return this.$store.getters.eventStage(this.$route.params.slug);
-    },
-    qrCodeUrl() {
-      return `https://hoadley-hide.netlify.app/scan?code=${this.eventStage.code}`;
     },
   },
   mounted() {

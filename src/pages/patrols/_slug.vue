@@ -7,18 +7,20 @@
         <v-card-text>Patrol Number: #{{ patrol.patrolNumber }}</v-card-text>
       </v-card>
     </v-col>
-    <v-col
-      cols="12"
-      sm="6"
-      v-if="activeUser && patrol.code === activeUser.code"
-    >
-      <v-card>
-        <v-card-text>
-          <strong>This is your Patrol.</strong> You can share this QR code with
-          friends from other patrols!
-        </v-card-text>
-      </v-card>
-    </v-col>
+    <client-only>
+      <v-col
+        cols="12"
+        sm="6"
+        v-if="activeUser && patrol.code === activeUser.code"
+      >
+        <v-card>
+          <v-card-text>
+            <strong>This is your Patrol.</strong> You can share this QR code
+            with friends from other patrols!
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </client-only>
     <v-col cols="12" sm="6">
       <v-card>
         <v-card-title class="text-h4 d-flex flex-nowrap">
@@ -26,7 +28,13 @@
           <span>Share this patrol</span>
         </v-card-title>
         <v-card-text class="d-flex justify-space-around">
-          <qr-code :url="qrCodeUrl"></qr-code>
+          <qr-code
+            :entity="{
+              code: patrol.code,
+              path: patrol.path,
+              name: patrol.name,
+            }"
+          ></qr-code>
         </v-card-text>
       </v-card>
     </v-col>
@@ -49,9 +57,6 @@ export default {
     },
     activeUser() {
       return this.$store.getters.user;
-    },
-    qrCodeUrl() {
-      return `https://hoadley-hide.netlify.app/scan?code=${this.patrol.code}`;
     },
   },
   mounted() {
