@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { AppUser, Patrol } from "~/types";
+import { AppUserEntity, Patrol } from "~/types";
 
 export default {
   data() {
@@ -49,7 +49,7 @@ export default {
         return this.$store.state.patrols;
       }
     },
-    activeUser(): AppUser | null {
+    activeUser(): AppUserEntity | null {
       return this.$store.getters.user;
     },
   },

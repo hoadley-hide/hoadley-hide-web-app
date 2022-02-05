@@ -103,8 +103,8 @@ export default defineNuxtConfig({
     cmsApiKey: process.env.CMS_KEY,
   },
   publicRuntimeConfig: {
-    version: version,
-    baseUrl: "https://hoadley-hide.netlify.app",
+    version: `${version}-${process.env.BRANCH ?? "dev"}`,
+    baseUrl: "https://app.hoadleyhide.com.au",
   },
 });
 

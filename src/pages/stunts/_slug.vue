@@ -29,8 +29,9 @@
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
+import { AppUserEntity } from "~/types";
 
 export default {
   validate({ params, store }) {
@@ -43,7 +44,7 @@ export default {
     stunt() {
       return this.$store.getters.stunt(this.$route.params.slug);
     },
-    activeUser() {
+    activeUser(): AppUserEntity | null {
       return this.$store.getters.user;
     },
   },

@@ -3,8 +3,7 @@ import { ActionTree, GetterTree, MutationTree } from "vuex";
 import { AppAlert } from "~/common/alert";
 import { AppBreadcrumb } from "~/common/breadcrumb";
 import {
-  AppUser,
-  AppUserType,
+  AppUserEntity,
   EventStage,
   GraphQL,
   Patrol,
@@ -28,7 +27,7 @@ export const state = () => ({
   scannedCodes: [] as ScannedCode[],
   monsterAcronyms: [
     "Military Operational New Soldiers Trapped till Everybody Runs",
-    "Many Oodles of Nutty Stories Threatening Earth’s Reality",
+    "Many Oodles of Nutty Stories Threatening Earth's Reality",
     "Martian Orbital Nuclear Spaceship for Terraforming into Earthlike Realm",
     "Mostly Online New System for Terrible Electronic Rucksacks",
     "Mining Operation for Nice Shiny Tiny Earth Rocks",
@@ -37,15 +36,13 @@ export const state = () => ({
     "Mystic Oranges Never Stay to Enlighten Royals",
   ],
   hasPermissionWarningBeenRead: false as boolean,
-  packageVersion: process.env.PACKAGE_VERSION || "0",
-  user: null as AppUser | null,
+  user: null as AppUserEntity | null,
 });
 
 export type RootState = ReturnType<typeof state>;
 
 export const getters: GetterTree<RootState, RootState> = {
   // Util getters
-  appVersion: (state) => state.packageVersion,
   alerts: (state) => state.alerts,
   breadcrumbs: (state) => state.breadcrumbs,
   scannedCodes: (state) => state.scannedCodes,
@@ -73,10 +70,7 @@ export const getters: GetterTree<RootState, RootState> = {
         wikiArticle.slug === slugOrId || wikiArticle.code === slugOrId
     ),
   // User getters
-  user: (
-    state,
-    getters
-  ): (AppUser & { entity: Stunt | EventStage | Patrol }) | null => {
+  user: (state, getters): AppUserEntity | null => {
     if (!state.user) {
       return null;
     }
@@ -91,9 +85,9 @@ export const getters: GetterTree<RootState, RootState> = {
 
     switch (entity._type) {
       case "stunt":
-        return { ...state.user, entity: entity.stunt };
+        return entity.stunt;
       case "patrol":
-        return { ...state.user, entity: entity.patrol };
+        return entity.patrol;
       default:
         return null;
     }
@@ -162,28 +156,6 @@ export const mutations: MutationTree<RootState> = {
     Vue.set(state, "scannedCodes", []);
     Vue.set(state, "hasPermissionWarningBeenRead", false);
   },
-  persistUser: (
-    state,
-    opts: { _type: "patrol"; patrol: Patrol } | { _type: "stunt"; stunt: Stunt }
-  ) => {
-    if (opts._type === "patrol") {
-      const appUser: AppUser = {
-        id: opts.patrol.id,
-        _type: opts._type as AppUserType,
-        code: opts.patrol.code,
-        name: opts.patrol.name,
-      };
-      Vue.set(state, "user", appUser);
-    } else if (opts._type === "stunt") {
-      const appUser: AppUser = {
-        id: opts.stunt.id,
-        _type: opts._type as AppUserType,
-        code: opts.stunt.code,
-        name: opts.stunt.name,
-      };
-      Vue.set(state, "user", appUser);
-    }
-  },
   setStunts: (state, stunts) => {
     Vue.set(state, "stunts", stunts);
   },
@@ -195,6 +167,10 @@ export const mutations: MutationTree<RootState> = {
   },
   setWikiArticles: (state, wikiArticles) => {
     Vue.set(state, "wikiArticles", wikiArticles);
+  },
+  // User
+  persistUser: (state, entity: AppUserEntity) => {
+    Vue.set(state, "user", entity);
   },
 };
 
@@ -317,15 +293,9 @@ export const actions: ActionTree<RootState, RootState> = {
     opts: { patrolId: string } | { stuntId: string }
   ) {
     if ("patrolId" in opts) {
-      commit("persistUser", {
-        _type: "patrol",
-        patrol: getters.patrol(opts.patrolId),
-      });
+      commit("persistUser", getters.patrol(opts.patrolId));
     } else if ("stuntId" in opts) {
-      commit("persistUser", {
-        _type: "stunt",
-        stunt: getters.stunt(opts.stuntId),
-      });
+      commit("persistUser", getters.stunt(opts.stuntId));
     }
   },
 };

@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { AppUser, EventStage } from "~/types";
+import { AppUserEntity, EventStage } from "~/types";
 
 export default {
   data() {
@@ -63,7 +63,7 @@ export default {
         return this.$store.state.eventStages;
       }
     },
-    activeUser(): AppUser | null {
+    activeUser(): AppUserEntity | null {
       return this.$store.getters.user;
     },
   },

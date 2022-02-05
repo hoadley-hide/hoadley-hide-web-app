@@ -12,7 +12,7 @@
 
       <client-only>
         <span v-if="activeUser">
-          <v-list-item :to="activeUser.entity.path">
+          <v-list-item :to="activeUser.path">
             <v-list-item-icon>
               <v-icon>mdi-account-details</v-icon>
             </v-list-item-icon>
@@ -106,7 +106,8 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
+import { AppUserEntity } from "~/types";
 export default {
   data() {
     return {
@@ -207,7 +208,7 @@ export default {
 
       return true;
     },
-    activeUser() {
+    activeUser(): AppUserEntity | null {
       return this.$store.getters.user;
     },
   },

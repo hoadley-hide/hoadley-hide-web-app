@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { AppUser, Stunt } from "~/types";
+import { AppUserEntity, Stunt } from "~/types";
 
 export default {
   data() {
@@ -52,7 +52,7 @@ export default {
         return this.$store.state.stunts;
       }
     },
-    activeUser(): AppUser | null {
+    activeUser(): AppUserEntity | null {
       return this.$store.getters.user;
     },
   },
