@@ -2,9 +2,9 @@
   <v-row>
     <v-col cols="12" sm="6">
       <v-card>
-        <v-card-title class="text-h2">Stunts</v-card-title>
+        <v-card-title class="text-h2">Monstemon Go</v-card-title>
 
-        <v-card-text>Browse the stunts locations and teams.</v-card-text>
+        <v-card-text>Browse the monsters you have identified.</v-card-text>
       </v-card>
     </v-col>
     <v-col cols="12">
@@ -12,15 +12,15 @@
         <v-card-text>
           <v-list>
             <v-list-item
-              v-for="stunt in stunts"
-              :key="stunt.title"
-              :to="`/stunts/${stunt.slug}`"
+              v-for="monstemonGo in monstemonGos"
+              :key="monstemonGo.title"
+              :to="`/monstemon-go/${monstemonGo.slug}`"
             >
-              <v-icon left>{{ stunt.icon }}</v-icon>
-              <span class="tab-title-left-align">{{ stunt.name }}</span>
+              <v-icon left>{{ monstemonGo.icon }}</v-icon>
+              <span class="tab-title-left-align">{{ monstemonGo.name }}</span>
             </v-list-item>
-            <v-list-item v-if="stunts.length === 0">
-              <i>You have not discovered any stunts</i>
+            <v-list-item v-if="monstemonGos.length === 0">
+              <i>You have not discovered any Monstemon Gos</i>
             </v-list-item>
           </v-list>
           <v-btn block color="success" to="/scan">Open scanner</v-btn>
@@ -32,25 +32,26 @@
 
 <script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { AppUserEntity, Stunt } from "~/types";
+import { AppUserEntity, MonstemonGo } from "~/types";
 
 export default {
   data() {
     return {};
   },
   computed: {
-    stunts() {
+    monstemonGos() {
       if (!this.activeUser) {
         return [];
       }
       if (this.activeUser._type === "patrol") {
-        return this.$store.state.stunts.filter((stunt: Stunt) =>
-          this.$store.getters.hasCodeBeenScanned(stunt.code)
+        return this.$store.state.monstemonGos.filter(
+          (monstemonGo: MonstemonGo) =>
+            this.$store.getters.hasCodeBeenScanned(monstemonGo.code)
         );
       } else if (this.activeUser._type === "stunt") {
-        return this.$store.state.stunts;
+        return this.$store.state.monstemonGos;
       } else if (this.activeUser._type === "admin") {
-        return this.$store.state.stunts;
+        return this.$store.state.monstemonGos;
       }
     },
     activeUser(): AppUserEntity | null {
@@ -60,7 +61,7 @@ export default {
   mounted() {
     setBreadcrumbs(this.$store, [
       { to: "/", label: "Home" },
-      { to: null, label: "Stunts" },
+      { to: null, label: "Monstemon Go" },
     ]);
   },
 };

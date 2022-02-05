@@ -19,9 +19,11 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
 };
 
 export const EntityType = {
-  Stunt: { prefix: "S", length: 5 },
+  Admin: { prefix: "A", length: 5 },
   EventStage: { prefix: "E", length: 5 },
+  MonstemonGo: { prefix: "M", length: 5 },
   Patrol: { prefix: "P", length: 5 },
+  Stunt: { prefix: "S", length: 5 },
   WikiArticle: { prefix: "W", length: 5 },
 };
 

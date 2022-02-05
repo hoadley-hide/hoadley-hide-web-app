@@ -17,6 +17,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     `{ stunts ${fields} }`,
     {},
     (stunt): Stunt => ({
+      _type: "stunt",
       id: stunt.id,
       code: generateCode(EntityType.Stunt, stunt.id),
       name: stunt.name,

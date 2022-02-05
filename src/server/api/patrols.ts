@@ -15,6 +15,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     `{ patrols ${fields} }`,
     {},
     (patrol): Patrol => ({
+      _type: "patrol",
       id: patrol.id,
       code: generateCode(EntityType.Patrol, patrol.id),
       name: patrol.name,

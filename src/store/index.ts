@@ -4,27 +4,28 @@ import { AppAlert } from "~/common/alert";
 import { AppBreadcrumb } from "~/common/breadcrumb";
 import {
   AppUserEntity,
+  Entity,
   EventStage,
   GraphQL,
   Patrol,
-  QrCodeLookup,
-  QrCodeLookupPatrol,
-  QrCodeLookupStage,
-  QrCodeLookupStunt,
-  QrCodeLookupWikiArticle,
   ScannedCode,
   Stunt,
   WikiArticle,
 } from "~/types";
 
 export const state = () => ({
+  // UI
   alerts: [] as AppAlert[],
   breadcrumbs: [] as AppBreadcrumb[],
+  // Entities
+  admins: [] as EventStage[],
   eventStages: [] as EventStage[],
-  stunts: [] as Stunt[],
+  monstemonGos: [] as EventStage[],
   patrols: [] as Patrol[],
+  stunts: [] as Stunt[],
   wikiArticles: [] as WikiArticle[],
-  scannedCodes: [] as ScannedCode[],
+  // Other Stuff
+  scannedCodes: [] as Entity[],
   monsterAcronyms: [
     "Military Operational New Soldiers Trapped till Everybody Runs",
     "Many Oodles of Nutty Stories Threatening Earth's Reality",
@@ -52,17 +53,26 @@ export const getters: GetterTree<RootState, RootState> = {
       return state.scannedCodes.find((scanned) => scanned.code === code);
     },
   // Content getters
-  stunt: (state) => (slugOrId) =>
-    state.stunts.find(
-      (stunt) => stunt.slug === slugOrId || stunt.code === slugOrId
+  admin: (state) => (slugOrId) =>
+    state.admins.find(
+      (admin) => admin.slug === slugOrId || admin.code === slugOrId
+    ),
+  eventStage: (state) => (slugOrId) =>
+    state.eventStages.find(
+      (stage) => stage.slug === slugOrId || stage.code === slugOrId
+    ),
+  monstemonGo: (state) => (slugOrId) =>
+    state.monstemonGos.find(
+      (monstemonGo) =>
+        monstemonGo.slug === slugOrId || monstemonGo.code === slugOrId
     ),
   patrol: (state) => (slugOrId) =>
     state.patrols.find(
       (patrol) => patrol.slug === slugOrId || patrol.code === slugOrId
     ),
-  eventStage: (state) => (slugOrId) =>
-    state.eventStages.find(
-      (stage) => stage.slug === slugOrId || stage.code === slugOrId
+  stunt: (state) => (slugOrId) =>
+    state.stunts.find(
+      (stunt) => stunt.slug === slugOrId || stunt.code === slugOrId
     ),
   wikiArticle: (state) => (slugOrId) =>
     state.wikiArticles.find(
@@ -75,54 +85,21 @@ export const getters: GetterTree<RootState, RootState> = {
       return null;
     }
 
-    const entity: QrCodeLookup = getters.compiledCodes.find(
-      (lookup: QrCodeLookup) => lookup.code === state.user?.code
+    const entity: AppUserEntity = getters.compiledCodes.find(
+      (entity: AppUserEntity) => entity.code === state.user?.code
     );
 
-    if (!entity) {
-      return null;
-    }
-
-    switch (entity._type) {
-      case "stunt":
-        return entity.stunt;
-      case "patrol":
-        return entity.patrol;
-      default:
-        return null;
-    }
+    return entity ?? null;
   },
   // QR Codes
   compiledCodes: (state) => {
-    const compiledCodes: QrCodeLookup[] = [
-      ...state.eventStages.map(
-        (stage): QrCodeLookupStage => ({
-          _type: "stage",
-          code: stage.code,
-          stage,
-        })
-      ),
-      ...state.stunts.map(
-        (stunt): QrCodeLookupStunt => ({
-          _type: "stunt",
-          code: stunt.code,
-          stunt,
-        })
-      ),
-      ...state.patrols.map(
-        (patrol): QrCodeLookupPatrol => ({
-          _type: "patrol",
-          code: patrol.code,
-          patrol,
-        })
-      ),
-      ...state.wikiArticles.map(
-        (wikiArticle): QrCodeLookupWikiArticle => ({
-          _type: "wiki",
-          code: wikiArticle.code,
-          wikiArticle,
-        })
-      ),
+    const compiledCodes: Entity[] = [
+      ...state.admins,
+      ...state.eventStages,
+      ...state.monstemonGos,
+      ...state.patrols,
+      ...state.stunts,
+      ...state.wikiArticles,
     ];
 
     return compiledCodes;
@@ -142,10 +119,10 @@ export const mutations: MutationTree<RootState> = {
   permissionWarningHasBeenRead: (state) => {
     Vue.set(state, "hasPermissionWarningBeenRead", true);
   },
-  recordCodeScan: (state, scannedCode: QrCodeLookup) => {
+  recordCodeScan: (state, entity: Entity) => {
     Vue.set(state.scannedCodes, state.scannedCodes.length, {
       time: new Date(),
-      code: scannedCode.code,
+      code: entity.code,
     });
   },
   clearScannedCodes: (state) => {
@@ -156,14 +133,21 @@ export const mutations: MutationTree<RootState> = {
     Vue.set(state, "scannedCodes", []);
     Vue.set(state, "hasPermissionWarningBeenRead", false);
   },
-  setStunts: (state, stunts) => {
-    Vue.set(state, "stunts", stunts);
+  // Entities
+  setAdmins: (state, admins) => {
+    Vue.set(state, "admins", admins);
+  },
+  setEventStages: (state, eventStages) => {
+    Vue.set(state, "eventStages", eventStages);
+  },
+  setMonstemonGos: (state, monstemonGos) => {
+    Vue.set(state, "monstemonGos", monstemonGos);
   },
   setPatrols: (state, patrols) => {
     Vue.set(state, "patrols", patrols);
   },
-  setEventStages: (state, eventStages) => {
-    Vue.set(state, "eventStages", eventStages);
+  setStunts: (state, stunts) => {
+    Vue.set(state, "stunts", stunts);
   },
   setWikiArticles: (state, wikiArticles) => {
     Vue.set(state, "wikiArticles", wikiArticles);
@@ -205,63 +189,53 @@ export const actions: ActionTree<RootState, RootState> = {
   },
 
   async initialiseAll({ dispatch }) {
-    await dispatch("initialiseStunts");
-    await dispatch("initialisePatrols");
-    await dispatch("initialiseEventStages");
-    await dispatch("initialiseWikiArticles");
+    await dispatch("initialiseEntity", {
+      path: "/api/admins",
+      dataKey: "admins",
+      mutation: "setAdmins",
+    });
+    await dispatch("initialiseEntity", {
+      path: "/api/event-stages",
+      dataKey: "eventStages",
+      mutation: "setEventStages",
+    });
+    await dispatch("initialiseEntity", {
+      path: "/api/monstemon-go",
+      dataKey: "monstemonGos",
+      mutation: "setMonstemonGos",
+    });
+    await dispatch("initialiseEntity", {
+      path: "/api/patrols",
+      dataKey: "patrols",
+      mutation: "setPatrols",
+    });
+    await dispatch("initialiseEntity", {
+      path: "/api/stunts",
+      dataKey: "stunts",
+      mutation: "setStunts",
+    });
+    await dispatch("initialiseEntity", {
+      path: "/api/wiki-articles",
+      dataKey: "wikiArticles",
+      mutation: "setWikiArticles",
+    });
   },
-  async initialiseStunts({ commit }) {
+  async initialiseEntity({ commit }, { path, dataKey, mutation }) {
+    type ResultType = GraphQL<
+      string,
+      Stunt | EventStage | Patrol | WikiArticle | MonstemonGo
+    >;
+
     try {
-      const result: GraphQL<"stunts", Stunt> = await $fetch("/api/stunts");
+      const result: ResultType = await $fetch(path);
       if (result && result.data) {
-        commit("setStunts", result.data.stunts);
+        commit(mutation, result.data[dataKey]);
       }
     } catch (e) {
-      const res: GraphQL<"stunts", Stunt> = await e.response;
-      console.log(res);
-      console.log(res.errors);
-    }
-  },
-  async initialisePatrols({ commit }) {
-    try {
-      const result: GraphQL<"patrols", EventStage> = await $fetch(
-        "/api/patrols"
-      );
-      if (result && result.data) {
-        commit("setPatrols", result.data.patrols);
-      }
-    } catch (e) {
-      const res: GraphQL<"patrols", EventStage> = await e.response;
-      console.log(res);
-      console.log(res.errors);
-    }
-  },
-  async initialiseEventStages({ commit }) {
-    try {
-      const result: GraphQL<"eventStages", EventStage> = await $fetch(
-        "/api/event-stages"
-      );
-      if (result && result.data) {
-        commit("setEventStages", result.data.eventStages);
-      }
-    } catch (e) {
-      const res: GraphQL<"eventStages", EventStage> = await e.response;
-      console.log(res);
-      console.log(res.errors);
-    }
-  },
-  async initialiseWikiArticles({ commit }) {
-    try {
-      const result: GraphQL<"wikiArticles", WikiArticle> = await $fetch(
-        "/api/wiki-articles"
-      );
-      if (result && result.data) {
-        commit("setWikiArticles", result.data.wikiArticles);
-      }
-    } catch (e) {
-      const res: GraphQL<"wikiArticles", WikiArticle> = await e.response;
-      console.log(res);
-      console.log(res.errors);
+      throw e;
+      // const res: ResultType = await (e as any).response;
+      // console.log(res);
+      // console.log(res.errors);
     }
   },
 
@@ -277,7 +251,7 @@ export const actions: ActionTree<RootState, RootState> = {
     return matchedCode || null;
   },
 
-  async recordCodeScan({ commit }, lookup: QrCodeLookup) {
+  async recordCodeScan({ commit }, lookup: Entity) {
     commit("recordCodeScan", lookup);
   },
   async clearScannedCodes({ commit }) {

@@ -10,6 +10,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     description { html text }
     startTime
     instructions { html text }
+    autoShowAfterStartTime
   }`;
 
   const returnable = await simpleAllGraphQL<EventStageRaw, EventStage>(
@@ -17,6 +18,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     `{ eventStages(orderBy:startTime_ASC) ${fields} }`,
     {},
     (stage): EventStage => ({
+      _type: "eventStage",
       id: stage.id,
       code: generateCode(EntityType.EventStage, stage.id),
       name: stage.name,
@@ -26,6 +28,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       descriptionText: stage.description.text,
       startTime: stage.startTime,
       instructions: stage.instructions,
+      autoShowAfterStartTime: stage.autoShowAfterStartTime,
     })
   );
 

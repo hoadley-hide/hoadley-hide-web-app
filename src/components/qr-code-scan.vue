@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import { QrCodeLookup } from "~/types";
+import { Entity } from "~/types";
 // https://gruhn.github.io/vue-qrcode-reader/
 
 export default {
@@ -188,14 +188,11 @@ export default {
       await this.validateCode(this.codeManual);
     },
     async validateCode(code: string) {
-      const lookup: QrCodeLookup = await this.$store.dispatch(
-        "validateCode",
-        code
-      );
+      const entity: Entity = await this.$store.dispatch("validateCode", code);
 
-      if (lookup) {
-        this.$store.dispatch("recordCodeScan", lookup);
-        this.$emit("valid-code", lookup);
+      if (entity) {
+        this.$store.dispatch("recordCodeScan", entity);
+        this.$emit("valid-code", entity);
       }
     },
   },

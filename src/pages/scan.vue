@@ -11,7 +11,7 @@
 <script lang="ts">
 // https://gruhn.github.io/vue-qrcode-reader/
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { QrCodeLookup } from "~/types";
+import { Entity } from "~/types";
 
 export default {
   data() {
@@ -24,14 +24,14 @@ export default {
     ]);
   },
   methods: {
-    async routeValidCode(validEntity: QrCodeLookup) {
+    async routeValidCode(validEntity: Entity) {
       switch (validEntity._type) {
-        case "stage":
-          return this.$router.push(validEntity.stage.path);
+        case "eventStage":
+          return this.$router.push(validEntity.path);
         case "stunt":
-          return this.$router.push(validEntity.stunt.path);
+          return this.$router.push(validEntity.path);
         case "patrol":
-          return this.$router.push(validEntity.patrol.path);
+          return this.$router.push(validEntity.path);
       }
     },
   },

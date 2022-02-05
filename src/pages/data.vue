@@ -15,7 +15,7 @@
           <v-list>
             <v-list-item
               v-for="scannedCode in scannedCodes"
-              v-bind:key="scannedCode.time"
+              v-bind:key="scannedCode.code"
             >
               {{ scannedCode.code }}
             </v-list-item>

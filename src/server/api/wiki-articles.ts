@@ -17,6 +17,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     `{ wikiArticles ${fields} }`,
     {},
     (wikiArticle): WikiArticle => ({
+      _type: "wikiArticle",
       id: wikiArticle.id,
       code: generateCode(EntityType.WikiArticle, wikiArticle.id),
       name: wikiArticle.name,

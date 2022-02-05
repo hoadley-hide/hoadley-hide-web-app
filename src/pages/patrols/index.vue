@@ -20,6 +20,7 @@
               <span class="tab-title-left-align">{{ patrol.name }}</span>
             </v-list-item>
           </v-list>
+          <v-btn block color="success" to="/scan">Open scanner</v-btn>
         </v-card-text>
       </v-card>
     </v-col>
