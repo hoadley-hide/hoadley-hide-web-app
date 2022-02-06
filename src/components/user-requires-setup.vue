@@ -23,6 +23,9 @@
                   Stunt (Rovers &amp; Adults)
                 </v-btn>
               </v-col>
+              <v-col>
+                <v-btn to="/user/admin/setup" color="" text nuxt> HHMT </v-btn>
+              </v-col>
             </v-row>
           </v-card-actions>
         </v-card>

@@ -8,7 +8,7 @@ export interface MonstemonGo {
   slug: string;
   path: string;
   description: RichText;
-  location: { latitude: number; longitude: number };
+  clues: RichText[];
 }
 
 export interface MonstemonGoRaw {
@@ -16,5 +16,5 @@ export interface MonstemonGoRaw {
   name: string;
   slug: string;
   description: RichText;
-  location: { latitude: number; longitude: number };
+  clues: RichText[];
 }

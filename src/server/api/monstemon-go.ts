@@ -8,10 +8,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     name
     slug
     description { html text }
-    location {
-      latitude
-      longitude
-    }
+    clues { html text }
   }`;
 
   const returnable = await simpleAllGraphQL<MonstemonGoRaw, MonstemonGo>(
@@ -26,7 +23,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       slug: monster.slug,
       path: `/monstemonGo/${monster.slug}`,
       description: monster.description,
-      location: monster.location,
+      clues: monster.clues,
     })
   );
 

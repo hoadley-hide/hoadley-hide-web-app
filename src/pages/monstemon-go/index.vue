@@ -13,7 +13,7 @@
           <v-list>
             <v-list-item
               v-for="monstemonGo in monstemonGos"
-              :key="monstemonGo.title"
+              :key="monstemonGo.name"
               :to="`/monstemon-go/${monstemonGo.slug}`"
             >
               <v-icon left>{{ monstemonGo.icon }}</v-icon>
@@ -43,6 +43,7 @@ export default {
       if (!this.activeUser) {
         return [];
       }
+
       if (this.activeUser._type === "patrol") {
         return this.$store.state.monstemonGos.filter(
           (monstemonGo: MonstemonGo) =>

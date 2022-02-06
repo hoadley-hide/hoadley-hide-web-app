@@ -50,6 +50,7 @@ export default {
       } else if (this.activeUser._type === "stunt") {
         return this.$store.state.stunts;
       } else if (this.activeUser._type === "admin") {
+        console.log(this.$store.state.stunts);
         return this.$store.state.stunts;
       }
     },

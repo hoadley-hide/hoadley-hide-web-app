@@ -54,9 +54,21 @@ export default {
         return [];
       }
       if (this.activeUser._type === "patrol") {
-        return this.$store.state.eventStages.filter((stage: EventStage) =>
-          this.$store.getters.hasCodeBeenScanned(stage.code)
-        );
+        return this.$store.state.eventStages
+          .filter((stage: EventStage) => {
+            const stageAlwaysShown =
+              stage.autoShowAfterStartTime &&
+              Date.parse(stage.startTime) < Date.now();
+
+            const codeScanned = this.$store.getters.hasCodeBeenScanned(
+              stage.code
+            );
+
+            return codeScanned || stageAlwaysShown;
+          })
+          .sort((a: EventStage, b: EventStage) => {
+            return Date.parse(b.startTime) - Date.parse(a.startTime);
+          });
       } else if (this.activeUser._type === "stunt") {
         return this.$store.state.eventStages;
       } else if (this.activeUser._type === "admin") {

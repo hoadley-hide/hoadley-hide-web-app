@@ -264,9 +264,11 @@ export const actions: ActionTree<RootState, RootState> = {
 
   async persistUser(
     { commit, getters },
-    opts: { patrolId: string } | { stuntId: string }
+    opts: { adminId: string } | { patrolId: string } | { stuntId: string }
   ) {
-    if ("patrolId" in opts) {
+    if ("adminId" in opts) {
+      commit("persistUser", getters.admin(opts.adminId));
+    } else if ("patrolId" in opts) {
       commit("persistUser", getters.patrol(opts.patrolId));
     } else if ("stuntId" in opts) {
       commit("persistUser", getters.stunt(opts.stuntId));

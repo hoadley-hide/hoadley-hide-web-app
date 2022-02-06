@@ -23,7 +23,14 @@ export default {
       }
     },
     async lookupAdmin(scannedData) {
-      alert("Not supported yet.");
+      const admin = this.$store.getters.admin(scannedData.code);
+      if (!admin) {
+        console.log("not a valid admin");
+        return;
+      }
+
+      this.$emit("admin-data", admin);
+      this.$emit("next-step");
     },
     async lookupPatrol(scannedData) {
       const patrol = this.$store.getters.patrol(scannedData.code);

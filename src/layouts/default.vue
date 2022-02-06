@@ -122,6 +122,11 @@ export default {
           icon: "mdi-account-group",
           to: "/patrols",
         },
+        {
+          title: "Monsters At AG",
+          icon: "mdi-ghost",
+          to: "/monstemon-go",
+        },
         { title: "Scan QR Code", icon: "mdi-qrcode", to: "/scan" },
         { title: "Data & Activity", icon: "mdi-refresh", to: "/data" },
         {
@@ -194,9 +199,11 @@ export default {
       return this.monsterAcronyms[this.monsterAcronymIndex];
     },
     userSetupRequired() {
-      const isPageSetup = ["/user/stunt/setup", "/user/patrol/setup"].includes(
-        this.$route.path
-      );
+      const isPageSetup = [
+        "/user/admin/setup",
+        "/user/patrol/setup",
+        "/user/stunt/setup",
+      ].includes(this.$route.path);
       if (isPageSetup) {
         return false;
       }
