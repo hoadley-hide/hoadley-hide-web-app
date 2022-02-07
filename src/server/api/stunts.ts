@@ -24,8 +24,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       slug: stunt.slug,
       path: `/stunts/${stunt.slug}`,
       icon: stunt.icon,
-      description: stunt.description.html,
-      descriptionText: stunt.description.text,
+      description: stunt.description,
       location: stunt.location,
     })
   );

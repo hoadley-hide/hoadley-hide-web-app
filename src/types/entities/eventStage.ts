@@ -7,8 +7,7 @@ export interface EventStage {
   name: string;
   slug: string;
   path: string;
-  description: string;
-  descriptionText: string;
+  description: RichText;
   startTime: string;
   instructions: RichText[];
   autoShowAfterStartTime: boolean;

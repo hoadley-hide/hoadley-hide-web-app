@@ -8,7 +8,7 @@
           {{ eventStage.startTime | datetime }}
         </v-card-subtitle>
 
-        <v-card-text v-html="eventStage.description"> </v-card-text>
+        <v-card-text v-html="eventStage.description.html"> </v-card-text>
       </v-card>
     </v-col>
 

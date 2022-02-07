@@ -4,7 +4,7 @@
       <v-card>
         <v-card-title class="text-h3">{{ monstemonGo.name }}</v-card-title>
 
-        <v-card-text v-html="monstemonGo.description"></v-card-text>
+        <v-card-text v-html="monstemonGo.description.html"></v-card-text>
 
         <v-card-text
           >Find this Monstemon Go: {{ monstemonGo.location }}</v-card-text

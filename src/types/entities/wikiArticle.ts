@@ -8,8 +8,7 @@ export interface WikiArticle {
   shortName: string;
   slug: string;
   path: string;
-  content: string;
-  contentText: string;
+  content: RichText;
   tags: string[];
 }
 

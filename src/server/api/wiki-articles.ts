@@ -24,8 +24,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       shortName: wikiArticle.shortName,
       slug: wikiArticle.slug,
       path: `/wiki/${wikiArticle.slug}`,
-      content: wikiArticle.content.html,
-      contentText: wikiArticle.content.text,
+      content: wikiArticle.content,
       tags: wikiArticle.tags,
     })
   );

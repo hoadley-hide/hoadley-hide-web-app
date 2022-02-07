@@ -4,7 +4,7 @@
       <v-card>
         <v-card-title class="text-h3">{{ wikiArticle.name }}</v-card-title>
 
-        <v-card-text v-html="wikiArticle.content"> </v-card-text>
+        <v-card-text v-html="wikiArticle.content.html"> </v-card-text>
       </v-card>
     </v-col>
   </v-row>

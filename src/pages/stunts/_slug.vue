@@ -4,7 +4,7 @@
       <v-card>
         <v-card-title class="text-h3">{{ stunt.name }}</v-card-title>
 
-        <v-card-text v-html="stunt.description"></v-card-text>
+        <v-card-text v-html="stunt.description.html"></v-card-text>
 
         <v-card-text>Find this stunt: {{ stunt.location }}</v-card-text>
       </v-card>

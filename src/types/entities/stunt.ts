@@ -8,8 +8,7 @@ export interface Stunt {
   slug: string;
   path: string;
   icon: string;
-  description: string;
-  descriptionText: string;
+  description: RichText;
   location: string;
 }
 
