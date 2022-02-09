@@ -7,7 +7,9 @@ import {
   Entity,
   EventStage,
   GraphQL,
+  MonstemonGo,
   Patrol,
+  ReviewQuestion,
   ScannedCode,
   Stunt,
   WikiArticle,
@@ -22,6 +24,7 @@ export const state = () => ({
   eventStages: [] as EventStage[],
   monstemonGos: [] as EventStage[],
   patrols: [] as Patrol[],
+  reviewQuestions: [] as ReviewQuestion[],
   stunts: [] as Stunt[],
   wikiArticles: [] as WikiArticle[],
   // Other Stuff
@@ -146,6 +149,9 @@ export const mutations: MutationTree<RootState> = {
   setPatrols: (state, patrols) => {
     Vue.set(state, "patrols", patrols);
   },
+  setReviewQuestions: (state, reviewQuestions) => {
+    Vue.set(state, "reviewQuestions", reviewQuestions);
+  },
   setStunts: (state, stunts) => {
     Vue.set(state, "stunts", stunts);
   },
@@ -208,6 +214,11 @@ export const actions: ActionTree<RootState, RootState> = {
       path: "/api/patrols",
       dataKey: "patrols",
       mutation: "setPatrols",
+    });
+    await dispatch("initialiseEntity", {
+      path: "/api/review-questions",
+      dataKey: "reviewQuestions",
+      mutation: "setReviewQuestions",
     });
     await dispatch("initialiseEntity", {
       path: "/api/stunts",

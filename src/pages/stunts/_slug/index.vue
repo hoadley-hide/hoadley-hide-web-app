@@ -9,6 +9,19 @@
         <v-card-text>Find this stunt: {{ stunt.location }}</v-card-text>
       </v-card>
     </v-col>
+    <v-col cols="12" sm="6" v-if="activeUser && activeUser._type === 'patrol'">
+      <v-card>
+        <v-card-title class="text-h4 d-flex flex-nowrap">
+          <v-icon left large>mdi-review</v-icon>
+          <span>Leave feedback for this stunt</span>
+        </v-card-title>
+        <v-card-text>
+          <v-btn color="info" block nuxt :to="`${stunt.path}/review`">
+            Enter feedback
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-col>
     <v-col cols="12" sm="6" v-if="activeUser && activeUser._type !== 'patrol'">
       <v-card>
         <v-card-title class="text-h4 d-flex flex-nowrap">
