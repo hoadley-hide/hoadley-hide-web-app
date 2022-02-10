@@ -7,19 +7,30 @@
           {{ question.description }}
         </v-card-subtitle>
       </v-col>
-      <v-col cols="6">
+      <v-col :cols="question.reviewType === 'Rating' ? 6 : 12">
         <v-card-text>
           <v-slider
+            v-if="question.reviewType === 'Rating'"
             v-model="data"
             min="1"
             :max="question.tickLabels.length"
             step="1"
             vertical
-            persistent-hint
             :tick-labels="question.tickLabels"
             ticks="always"
             tick-size="4"
           ></v-slider>
+          <v-text-field
+            v-else-if="question.reviewType === 'ShortAnswer'"
+            v-model="data"
+          ></v-text-field>
+          <v-textarea
+            v-else-if="question.reviewType === 'LongAnswer'"
+            v-model="data"
+            :placeholder="question.description"
+            outlined
+            counter
+          ></v-textarea>
         </v-card-text>
       </v-col>
     </v-row>
@@ -32,7 +43,7 @@ export default {
     question: Object,
   },
   data() {
-    return { data: 0 };
+    return { data: "" };
   },
   watch: {
     data() {

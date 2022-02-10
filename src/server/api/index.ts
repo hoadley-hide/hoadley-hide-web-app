@@ -34,6 +34,22 @@ export function generateCode(entityType, id: string) {
   return code.toUpperCase();
 }
 
+export function makeError(
+  res: ServerResponse,
+  status: number,
+  msgs: string | string[],
+  extensions?: object[]
+) {
+  res.statusCode = status;
+
+  const messages = Array.isArray(msgs) ? msgs : [msgs];
+
+  return {
+    errors: messages.map((message) => ({ message: message })),
+    extensions,
+  };
+}
+
 export async function simpleAllGraphQL<Raw, Data>(
   key: string,
   query: string,
@@ -92,17 +108,5 @@ export async function simpleAllGraphQL<Raw, Data>(
     data: {
       [key]: returnable,
     },
-  });
-}
-
-export async function streamData<T>(req: IncomingMessage): Promise<T> {
-  return new Promise((resolve) => {
-    let body = "";
-    req.on("data", (chunk) => {
-      body += chunk;
-    });
-    req.on("end", () => {
-      resolve(JSON.parse(body ?? "{}") ?? {});
-    });
   });
 }

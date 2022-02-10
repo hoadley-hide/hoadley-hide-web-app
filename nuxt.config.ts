@@ -51,6 +51,7 @@ export default defineNuxtConfig({
   plugins: [
     { src: "~/plugins/filters.ts" },
     { src: "~/plugins/persistedState.client.js", mode: "client" },
+    { src: "~/plugins/postMessageReceive.client.js", mode: "client" },
     { src: "~/plugins/printd.client.ts", mode: "client" },
     { src: "~/plugins/pwa-update.js", mode: "client" },
     { src: "~/plugins/vue-qr.ts", mode: "client" },
@@ -100,6 +101,7 @@ export default defineNuxtConfig({
      */
     workbox: {
       enabled: true,
+      workboxExtensions: "@/plugins/workbox-background-sync.js",
     },
   },
   privateRuntimeConfig: {
@@ -107,6 +109,7 @@ export default defineNuxtConfig({
     cmsApiKey: process.env.CMS_KEY,
   },
   publicRuntimeConfig: {
+    eventName: process.env.EVENT_NAME ?? "Unknown",
     version: `${version}-${process.env.BRANCH ?? "dev"}`,
     baseUrl: baseUrl,
   },
@@ -119,6 +122,7 @@ export interface RuntimeConfig {
       assetsPath: string;
       cdnURL: string;
     };
+    eventName: string;
     version: string;
     baseUrl: string;
   };

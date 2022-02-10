@@ -15,10 +15,13 @@
           <v-icon left large>mdi-review</v-icon>
           <span>Leave feedback for this stunt</span>
         </v-card-title>
-        <v-card-text>
+        <v-card-text v-if="stuntReviewCompleted">
           <v-btn color="info" block nuxt :to="`${stunt.path}/review`">
             Enter feedback
           </v-btn>
+        </v-card-text>
+        <v-card-text v-else>
+          You have already submitted feedback, thank you.
         </v-card-text>
       </v-card>
     </v-col>
@@ -59,6 +62,9 @@ export default {
     },
     activeUser(): AppUserEntity | null {
       return this.$store.getters.user;
+    },
+    stuntReviewCompleted(): boolean {
+      return this.$store.getters.stuntReviewCompleted(this.stunt);
     },
   },
   mounted() {

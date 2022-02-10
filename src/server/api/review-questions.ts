@@ -7,6 +7,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     id
     heading
     storageKey
+    reviewType
     description
     tickLabels
   }`;
@@ -20,6 +21,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       id: reviewQuestion.id,
       heading: reviewQuestion.heading,
       storageKey: reviewQuestion.storageKey,
+      reviewType: reviewQuestion.reviewType,
       description: reviewQuestion.description,
       tickLabels: reviewQuestion.tickLabels,
     })

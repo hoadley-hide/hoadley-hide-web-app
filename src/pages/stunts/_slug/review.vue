@@ -59,7 +59,9 @@
 
 <script lang="ts">
 import { createAlert, setBreadcrumbs } from "~/common/helper-factories";
-import { AppUserEntity, EventLogInput } from "~/types";
+import { AppUserEntity, EventLog } from "~/types";
+
+import uuid4 from "uuid4";
 
 export default {
   validate({ params, store }) {
@@ -90,7 +92,7 @@ export default {
     ]);
   },
   methods: {
-    submitReview() {
+    async submitReview() {
       if (!this.activeUser) {
         createAlert(this.$store, {
           message: "You are not logged in, you can not submit a review",
@@ -102,18 +104,21 @@ export default {
         });
       }
 
-      console.log(JSON.stringify(this.review));
-
-      const logData: EventLogInput = {
-        deduplicationId: "",
-        eventName: "hh22",
+      const logData: EventLog = {
+        deduplicationId: uuid4(),
+        eventName: this.$config.eventName,
         type: "stuntReview",
-        recordingEntity: this.activeUser.id,
-        referencedEntity: this.stunt.id,
-        data: {},
+        recordingEntity: {
+          _type: this.activeUser._type,
+          id: this.activeUser.id,
+        },
+        referencedEntity: { _type: this.stunt._type, id: this.stunt.id },
+        data: this.review,
       };
-      console.log(logData);
-      // this.$store.dispatch("persistEventLog", logData);
+
+      await this.$store.dispatch("persistEventLog", logData);
+
+      this.$router.push(this.stunt.path);
     },
   },
 };

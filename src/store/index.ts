@@ -43,6 +43,7 @@ export const state = () => ({
   hasPermissionWarningBeenRead: false as boolean,
   user: null as AppUserEntity | null,
   eventLogs: [] as EventLog[],
+  pendingLogIds: [] as string[],
 });
 
 export type RootState = ReturnType<typeof state>;
@@ -109,6 +110,20 @@ export const getters: GetterTree<RootState, RootState> = {
 
     return compiledCodes;
   },
+  stuntReviewCompleted:
+    (state) =>
+    (stunt: Stunt): boolean => {
+      if (!state.user) {
+        return false;
+      }
+
+      return state.eventLogs.some(
+        (eventLog) =>
+          eventLog.type === "stuntReview" &&
+          eventLog.recordingEntity.id === state.user?.id &&
+          eventLog.referencedEntity.id === stunt.id
+      );
+    },
 };
 
 export const mutations: MutationTree<RootState> = {
@@ -164,8 +179,22 @@ export const mutations: MutationTree<RootState> = {
   persistUser: (state, entity: AppUserEntity) => {
     Vue.set(state, "user", entity);
   },
-  addEventLog: (state, logData: EventLog) => {
+  addEventLogRequest: (state, logData: EventLog) => {
+    // Record dedup id as pending.
+    Vue.set(
+      state.pendingLogIds,
+      state.pendingLogIds.length,
+      logData.deduplicationId
+    );
+    // Record log dataset for immediate use in app.
     Vue.set(state.eventLogs, state.eventLogs.length, logData);
+  },
+  recordEventLogPersist: (state, opt: { deduplicationId: string }) => {
+    // Remove dedup id from the pending list.
+    state.pendingLogIds.splice(
+      state.pendingLogIds.indexOf(opt.deduplicationId),
+      1
+    );
   },
 };
 
@@ -292,14 +321,22 @@ export const actions: ActionTree<RootState, RootState> = {
   },
 
   async persistEventLog({ commit }, logData: EventLog) {
-    commit("addEventLog", logData);
+    commit("addEventLogRequest", logData);
 
-    const res = $fetch("/api/log", {
-      method: "POST",
-      body: logData,
-    });
+    try {
+      const res = await $fetch("/api/log", {
+        method: "POST",
+        body: logData,
+      });
 
-    console.log(res);
-    // commit('recordPersist')
+      console.log(res);
+      commit("recordEventLogPersist", {
+        deduplicationId: logData.deduplicationId,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
+    return { deduplicationId: logData.deduplicationId };
   },
 };
