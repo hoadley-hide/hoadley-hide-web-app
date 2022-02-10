@@ -11,17 +11,19 @@
       <v-card>
         <v-card-text>
           <v-list>
-            <v-list-item
-              v-for="stunt in stunts"
-              :key="stunt.title"
-              :to="`/stunts/${stunt.slug}`"
-            >
-              <v-icon left>{{ stunt.icon }}</v-icon>
-              <span class="tab-title-left-align">{{ stunt.name }}</span>
-            </v-list-item>
-            <v-list-item v-if="stunts.length === 0">
-              <i>You have not discovered any stunts</i>
-            </v-list-item>
+            <client-only>
+              <v-list-item
+                v-for="stunt in stunts"
+                :key="stunt.title"
+                :to="`/stunts/${stunt.slug}`"
+              >
+                <v-icon left>{{ stunt.icon }}</v-icon>
+                <span class="tab-title-left-align">{{ stunt.name }}</span>
+              </v-list-item>
+              <v-list-item v-if="stunts.length === 0">
+                <i>You have not discovered any stunts</i>
+              </v-list-item>
+            </client-only>
           </v-list>
           <v-btn block color="success" to="/scan">Open scanner</v-btn>
         </v-card-text>
@@ -50,7 +52,6 @@ export default {
       } else if (this.activeUser._type === "stunt") {
         return this.$store.state.stunts;
       } else if (this.activeUser._type === "admin") {
-        console.log(this.$store.state.stunts);
         return this.$store.state.stunts;
       }
     },

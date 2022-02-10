@@ -29,17 +29,17 @@
             v-for="question in reviewQuestions"
             v-bind:key="question.heading"
           >
-            <v-card>
-              <form-vertical-slider
-                v-model="review[question.storageKey]"
-                :tick-labels="question.tickLabels"
-              >
-                <v-card-title>{{ question.heading }}</v-card-title>
-                <v-card-subtitle class="text--secondary">
-                  {{ question.description }}
-                </v-card-subtitle>
-              </form-vertical-slider>
-            </v-card>
+            <review-question
+              @input="(value) => (review[question.storageKey] = value)"
+              :question="question"
+            ></review-question>
+          </v-col>
+
+          <!-- Submit Review -->
+          <v-col cols="12">
+            <v-btn block color="success" @click="submitReview">
+              Submit Review
+            </v-btn>
           </v-col>
         </v-form>
       </span>
@@ -58,8 +58,8 @@
 </template>
 
 <script lang="ts">
-import { setBreadcrumbs } from "~/common/helper-factories";
-import { AppUserEntity } from "~/types";
+import { createAlert, setBreadcrumbs } from "~/common/helper-factories";
+import { AppUserEntity, EventLogInput } from "~/types";
 
 export default {
   validate({ params, store }) {
@@ -68,8 +68,6 @@ export default {
   data() {
     return {
       review: {},
-      funness: 0,
-      enthusiasm: 0,
     };
   },
   computed: {
@@ -90,6 +88,33 @@ export default {
       { to: this.stunt.path, label: this.stunt.name },
       { to: null, label: "Review" },
     ]);
+  },
+  methods: {
+    submitReview() {
+      if (!this.activeUser) {
+        createAlert(this.$store, {
+          message: "You are not logged in, you can not submit a review",
+        });
+      }
+      if (!this.stunt) {
+        createAlert(this.$store, {
+          message: "An internal error occurred, you can not submit a review",
+        });
+      }
+
+      console.log(JSON.stringify(this.review));
+
+      const logData: EventLogInput = {
+        deduplicationId: "",
+        eventName: "hh22",
+        type: "stuntReview",
+        recordingEntity: this.activeUser.id,
+        referencedEntity: this.stunt.id,
+        data: {},
+      };
+      console.log(logData);
+      // this.$store.dispatch("persistEventLog", logData);
+    },
   },
 };
 </script>

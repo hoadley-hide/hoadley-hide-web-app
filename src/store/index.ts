@@ -5,6 +5,7 @@ import { AppBreadcrumb } from "~/common/breadcrumb";
 import {
   AppUserEntity,
   Entity,
+  EventLog,
   EventStage,
   GraphQL,
   MonstemonGo,
@@ -41,6 +42,7 @@ export const state = () => ({
   ],
   hasPermissionWarningBeenRead: false as boolean,
   user: null as AppUserEntity | null,
+  eventLogs: [] as EventLog[],
 });
 
 export type RootState = ReturnType<typeof state>;
@@ -161,6 +163,9 @@ export const mutations: MutationTree<RootState> = {
   // User
   persistUser: (state, entity: AppUserEntity) => {
     Vue.set(state, "user", entity);
+  },
+  addEventLog: (state, logData: EventLog) => {
+    Vue.set(state.eventLogs, state.eventLogs.length, logData);
   },
 };
 
@@ -284,5 +289,17 @@ export const actions: ActionTree<RootState, RootState> = {
     } else if ("stuntId" in opts) {
       commit("persistUser", getters.stunt(opts.stuntId));
     }
+  },
+
+  async persistEventLog({ commit }, logData: EventLog) {
+    commit("addEventLog", logData);
+
+    const res = $fetch("/api/log", {
+      method: "POST",
+      body: logData,
+    });
+
+    console.log(res);
+    // commit('recordPersist')
   },
 };

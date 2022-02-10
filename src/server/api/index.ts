@@ -12,6 +12,8 @@ export const nuxtConfig = {
   NITRO_PRESET: process.env.NITRO_PRESET as unknown as string,
   RUNTIME_CONFIG: process.env.RUNTIME_CONFIG as unknown as RuntimeConfig,
   DEBUG: process.env.DEBUG as unknown as boolean,
+  BASE_URL: process.env.CMS_URL || console.error("missing CMS_URL") || "",
+  API_KEY: process.env.CMS_KEY || console.error("missing CMS_KEY") || "",
 };
 
 export default async (_req: IncomingMessage, res: ServerResponse) => {
@@ -57,7 +59,7 @@ export async function simpleAllGraphQL<Raw, Data>(
     });
   }
 
-  const result: GraphQL<typeof key, Raw[]> = await response.json();
+  const result: GraphQL<typeof key, Raw | Raw[]> = await response.json();
 
   if (!result) {
     return Promise.resolve({
@@ -80,11 +82,27 @@ export async function simpleAllGraphQL<Raw, Data>(
     });
   }
 
-  const returnable: Data[] = result.data[key].map(mappingFn);
+  const queryData = result.data[key];
+
+  const returnable: Data[] = Array.isArray(queryData)
+    ? queryData.map(mappingFn)
+    : [mappingFn(queryData)];
 
   return Promise.resolve({
     data: {
       [key]: returnable,
     },
+  });
+}
+
+export async function streamData<T>(req: IncomingMessage): Promise<T> {
+  return new Promise((resolve) => {
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk;
+    });
+    req.on("end", () => {
+      resolve(JSON.parse(body ?? "{}") ?? {});
+    });
   });
 }

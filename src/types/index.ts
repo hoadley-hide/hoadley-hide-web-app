@@ -1,5 +1,6 @@
 export * from "./common";
 export * from "./entities/admin";
+export * from "./entities/eventLog";
 export * from "./entities/eventStage";
 export * from "./entities/monstemonGo";
 export * from "./entities/patrol";
