@@ -4,6 +4,10 @@ import webpack from "webpack";
 
 const packageJson = fs.readFileSync("./package.json").toString();
 const version = JSON.parse(packageJson).version || "Unknown";
+const baseUrl =
+  process.env.BRANCH !== "main"
+    ? `https://${process.env.BRANCH}--hoadley-hide.netlify.app`
+    : "app.hoadleyhide.com.au";
 
 export default defineNuxtConfig({
   srcDir: "src/",
@@ -77,7 +81,7 @@ export default defineNuxtConfig({
       description: "Hoadley Hide 2022: Monster Hunters",
       theme_color: "#000000",
       background_color: "#000000",
-      start_url: "https://hoadley-hide.netlify.app",
+      start_url: baseUrl,
     },
 
     /**
@@ -87,7 +91,7 @@ export default defineNuxtConfig({
       name: "Hoadley Hide 2022: Monster Hunters",
       description: "Hoadley Hide 2022: Monster Hunters",
       author: false,
-      ogHost: "https://hoadley-hide.netlify.app",
+      ogHost: baseUrl,
       nativeUI: true,
     },
 
@@ -104,7 +108,7 @@ export default defineNuxtConfig({
   },
   publicRuntimeConfig: {
     version: `${version}-${process.env.BRANCH ?? "dev"}`,
-    baseUrl: "https://app.hoadleyhide.com.au",
+    baseUrl: baseUrl,
   },
 });
 
