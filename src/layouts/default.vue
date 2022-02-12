@@ -66,7 +66,7 @@
     </v-app-bar>
 
     <v-main>
-      <breadcrumbs></breadcrumbs>
+      <app-status-bar></app-status-bar>
 
       <client-only>
         <user-requires-setup v-if="userSetupRequired"></user-requires-setup>
