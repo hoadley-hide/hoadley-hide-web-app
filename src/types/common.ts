@@ -32,4 +32,7 @@ export type PermissionScope =
   | "patrol:seeAll"
   | "stunt:canReview"
   | "stunt:canShare"
-  | "stunt:seeAll";
+  | "stunt:seeAll"
+  | "review:seeRecordedBySelf"
+  | "review:seeReferencingSelf"
+  | "review:seeAll";

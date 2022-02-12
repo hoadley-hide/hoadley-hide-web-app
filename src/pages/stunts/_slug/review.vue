@@ -1,12 +1,7 @@
 <template>
   <v-row>
-    <client-only>
-      <span
-        v-if="
-          (activeUser && activeUser._type === 'patrol') ||
-          (activeUser && activeUser._type === 'admin')
-        "
-      >
+    <authorised :allow="['stunt:canReview']">
+      <template v-slot:default>
         <v-col cols="12">
           <v-card>
             <v-card-title class="text-h3">{{ stunt.name }}</v-card-title>
@@ -42,18 +37,20 @@
             </v-btn>
           </v-col>
         </v-form>
-      </span>
-      <v-col cols="12" v-else>
-        <v-card>
-          <v-card-title class="text-h3">{{ stunt.name }}</v-card-title>
+      </template>
+      <template v-slot:blocked>
+        <v-col cols="12">
+          <v-card>
+            <v-card-title class="text-h3">{{ stunt.name }}</v-card-title>
 
-          <v-card-subtitle>Review this stunt</v-card-subtitle>
-          <v-card-text>
-            Why sir, are you here? You are not a patrol user. Buzz off.
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </client-only>
+            <v-card-subtitle>Review this stunt</v-card-subtitle>
+            <v-card-text>
+              Why sir, are you here? You are not a patrol user. Buzz off.
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </template>
+    </authorised>
   </v-row>
 </template>
 
@@ -107,7 +104,7 @@ export default {
       const logData: EventLog = {
         deduplicationId: uuid4(),
         eventName: this.$config.eventName,
-        type: "stuntReview",
+        type: "review:stunt",
         recordingEntity: {
           _type: this.activeUser._type,
           id: this.activeUser.id,

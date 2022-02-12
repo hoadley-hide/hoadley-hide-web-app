@@ -6,6 +6,7 @@ import {
   AppUserEntity,
   Entity,
   EventLog,
+  EventLogAugmented,
   EventStage,
   GraphQL,
   MonstemonGo,
@@ -110,20 +111,82 @@ export const getters: GetterTree<RootState, RootState> = {
 
     return compiledCodes;
   },
-  stuntReviewCompleted:
+  findById:
     (state) =>
+    (id: string): Entity | null => {
+      const compiledCodes: Entity[] = [
+        ...state.admins,
+        ...state.eventStages,
+        ...state.monstemonGos,
+        ...state.patrols,
+        ...state.stunts,
+        ...state.wikiArticles,
+      ];
+
+      return compiledCodes.find((entity) => entity.id === id) ?? null;
+    },
+  stuntReviewCompleted:
+    (state, getters) =>
     (stunt: Stunt): boolean => {
-      if (!state.user) {
+      if (!getters.user) {
         return false;
       }
 
+      console.log(state.eventLogs);
+
       return state.eventLogs.some(
         (eventLog) =>
-          eventLog.type === "stuntReview" &&
-          eventLog.recordingEntity.id === state.user?.id &&
+          eventLog.type === "review:stunt" &&
+          eventLog.recordingEntity.id === getters.user?.id &&
           eventLog.referencedEntity.id === stunt.id
       );
     },
+  reviewsRecordedBySelf: (state, getters): EventLogAugmented[] => {
+    if (!state.user) {
+      return [];
+    }
+
+    const logs: EventLog[] = state.eventLogs.filter(
+      (eventLog) =>
+        eventLog.type === "review:stunt" &&
+        eventLog.recordingEntity.id === state.user?.id
+    );
+
+    return logs.map(
+      (log): EventLogAugmented => ({
+        deduplicationId: log.deduplicationId,
+        eventName: log.eventName,
+        type: log.type,
+        recordingEntity: getters.findById(log.recordingEntity.id),
+        referencedEntity: getters.findById(log.referencedEntity.id),
+        data: log.data,
+        isPersisted: !state.pendingLogIds.includes(log.deduplicationId),
+      })
+    );
+  },
+  reviewsReferencingSelf: (state, getters): EventLogAugmented[] => {
+    if (!state.user) {
+      return [];
+    }
+
+    const logs: EventLog[] = state.eventLogs.filter(
+      (eventLog) =>
+        eventLog.type === "review:stunt" &&
+        eventLog.referencedEntity.id === state.user?.id
+    );
+
+    return logs.map(
+      (log): EventLogAugmented => ({
+        deduplicationId: log.deduplicationId,
+        eventName: log.eventName,
+        type: log.type,
+        recordingEntity: getters.findById(log.recordingEntity.id),
+        referencedEntity: getters.findById(log.referencedEntity.id),
+        data: log.data,
+        isPersisted: !state.pendingLogIds.includes(log.deduplicationId),
+      })
+    );
+  },
 };
 
 export const mutations: MutationTree<RootState> = {

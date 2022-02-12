@@ -9,6 +9,15 @@
     </v-col>
     <v-col cols="12" sm="6">
       <v-card>
+        <v-card-title class="text-h3">Reviews</v-card-title>
+
+        <v-card-text>
+          <v-btn nuxt link block to="/reviews">See reviews</v-btn>
+        </v-card-text>
+      </v-card>
+    </v-col>
+    <v-col cols="12" sm="6">
+      <v-card>
         <v-card-title class="text-h3">Scanned Codes</v-card-title>
 
         <v-card-text>

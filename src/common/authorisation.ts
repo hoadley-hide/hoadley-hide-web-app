@@ -20,12 +20,14 @@ export function authorised(
   if (user._type === "patrol") {
     // Default Patrol scopes.
     userScopes.push("stunt:canReview");
+    userScopes.push("review:seeRecordedBySelf");
   }
   if (user._type === "stunt") {
     // Default Stunt scopes.
     userScopes.push("patrol:canScore");
     userScopes.push("stunt:canShare");
     userScopes.push("stunt:seeAll");
+    userScopes.push("review:seeReferencingSelf");
   }
 
   const normaliseScopes = userScopes.flatMap((userScope) => {

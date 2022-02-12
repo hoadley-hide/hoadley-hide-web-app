@@ -1,7 +1,32 @@
+import { AppUserEntity, Entity } from "..";
+
+export type EventLogType =
+  | "review:stunt"
+  | "checkpoint:stunt:visit"
+  | "checkpoint:voc:enter"
+  | "checkpoint:voc:exit";
+
+export const ValidEventLogTypes: EventLogType[] = [
+  "review:stunt",
+  "checkpoint:stunt:visit",
+  "checkpoint:voc:enter",
+  "checkpoint:voc:exit",
+];
+
+export interface EventLogAugmented {
+  deduplicationId: string;
+  eventName: string;
+  type: EventLogType;
+  recordingEntity: AppUserEntity | null;
+  referencedEntity: Entity | null;
+  data: object;
+  isPersisted: boolean;
+}
+
 export interface EventLog {
   deduplicationId: string;
   eventName: string;
-  type: "stuntReview" | "patrolCheckIn";
+  type: EventLogType;
   recordingEntity: { _type: string; id: string };
   referencedEntity: { _type: string; id: string };
   data: object;
@@ -10,7 +35,7 @@ export interface EventLog {
 export interface EventLogRaw {
   deduplicationId: string;
   eventName: string;
-  type: "stuntReview" | "patrolCheckIn";
+  type: EventLogType;
   recordingEntity: { _type: string; id: string };
   referencedEntity: { _type: string; id: string };
   data: object;
@@ -28,7 +53,7 @@ export interface EventLogPersistedRaw {
 export interface EventLogRawInput {
   deduplicationId: string;
   eventName: string;
-  type: "stuntReview" | "patrolCheckIn";
+  type: EventLogType;
   recordingEntity: ConnectableEntity | null;
   referencedEntity: ConnectableEntity | null;
   data: object;

@@ -7,6 +7,8 @@ export default ({ store }) => {
       "user", // wrap lines.
       "scannedCodes",
       "hasPermissionWarningBeenRead",
+      "eventLogs",
+      "pendingLogIds",
     ],
   })(store);
 };

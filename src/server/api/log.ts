@@ -5,6 +5,7 @@ import {
   EventLogPersisted,
   EventLogRaw,
   EventLogRawInput,
+  ValidEventLogTypes,
 } from "~/types";
 import { makeError, nuxtConfig, simpleAllGraphQL } from ".";
 import uuid4 from "uuid4";
@@ -45,6 +46,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
   }
   console.log(inputData);
 
+  // TODO: Move this logic to a common function to be validated in the UI too.
   // Confirm there is a valid deduplication ID.
   if (!inputData.deduplicationId || !uuid4.valid(inputData.deduplicationId)) {
     const error = `Event Log deduplicationId is invalid ${inputData.type}`;
@@ -59,8 +61,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
   }
 
   // Confirm the log type matches a valid type.
-  const validTypes = ["stuntReview", "patrolCheckIn"];
-  if (!inputData.type || !validTypes.includes(inputData.type)) {
+  if (!inputData.type || !ValidEventLogTypes.includes(inputData.type)) {
     const error = `Event Log type is invalid ${inputData.type}`;
     return makeError(res, 400, error);
   }

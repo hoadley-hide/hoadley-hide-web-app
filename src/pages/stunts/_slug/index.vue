@@ -16,13 +16,18 @@
             <!-- <v-icon left large>mdi-review</v-icon> -->
             <span>Leave feedback</span>
           </v-card-title>
-          <v-card-text v-if="stuntReviewCompleted">
+          <v-card-text v-if="!stuntReviewCompleted">
+            <p>Bonus points? Complete this review for 10 points</p>
+
             <v-btn color="info" block nuxt :to="`${stunt.path}/review`">
               Enter feedback
             </v-btn>
           </v-card-text>
           <v-card-text v-else>
-            You have already submitted feedback, thank you.
+            <p>You have already submitted feedback, thank you.</p>
+            <v-btn nuxt text block to="/reviews">
+              See feedback you have left
+            </v-btn>
           </v-card-text>
         </v-card>
       </v-col>
