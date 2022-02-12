@@ -16,7 +16,7 @@
 
       <v-card-text
         v-if="activeEventStage"
-        v-html="activeEventStage.description"
+        v-html="activeEventStage.description.html"
       ></v-card-text>
       <v-card-text v-else>
         <p>Today, you arrive at our humble village. Let me show you around.</p>
