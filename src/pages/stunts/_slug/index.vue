@@ -9,45 +9,49 @@
         <v-card-text>Find this stunt: {{ stunt.location }}</v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" sm="6" v-if="activeUser && activeUser._type === 'patrol'">
-      <v-card>
-        <v-card-title class="text-h4 d-flex flex-nowrap">
-          <v-icon left large>mdi-review</v-icon>
-          <span>Leave feedback for this stunt</span>
-        </v-card-title>
-        <v-card-text v-if="stuntReviewCompleted">
-          <v-btn color="info" block nuxt :to="`${stunt.path}/review`">
-            Enter feedback
-          </v-btn>
-        </v-card-text>
-        <v-card-text v-else>
-          You have already submitted feedback, thank you.
-        </v-card-text>
-      </v-card>
-    </v-col>
-    <v-col cols="12" sm="6" v-if="activeUser && activeUser._type === 'stunt'">
-      <v-card>
-        <v-card-title class="text-h4 d-flex flex-nowrap">
-          <v-icon left large>mdi-qrcode</v-icon>
-          <span>Share this stage</span>
-        </v-card-title>
-        <v-card-text class="d-flex justify-space-around">
-          <qr-code
-            :entity="{
-              code: stunt.code,
-              path: stunt.path,
-              name: stunt.name,
-            }"
-          ></qr-code>
-        </v-card-text>
-      </v-card>
-    </v-col>
+    <authorised :allow="['stunt:canReview']">
+      <v-col cols="12" sm="6">
+        <v-card>
+          <v-card-title class="text-h4 d-flex flex-nowrap">
+            <!-- <v-icon left large>mdi-review</v-icon> -->
+            <span>Leave feedback</span>
+          </v-card-title>
+          <v-card-text v-if="stuntReviewCompleted">
+            <v-btn color="info" block nuxt :to="`${stunt.path}/review`">
+              Enter feedback
+            </v-btn>
+          </v-card-text>
+          <v-card-text v-else>
+            You have already submitted feedback, thank you.
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </authorised>
+    <authorised :allow="['stunt:canShare']">
+      <v-col cols="12" sm="6">
+        <v-card>
+          <v-card-title class="text-h4 d-flex flex-nowrap">
+            <v-icon left large>mdi-qrcode</v-icon>
+            <span>Share this stage</span>
+          </v-card-title>
+          <v-card-text class="d-flex justify-space-around">
+            <qr-code
+              :entity="{
+                code: stunt.code,
+                path: stunt.path,
+                name: stunt.name,
+              }"
+            ></qr-code>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </authorised>
   </v-row>
 </template>
 
 <script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { AppUserEntity } from "~/types";
+import { Stunt } from "~/types";
 
 export default {
   validate({ params, store }) {
@@ -57,11 +61,8 @@ export default {
     return {};
   },
   computed: {
-    stunt() {
+    stunt(): Stunt[] {
       return this.$store.getters.stunt(this.$route.params.slug);
-    },
-    activeUser(): AppUserEntity | null {
-      return this.$store.getters.user;
     },
     stuntReviewCompleted(): boolean {
       return this.$store.getters.stuntReviewCompleted(this.stunt);

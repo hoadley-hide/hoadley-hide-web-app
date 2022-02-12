@@ -11,29 +11,31 @@
         >
       </v-card>
     </v-col>
-    <v-col cols="12" sm="6" v-if="activeUser && activeUser._type !== 'patrol'">
-      <v-card>
-        <v-card-title class="text-h4 d-flex flex-nowrap">
-          <v-icon left large>mdi-qrcode</v-icon>
-          <span>Share this stage</span>
-        </v-card-title>
-        <v-card-text class="d-flex justify-space-around">
-          <qr-code
-            :entity="{
-              code: monstemonGo.code,
-              path: monstemonGo.path,
-              name: monstemonGo.name,
-            }"
-          ></qr-code>
-        </v-card-text>
-      </v-card>
-    </v-col>
+    <authorised :allow="['monstermonGo:canShare']">
+      <v-col cols="12" sm="6">
+        <v-card>
+          <v-card-title class="text-h4 d-flex flex-nowrap">
+            <v-icon left large>mdi-qrcode</v-icon>
+            <span>Share this stage</span>
+          </v-card-title>
+          <v-card-text class="d-flex justify-space-around">
+            <qr-code
+              :entity="{
+                code: monstemonGo.code,
+                path: monstemonGo.path,
+                name: monstemonGo.name,
+              }"
+            ></qr-code>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </authorised>
   </v-row>
 </template>
 
 <script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { AppUserEntity } from "~/types";
+import { MonstemonGo } from "~/types";
 
 export default {
   validate({ params, store }) {
@@ -43,11 +45,8 @@ export default {
     return {};
   },
   computed: {
-    monstemonGo() {
+    monstemonGo(): MonstemonGo {
       return this.$store.getters.monstemonGo(this.$route.params.slug);
-    },
-    activeUser(): AppUserEntity | null {
-      return this.$store.getters.user;
     },
   },
   mounted() {

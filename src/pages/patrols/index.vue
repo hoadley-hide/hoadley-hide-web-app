@@ -28,30 +28,27 @@
 </template>
 
 <script lang="ts">
+import { authorised } from "~/common/authorisation";
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { AppUserEntity, Patrol } from "~/types";
+import { Patrol } from "~/types";
 
 export default {
   data() {
     return {};
   },
   computed: {
-    patrols() {
-      if (!this.activeUser) {
+    patrols(): Patrol[] {
+      if (!authorised(this.$store, ["authenticated"])) {
         return [];
       }
-      if (this.activeUser._type === "patrol") {
-        return this.$store.state.patrols.filter((patrol: Patrol) =>
-          this.$store.getters.hasCodeBeenScanned(patrol.code)
-        );
-      } else if (this.activeUser._type === "stunt") {
-        return this.$store.state.patrols;
-      } else if (this.activeUser._type === "admin") {
+
+      if (authorised(this.$store, ["patrol:seeAll"])) {
         return this.$store.state.patrols;
       }
-    },
-    activeUser(): AppUserEntity | null {
-      return this.$store.getters.user;
+
+      return this.$store.state.patrols.filter((patrol: Patrol) =>
+        this.$store.getters.hasCodeBeenScanned(patrol.code)
+      );
     },
   },
   mounted() {

@@ -1,3 +1,5 @@
+import { PermissionScope } from "..";
+
 export interface Admin {
   _type: "admin";
   id: string;
@@ -16,5 +18,5 @@ export interface AdminRaw {
 }
 
 interface AdminPermissions {
-  scopes: ("eventStages:seeAll" | "stunts:seeAll" | "patrols:seeAll")[];
+  scopes: PermissionScope[];
 }

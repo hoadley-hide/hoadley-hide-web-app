@@ -10,21 +10,26 @@
 
       <v-divider></v-divider>
 
-      <client-only>
-        <span v-if="activeUser">
+      <authorised :allow="['authenticated']">
+        <template v-slot:default="{ activeUser }">
           <v-list-item :to="activeUser.path">
             <v-list-item-icon>
               <v-icon>mdi-account-details</v-icon>
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title>Profile</v-list-item-title>
+              <v-list-item-title>
+                Profile
+                <small class="text--secondary">
+                  ({{ activeUser._type | capitalize }})
+                </small>
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 
           <v-divider></v-divider>
-        </span>
-      </client-only>
+        </template>
+      </authorised>
 
       <v-list dense>
         <v-list-item
@@ -214,9 +219,6 @@ export default {
       }
 
       return true;
-    },
-    activeUser(): AppUserEntity | null {
-      return this.$store.getters.user;
     },
   },
   watch: {

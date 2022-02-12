@@ -33,30 +33,27 @@
 </template>
 
 <script lang="ts">
+import { authorised } from "~/common/authorisation";
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { AppUserEntity, Stunt } from "~/types";
+import { Stunt } from "~/types";
 
 export default {
   data() {
     return {};
   },
   computed: {
-    stunts() {
-      if (!this.activeUser) {
+    stunts(): Stunt[] {
+      if (!authorised(this.$store, ["authenticated"])) {
         return [];
       }
-      if (this.activeUser._type === "patrol") {
-        return this.$store.state.stunts.filter((stunt: Stunt) =>
-          this.$store.getters.hasCodeBeenScanned(stunt.code)
-        );
-      } else if (this.activeUser._type === "stunt") {
-        return this.$store.state.stunts;
-      } else if (this.activeUser._type === "admin") {
+
+      if (authorised(this.$store, ["stunt:seeAll"])) {
         return this.$store.state.stunts;
       }
-    },
-    activeUser(): AppUserEntity | null {
-      return this.$store.getters.user;
+
+      return this.$store.state.stunts.filter((stunt: Stunt) =>
+        this.$store.getters.hasCodeBeenScanned(stunt.code)
+      );
     },
   },
   mounted() {

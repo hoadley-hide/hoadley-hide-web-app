@@ -31,32 +31,27 @@
 </template>
 
 <script lang="ts">
+import { authorised } from "~/common/authorisation";
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { AppUserEntity, MonstemonGo } from "~/types";
+import { MonstemonGo } from "~/types";
 
 export default {
   data() {
     return {};
   },
   computed: {
-    monstemonGos() {
-      if (!this.activeUser) {
+    monstemonGos(): MonstemonGo[] {
+      if (!authorised(this.$store, ["authenticated"])) {
         return [];
       }
 
-      if (this.activeUser._type === "patrol") {
-        return this.$store.state.monstemonGos.filter(
-          (monstemonGo: MonstemonGo) =>
-            this.$store.getters.hasCodeBeenScanned(monstemonGo.code)
-        );
-      } else if (this.activeUser._type === "stunt") {
-        return this.$store.state.monstemonGos;
-      } else if (this.activeUser._type === "admin") {
+      if (authorised(this.$store, ["monstermonGo:seeAll"])) {
         return this.$store.state.monstemonGos;
       }
-    },
-    activeUser(): AppUserEntity | null {
-      return this.$store.getters.user;
+
+      return this.$store.state.monstemonGos.filter((monstemonGo: MonstemonGo) =>
+        this.$store.getters.hasCodeBeenScanned(monstemonGo.code)
+      );
     },
   },
   mounted() {

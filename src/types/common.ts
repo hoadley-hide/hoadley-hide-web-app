@@ -23,3 +23,13 @@ export type Entity =
   | Stunt
   | WikiArticle;
 export type AppUserEntity = Admin | Patrol | Stunt;
+export type PermissionScope =
+  | "authenticated"
+  | "monstermonGo:canShare"
+  | "monstermonGo:seeAll"
+  | "eventStage:seeAll"
+  | "patrol:canScore"
+  | "patrol:seeAll"
+  | "stunt:canReview"
+  | "stunt:canShare"
+  | "stunt:seeAll";

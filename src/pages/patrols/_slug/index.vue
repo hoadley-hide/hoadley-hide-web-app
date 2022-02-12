@@ -7,20 +7,18 @@
         <v-card-text>Patrol Number: #{{ patrol.patrolNumber }}</v-card-text>
       </v-card>
     </v-col>
-    <client-only>
-      <v-col
-        cols="12"
-        sm="6"
-        v-if="activeUser && patrol.code === activeUser.code"
-      >
-        <v-card>
-          <v-card-text>
-            <strong>This is your Patrol.</strong> You can share this QR code
-            with friends from other patrols!
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </client-only>
+    <authorised :allow="['authenticated']">
+      <template v-slot:default="{ activeUser }">
+        <v-col cols="12" sm="6" v-if="patrol.code === activeUser.code">
+          <v-card>
+            <v-card-text>
+              <strong>This is your Patrol.</strong> You can share this QR code
+              with friends from other patrols!
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </template>
+    </authorised>
     <v-col cols="12" sm="6">
       <v-card>
         <v-card-title class="text-h4 d-flex flex-nowrap">
@@ -55,9 +53,6 @@ export default {
   computed: {
     patrol() {
       return this.$store.getters.patrol(this.$route.params.slug);
-    },
-    activeUser(): AppUserEntity | null {
-      return this.$store.getters.user;
     },
   },
   mounted() {
