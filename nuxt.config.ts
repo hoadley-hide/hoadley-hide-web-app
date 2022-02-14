@@ -1,13 +1,13 @@
 import { defineNuxtConfig } from "@nuxt/bridge";
 import fs from "fs";
-import webpack from "webpack";
 
 const packageJson = fs.readFileSync("./package.json").toString();
 const version = JSON.parse(packageJson).version || "Unknown";
-const baseUrl =
-  process.env.BRANCH !== "main"
+const baseUrl = process.env.BRANCH
+  ? process.env.BRANCH !== "main"
     ? `https://${process.env.BRANCH}--hoadley-hide.netlify.app`
-    : "app.hoadleyhide.com.au";
+    : "https://app.hoadleyhide.com.au"
+  : "https://localhost:3000";
 
 export default defineNuxtConfig({
   srcDir: "src/",
