@@ -32,7 +32,7 @@ export function authorised(
 
   const normaliseScopes = userScopes.flatMap((userScope) => {
     // Return quickly if there is no wildcard detected.
-    if (!userScope.indexOf("*")) {
+    if (!userScope.includes("*")) {
       return userScope;
     }
 
@@ -44,6 +44,13 @@ export function authorised(
     // If the current scope matches an allowed/blocked scope, it will be returned.
     const allowedScopesExpanded = allow.filter((scope) => scope.match(regex));
     const blockedScopesExpanded = block.filter((scope) => scope.match(regex));
+    console.log(
+      userScope,
+      userScope.includes("*"),
+      regex,
+      allowedScopesExpanded,
+      blockedScopesExpanded
+    );
 
     return [...allowedScopesExpanded, ...blockedScopesExpanded];
   });

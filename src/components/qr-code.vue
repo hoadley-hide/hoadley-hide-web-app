@@ -45,12 +45,7 @@
 
 <script lang="ts">
 import type { Printd } from "printd";
-
-interface CodeEntity {
-  code: string;
-  path: string;
-  name: string;
-}
+import { CodeEntity } from "~/types";
 
 // https://github.com/Binaryify/vue-qr
 export default {

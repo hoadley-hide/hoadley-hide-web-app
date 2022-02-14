@@ -289,11 +289,12 @@ export const mutations: MutationTree<RootState> = {
   permissionWarningHasBeenRead: (state) => {
     Vue.set(state, "hasPermissionWarningBeenRead", true);
   },
-  recordCodeScan: (state, entity: Entity) => {
-    Vue.set(state.scannedCodes, state.scannedCodes.length, {
-      time: new Date(),
+  recordCodeScan: (state, entity: QrCodeableEntity) => {
+    const scannedData: ScannedCode = {
+      time: new Date().toISOString(),
       code: entity.code,
-    });
+    };
+    Vue.set(state.scannedCodes, state.scannedCodes.length, scannedData);
   },
   clearScannedCodes: (state) => {
     Vue.set(state, "scannedCodes", []);
@@ -450,11 +451,11 @@ export const actions: ActionTree<RootState, RootState> = {
       return null;
     }
 
-    const matchedCode = getters.compiledCodes.find((route) => {
-      return route.code === code.toUpperCase();
-    });
+    // const matchedCode = getters.compiledCodes.find((route) => {
+    //   return route.code === code.toUpperCase();
+    // });
 
-    return matchedCode || null;
+    return getters.findByIdOrCode(code) || null;
   },
 
   async recordCodeScan({ commit }, lookup: Entity) {

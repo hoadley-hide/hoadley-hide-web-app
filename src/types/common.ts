@@ -20,7 +20,14 @@ export interface GraphQL<K extends string, T> {
 }
 
 export interface ScannedCode {
+  time: string;
   code: string;
+}
+
+export interface CodeEntity {
+  code: string;
+  path: string;
+  name: string;
 }
 
 export type Entity =

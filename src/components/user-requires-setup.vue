@@ -15,40 +15,7 @@
               <v-divider></v-divider>
 
               <v-container>
-                <v-row>
-                  <v-col
-                    v-for="action in signUpActions"
-                    v-bind:key="action.title"
-                    cols="6"
-                    md="3"
-                  >
-                    <v-card
-                      :color="action.colour"
-                      class="
-                        d-flex
-                        flex-column
-                        align-center
-                        justify-center
-                        px-4
-                      "
-                      height="200"
-                      :to="action.to"
-                    >
-                      <div
-                        class="text-h4 text-center"
-                        :class="{ 'black--text': action.colour === 'yellow' }"
-                      >
-                        {{ action.title }}
-                      </div>
-                      <div
-                        class="text-center"
-                        :class="{ 'black--text': action.colour === 'yellow' }"
-                      >
-                        {{ action.subtitle }}
-                      </div>
-                    </v-card>
-                  </v-col>
-                </v-row>
+                <btn-block :btnBlocks="signUpActions"></btn-block>
               </v-container>
             </v-card>
           </v-col>
@@ -60,7 +27,9 @@
 
 <script lang="ts">
 import { EventStage, EventStageSignUpAction } from "~/types";
+import btnBlock from "./btn-block.vue";
 export default {
+  components: { btnBlock },
   computed: {
     activeEventStage(): EventStage | null {
       return this.$store.getters.activeEventStage;
