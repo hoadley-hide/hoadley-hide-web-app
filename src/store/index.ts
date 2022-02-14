@@ -162,12 +162,12 @@ export const getters: GetterTree<RootState, RootState> = {
       })
       .sort((a, b) => {
         if (!a.scanned && b.scanned) {
-          // A not scanned, move it up.
-          return 1;
+          // A not scanned, move it closer to the start of the array.
+          return -1;
         }
         if (a.scanned && !b.scanned) {
-          // A scanned, move it down.
-          return -1;
+          // A scanned, move it closer to the end of the array.
+          return 1;
         }
         // Both scanned or not scanned.
         // Reposition by alpha.
