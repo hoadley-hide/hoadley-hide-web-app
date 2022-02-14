@@ -28,15 +28,11 @@
             <v-spacer></v-spacer>
 
             <!-- Pending request indicator -->
-            <v-btn
-              v-show="countOfPendingLogIds > 0"
-              icon
-              small
-              nuxt
-              to="/data"
-              active-class="none"
-            >
-              <v-icon color="red">mdi-cloud-alert</v-icon>
+            <v-btn icon small nuxt to="/data">
+              <v-icon v-if="countOfPendingLogIds > 0" color="red">
+                mdi-cloud-alert
+              </v-icon>
+              <v-icon v-else>mdi-cloud-check</v-icon>
             </v-btn>
           </v-card-text>
         </v-card>
