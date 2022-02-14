@@ -1,5 +1,10 @@
 import type { IncomingMessage, ServerResponse } from "http";
-import { EventStage, EventStageRaw } from "~/types";
+import {
+  EventStage,
+  EventStageDashboardAction,
+  EventStageRaw,
+  EventStageSignUpAction,
+} from "~/types";
 import { EntityType, generateCode, simpleAllGraphQL } from ".";
 
 export default async (_req: IncomingMessage, res: ServerResponse) => {
@@ -11,6 +16,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     startTime
     instructions { html text }
     autoShowAfterStartTime
+    stageActions
   }`;
 
   const returnable = await simpleAllGraphQL<EventStageRaw, EventStage>(
@@ -28,6 +34,27 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       startTime: stage.startTime,
       instructions: stage.instructions,
       autoShowAfterStartTime: stage.autoShowAfterStartTime,
+      stageActions: {
+        dashboardActions:
+          stage.stageActions?.dashboardActions?.map(
+            (action): EventStageDashboardAction => ({
+              title: action.title ?? "",
+              subtitle: action.subtitle ?? "",
+              icon: action.icon ?? "",
+              to: String(action.to ?? ""),
+              href: String(action.href ?? ""),
+            })
+          ) ?? [],
+        signUpActions:
+          stage.stageActions?.signUpActions?.map(
+            (action): EventStageSignUpAction => ({
+              title: action.title ?? "",
+              subtitle: action.subtitle ?? "",
+              colour: action.colour ?? "",
+              to: String(action.to ?? ""),
+            })
+          ) ?? [],
+      },
     })
   );
 

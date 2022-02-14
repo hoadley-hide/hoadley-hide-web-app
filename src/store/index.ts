@@ -98,6 +98,21 @@ export const getters: GetterTree<RootState, RootState> = {
 
     return entity ?? null;
   },
+  activeEventStage: (state, getters) => {
+    const activeStages = state.eventStages
+      .filter((stage: EventStage) => {
+        const stageAlwaysShown =
+          stage.autoShowAfterStartTime &&
+          Date.parse(stage.startTime) < Date.now();
+
+        const codeScanned = getters.hasCodeBeenScanned(stage.code);
+        return codeScanned || stageAlwaysShown;
+      })
+      .sort((a: EventStage, b: EventStage) => {
+        return Date.parse(a.startTime) - Date.parse(b.startTime);
+      });
+    return activeStages[activeStages.length - 1];
+  },
   // QR Codes
   compiledCodes: (state) => {
     const compiledCodes: Entity[] = [

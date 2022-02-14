@@ -11,6 +11,27 @@ export interface EventStage {
   startTime: string;
   instructions: RichText[];
   autoShowAfterStartTime: boolean;
+  stageActions: EventStageActions;
+}
+
+export interface EventStageActions {
+  signUpActions: EventStageSignUpAction[];
+  dashboardActions: EventStageDashboardAction[];
+}
+
+export interface EventStageSignUpAction {
+  title: string;
+  subtitle: string;
+  colour: string;
+  to: string;
+}
+
+export interface EventStageDashboardAction {
+  title: string;
+  subtitle: string;
+  icon: string;
+  to?: string;
+  href?: string;
 }
 
 export interface EventStageRaw {
@@ -21,4 +42,5 @@ export interface EventStageRaw {
   startTime: string;
   instructions: RichText[];
   autoShowAfterStartTime: boolean;
+  stageActions?: Partial<EventStageActions>;
 }

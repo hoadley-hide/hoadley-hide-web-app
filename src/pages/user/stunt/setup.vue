@@ -80,9 +80,8 @@ export default {
   mounted() {
     setBreadcrumbs(this.$store, [
       { to: "/", label: "Home" },
-      { to: "/user", label: "User" },
-      { to: "/user/stunt", label: "Stunt" },
-      { to: null, label: "Setup" },
+      { to: null, label: "User" },
+      { to: null, label: "Stunt Setup" },
     ]);
   },
   watch: {

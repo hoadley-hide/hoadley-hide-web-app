@@ -91,9 +91,8 @@ export default {
   mounted() {
     setBreadcrumbs(this.$store, [
       { to: "/", label: "Home" },
-      { to: "/user", label: "User" },
-      { to: "/user/patrol", label: "Patrol" },
-      { to: null, label: "Setup" },
+      { to: null, label: "User" },
+      { to: null, label: "Patrol Setup" },
     ]);
   },
   watch: {

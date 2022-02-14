@@ -25,18 +25,16 @@
         <v-stepper-items>
           <!-- Step 1 -->
           <setup-step-start
-            entity="admin"
+            entity="Anything Goes User"
             :available-steps="availableSteps"
             @next-step="nextStep(1)"
           ></setup-step-start>
 
           <!-- Step 2 -->
-          <setup-step-scan-qr-code
-            entity="admin"
-            :step-active="currentStep === 2"
+          <setup-step-monstemon-go
             @next-step="nextStep(2)"
-            @admin-data="handleAdmin"
-          ></setup-step-scan-qr-code>
+            @monstemon-go-player-data="handleMonstemonGoPlayer"
+          ></setup-step-monstemon-go>
         </v-stepper-items>
       </v-stepper>
     </v-col>
@@ -55,12 +53,12 @@ export default {
         {
           icon: "mdi-check",
           title: "Start",
-          label: "Welcome to Hoadley Hide",
+          label: "Welcome to Anything Goes",
         },
         {
-          icon: "mdi-qrcode",
-          title: "Scan QR Code",
-          label: "Scan your admin's QR Code",
+          icon: "mdi-ghost",
+          title: "Find Monsters",
+          label: "Scan the QR Code of monsters to identify them",
         },
       ],
       adminId: null,
@@ -70,7 +68,7 @@ export default {
     setBreadcrumbs(this.$store, [
       { to: "/", label: "Home" },
       { to: null, label: "User" },
-      { to: null, label: "Admin Setup" },
+      { to: null, label: "Anything Goes Setup" },
     ]);
   },
   watch: {
@@ -96,7 +94,7 @@ export default {
         this.currentStep = index + 1;
       }
     },
-    async handleAdmin(adminData: Admin) {
+    async handleMonstemonGoPlayer(adminData: Admin) {
       this.adminId = adminData.code;
       this.$store.dispatch("persistUser", { adminId: this.adminId });
     },

@@ -25,19 +25,19 @@
       <v-card-text>
         <v-list>
           <v-list-item
-            v-for="item in links"
-            :key="item.title"
+            v-for="action in dashboardActions"
+            :key="action.title"
             link
             nuxt
-            :to="item.to"
+            :to="action.to"
           >
             <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
+              <v-icon v-if="action.icon">{{ action.icon }}</v-icon>
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-              <v-list-item-subtitle>{{ item.subtitle }}</v-list-item-subtitle>
+              <v-list-item-title>{{ action.title }}</v-list-item-title>
+              <v-list-item-subtitle>{{ action.subtitle }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -48,58 +48,15 @@
 
 <script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { EventStage } from "~/types";
+import { EventStage, EventStageDashboardAction } from "~/types";
 
 export default {
-  data() {
-    return {
-      drawer: false,
-      links: [
-        {
-          title: "Monsters At AG",
-          subtitle: "See the monsters you have identified",
-          icon: "mdi-ghost",
-          to: "/monstemon-go",
-        },
-        {
-          title: "Stunts",
-          subtitle: "See the stunts you've visited",
-          icon: "mdi-map-clock",
-          to: "/stunts",
-        },
-        {
-          title: "The Adventure",
-          subtitle: "What comes next?",
-          icon: "mdi-shield-sword",
-          to: "/event",
-        },
-        {
-          title: "First Aid",
-          subtitle: "My feet are hurting...",
-          icon: "mdi-medical-bag",
-          to: "/first-aid",
-        },
-        { title: "Wiki", icon: "mdi-information", to: "/wiki" },
-      ],
-    };
-  },
   computed: {
     activeEventStage(): EventStage | null {
-      const activeStages = this.$store.state.eventStages
-        .filter((stage: EventStage) => {
-          const stageAlwaysShown =
-            stage.autoShowAfterStartTime &&
-            Date.parse(stage.startTime) < Date.now();
-
-          const codeScanned = this.$store.getters.hasCodeBeenScanned(
-            stage.code
-          );
-          return codeScanned || stageAlwaysShown;
-        })
-        .sort((a: EventStage, b: EventStage) => {
-          return Date.parse(a.startTime) - Date.parse(b.startTime);
-        });
-      return activeStages[activeStages.length - 1];
+      return this.$store.getters.activeEventStage;
+    },
+    dashboardActions(): EventStageDashboardAction[] {
+      return this.activeEventStage?.stageActions?.dashboardActions ?? [];
     },
   },
   mounted() {
