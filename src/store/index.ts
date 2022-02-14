@@ -9,8 +9,12 @@ import {
   EventLogAugmented,
   EventStage,
   GraphQL,
-  MonstemonGo,
+  MonsterHuntMonster,
+  MonsterHuntMonsterIssued,
+  MonsterHuntMonsterIssuedStored,
+  MonsterHuntPlayer,
   Patrol,
+  QrCodeableEntity,
   ReviewQuestion,
   ScannedCode,
   Stunt,
@@ -24,13 +28,14 @@ export const state = () => ({
   // Entities
   admins: [] as EventStage[],
   eventStages: [] as EventStage[],
-  monstemonGos: [] as EventStage[],
+  monsterHuntMonsters: [] as MonsterHuntMonster[],
   patrols: [] as Patrol[],
   reviewQuestions: [] as ReviewQuestion[],
   stunts: [] as Stunt[],
   wikiArticles: [] as WikiArticle[],
   // Other Stuff
-  scannedCodes: [] as Entity[],
+  scannedCodes: [] as QrCodeableEntity[],
+  monsterHuntCluesIssued: [] as MonsterHuntMonsterIssuedStored[],
   monsterAcronyms: [
     "Military Operational New Soldiers Trapped till Everybody Runs",
     "Many Oodles of Nutty Stories Threatening Earth's Reality",
@@ -61,30 +66,28 @@ export const getters: GetterTree<RootState, RootState> = {
     },
   // Content getters
   admin: (state) => (slugOrId) =>
-    state.admins.find(
-      (admin) => admin.slug === slugOrId || admin.code === slugOrId
+    state.admins.find((admin) =>
+      [admin.id, admin.slug, admin.code].includes(slugOrId)
     ),
   eventStage: (state) => (slugOrId) =>
-    state.eventStages.find(
-      (stage) => stage.slug === slugOrId || stage.code === slugOrId
+    state.eventStages.find((stage) =>
+      [stage.id, stage.slug, stage.code].includes(slugOrId)
     ),
-  monstemonGo: (state) => (slugOrId) =>
-    state.monstemonGos.find(
-      (monstemonGo) =>
-        monstemonGo.slug === slugOrId || monstemonGo.code === slugOrId
+  monsterHuntMonster: (state) => (slugOrId) =>
+    state.monsterHuntMonsters.find((monster) =>
+      [monster.id, monster.slug, monster.code].includes(slugOrId)
     ),
   patrol: (state) => (slugOrId) =>
-    state.patrols.find(
-      (patrol) => patrol.slug === slugOrId || patrol.code === slugOrId
+    state.patrols.find((patrol) =>
+      [patrol.id, patrol.slug, patrol.code].includes(slugOrId)
     ),
   stunt: (state) => (slugOrId) =>
-    state.stunts.find(
-      (stunt) => stunt.slug === slugOrId || stunt.code === slugOrId
+    state.stunts.find((stunt) =>
+      [stunt.id, stunt.slug, stunt.code].includes(slugOrId)
     ),
   wikiArticle: (state) => (slugOrId) =>
-    state.wikiArticles.find(
-      (wikiArticle) =>
-        wikiArticle.slug === slugOrId || wikiArticle.code === slugOrId
+    state.wikiArticles.find((wikiArticle) =>
+      [wikiArticle.id, wikiArticle.slug, wikiArticle.code].includes(slugOrId)
     ),
   // User getters
   user: (state, getters): AppUserEntity | null => {
@@ -92,11 +95,7 @@ export const getters: GetterTree<RootState, RootState> = {
       return null;
     }
 
-    const entity: AppUserEntity = getters.compiledCodes.find(
-      (entity: AppUserEntity) => entity.code === state.user?.code
-    );
-
-    return entity ?? null;
+    return state.user ?? null;
   },
   activeEventStage: (state, getters) => {
     const activeStages = state.eventStages
@@ -113,12 +112,75 @@ export const getters: GetterTree<RootState, RootState> = {
       });
     return activeStages[activeStages.length - 1];
   },
+  remainingMonsters: (state, getters) => {
+    const remainingMonsters = state.monsterHuntMonsters.filter(
+      (monster: MonsterHuntMonster) => {
+        const codeScanned = getters.hasCodeBeenScanned(monster.code);
+        return !codeScanned;
+      }
+    );
+    return remainingMonsters;
+  },
+  remainingClues: (state, getters) => {
+    const remainingMonstersClues = state.monsterHuntMonsters.filter(
+      (monster: MonsterHuntMonster) => {
+        const beenRevealed = getters.monsterHuntClueRevealed(monster);
+        return !beenRevealed;
+      }
+    );
+    return remainingMonstersClues;
+  },
+  monsterHuntCanGiveClue:
+    (state) =>
+    (monster: MonsterHuntMonster): boolean => {
+      if (!monster) {
+        return false;
+      }
+
+      const hasGivenAClue = state.monsterHuntCluesIssued.find(
+        (issued) => issued.by?.id === monster.id
+      );
+
+      return !hasGivenAClue;
+    },
+  monsterHuntClueRevealed:
+    (state) =>
+    (monster: MonsterHuntMonster): boolean => {
+      const hasClueRevealed = state.monsterHuntCluesIssued.find(
+        (issued) => issued.for.id === monster.id
+      );
+      return !!hasClueRevealed;
+    },
+  monsterHuntCluesIssued: (state, getters): MonsterHuntMonsterIssued[] => {
+    const issuedClues = state.monsterHuntCluesIssued
+      .map((issued) => {
+        const monster = getters.monsterHuntMonster(issued.for.id);
+        return {
+          monster: monster,
+          scanned: getters.hasCodeBeenScanned(monster.code),
+        };
+      })
+      .sort((a, b) => {
+        if (!a.scanned && b.scanned) {
+          // A not scanned, move it up.
+          return 1;
+        }
+        if (a.scanned && !b.scanned) {
+          // A scanned, move it down.
+          return -1;
+        }
+        // Both scanned or not scanned.
+        // Reposition by alpha.
+        return a.monster.name.localeCompare(b.monster.name);
+      });
+    return issuedClues;
+  },
   // QR Codes
   compiledCodes: (state) => {
     const compiledCodes: Entity[] = [
       ...state.admins,
       ...state.eventStages,
-      ...state.monstemonGos,
+      ...state.monsterHuntMonsters,
       ...state.patrols,
       ...state.stunts,
       ...state.wikiArticles,
@@ -126,19 +188,29 @@ export const getters: GetterTree<RootState, RootState> = {
 
     return compiledCodes;
   },
-  findById:
+  findById: (_state, getters) => getters.findByIdOrCode,
+  findByIdOrCode:
     (state) =>
-    (id: string): Entity | null => {
+    (idOrCode: string): Entity | null => {
+      if (!idOrCode) {
+        return null;
+      }
       const compiledCodes: Entity[] = [
         ...state.admins,
         ...state.eventStages,
-        ...state.monstemonGos,
+        ...state.monsterHuntMonsters,
         ...state.patrols,
         ...state.stunts,
         ...state.wikiArticles,
       ];
 
-      return compiledCodes.find((entity) => entity.id === id) ?? null;
+      const entity = compiledCodes.find(
+        (entity) =>
+          entity.id === idOrCode ||
+          ("code" in entity && entity.code === idOrCode.toUpperCase())
+      );
+
+      return entity ?? null;
     },
   stuntReviewCompleted:
     (state, getters) =>
@@ -225,11 +297,15 @@ export const mutations: MutationTree<RootState> = {
   },
   clearScannedCodes: (state) => {
     Vue.set(state, "scannedCodes", []);
+    Vue.set(state, "monsterHuntCluesIssued", []);
   },
   resetApp: (state) => {
     Vue.set(state, "user", null);
     Vue.set(state, "scannedCodes", []);
     Vue.set(state, "hasPermissionWarningBeenRead", false);
+    Vue.set(state, "eventLogs", []);
+    Vue.set(state, "pendingLogIds", []);
+    Vue.set(state, "monsterHuntCluesIssued", []);
   },
   // Entities
   setAdmins: (state, admins) => {
@@ -238,8 +314,8 @@ export const mutations: MutationTree<RootState> = {
   setEventStages: (state, eventStages) => {
     Vue.set(state, "eventStages", eventStages);
   },
-  setMonstemonGos: (state, monstemonGos) => {
-    Vue.set(state, "monstemonGos", monstemonGos);
+  setMonsterHuntMonsters: (state, monsterHuntMonsters) => {
+    Vue.set(state, "monsterHuntMonsters", monsterHuntMonsters);
   },
   setPatrols: (state, patrols) => {
     Vue.set(state, "patrols", patrols);
@@ -256,6 +332,13 @@ export const mutations: MutationTree<RootState> = {
   // User
   persistUser: (state, entity: AppUserEntity) => {
     Vue.set(state, "user", entity);
+  },
+  collectClue: (state, clue: MonsterHuntMonsterIssuedStored) => {
+    Vue.set(
+      state.monsterHuntCluesIssued,
+      state.monsterHuntCluesIssued.length,
+      clue
+    );
   },
   addEventLogRequest: (state, logData: EventLog) => {
     // Record dedup id as pending.
@@ -318,9 +401,9 @@ export const actions: ActionTree<RootState, RootState> = {
       mutation: "setEventStages",
     });
     await dispatch("initialiseEntity", {
-      path: "/api/monstemon-go",
-      dataKey: "monstemonGos",
-      mutation: "setMonstemonGos",
+      path: "/api/monster-hunt-monsters",
+      dataKey: "monsterHuntMonsters",
+      mutation: "setMonsterHuntMonsters",
     });
     await dispatch("initialiseEntity", {
       path: "/api/patrols",
@@ -346,7 +429,7 @@ export const actions: ActionTree<RootState, RootState> = {
   async initialiseEntity({ commit }, { path, dataKey, mutation }) {
     type ResultType = GraphQL<
       string,
-      Stunt | EventStage | Patrol | WikiArticle | MonstemonGo
+      Stunt | EventStage | Patrol | WikiArticle | MonsterHuntMonster
     >;
 
     try {
@@ -387,10 +470,16 @@ export const actions: ActionTree<RootState, RootState> = {
 
   async persistUser(
     { commit, getters },
-    opts: { adminId: string } | { patrolId: string } | { stuntId: string }
+    opts:
+      | { adminId: string }
+      | MonsterHuntPlayer
+      | { patrolId: string }
+      | { stuntId: string }
   ) {
     if ("adminId" in opts) {
       commit("persistUser", getters.admin(opts.adminId));
+    } else if ("_type" in opts && opts._type === "monsterHuntPlayer") {
+      commit("persistUser", opts);
     } else if ("patrolId" in opts) {
       commit("persistUser", getters.patrol(opts.patrolId));
     } else if ("stuntId" in opts) {
@@ -416,5 +505,27 @@ export const actions: ActionTree<RootState, RootState> = {
     }
 
     return { deduplicationId: logData.deduplicationId };
+  },
+  async collectClue({ commit, getters }, byMonster: MonsterHuntMonster) {
+    const forMonster =
+      getters.remainingMonsters[
+        (getters.remainingMonsters.length * Math.random()) | 0
+      ];
+
+    const clue: MonsterHuntMonsterIssuedStored = {
+      by: byMonster,
+      for: forMonster,
+    };
+    commit("collectClue", clue);
+
+    if (getters.monsterHuntClueRevealed(byMonster)) {
+      // This monster's clue has not been given previously,
+      // but the monster was found. Show the clue anyway.
+      const clue: MonsterHuntMonsterIssuedStored = {
+        by: null,
+        for: byMonster,
+      };
+      commit("collectClue", clue);
+    }
   },
 };

@@ -128,7 +128,7 @@ export default {
         {
           title: "Monsters At AG",
           icon: "mdi-ghost",
-          to: "/monstemon-go",
+          to: "/monster-hunt",
         },
         { title: "Scan QR Code", icon: "mdi-qrcode", to: "/scan" },
         { title: "Data & Activity", icon: "mdi-refresh", to: "/data" },

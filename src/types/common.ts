@@ -1,4 +1,12 @@
-import { Admin, EventStage, MonstemonGo, Patrol, Stunt, WikiArticle } from ".";
+import {
+  Admin,
+  EventStage,
+  MonsterHuntMonster,
+  MonsterHuntPlayer,
+  Patrol,
+  Stunt,
+  WikiArticle,
+} from ".";
 
 export interface RichText {
   html: string;
@@ -18,15 +26,23 @@ export interface ScannedCode {
 export type Entity =
   | Admin
   | EventStage
-  | MonstemonGo
+  | MonsterHuntMonster
+  | MonsterHuntPlayer
   | Patrol
   | Stunt
   | WikiArticle;
-export type AppUserEntity = Admin | Patrol | Stunt;
+export type AppUserEntity = Admin | MonsterHuntPlayer | Patrol | Stunt;
+export type QrCodeableEntity =
+  | Admin
+  | EventStage
+  | MonsterHuntMonster
+  | Patrol
+  | Stunt;
 export type PermissionScope =
+  | "app:seePrintingList"
   | "authenticated"
-  | "monstermonGo:canShare"
-  | "monstermonGo:seeAll"
+  | "monsterHunt:canShare"
+  | "monsterHunt:seeAll"
   | "eventStage:seeAll"
   | "patrol:canScore"
   | "patrol:seeAll"

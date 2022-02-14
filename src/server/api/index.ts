@@ -1,6 +1,6 @@
 import { RuntimeConfig } from "@/nuxt.config";
 import type { IncomingMessage, ServerResponse } from "http";
-import { GraphQL } from "~/types";
+import { GraphQL, RichText } from "~/types";
 const baseUrl = process.env.CMS_URL || console.error("missing CMS_URL") || "";
 const apikey = process.env.CMS_KEY || console.error("missing CMS_KEY") || "";
 
@@ -23,7 +23,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
 export const EntityType = {
   Admin: { prefix: "A", length: 5 },
   EventStage: { prefix: "E", length: 5 },
-  MonstemonGo: { prefix: "M", length: 5 },
+  MonsterHuntMonster: { prefix: "M", length: 5 },
   Patrol: { prefix: "P", length: 5 },
   Stunt: { prefix: "S", length: 5 },
   WikiArticle: { prefix: "W", length: 5 },
@@ -47,6 +47,13 @@ export function makeError(
   return {
     errors: messages.map((message) => ({ message: message })),
     extensions,
+  };
+}
+
+export function safeRichText(richText: RichText | null): RichText {
+  return {
+    html: richText?.html ?? "",
+    text: richText?.text ?? "",
   };
 }
 

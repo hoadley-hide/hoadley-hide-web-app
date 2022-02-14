@@ -14,7 +14,7 @@ import uuid4 from "uuid4";
 const entityTypeMapping = {
   patrol: "Patrol",
   stunt: "Stunt",
-  monstemonGo: "MonstemonGo",
+  monsterHuntMonster: "MonsterHuntMonster",
 };
 
 export default async (req: IncomingMessage, res: ServerResponse) => {

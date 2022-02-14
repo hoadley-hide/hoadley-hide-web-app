@@ -25,16 +25,16 @@
         <v-stepper-items>
           <!-- Step 1 -->
           <setup-step-start
-            entity="Anything Goes User"
+            entity="Anything Goes Player"
             :available-steps="availableSteps"
             @next-step="nextStep(1)"
           ></setup-step-start>
 
           <!-- Step 2 -->
-          <setup-step-monstemon-go
+          <setup-step-monster-hunt
             @next-step="nextStep(2)"
-            @monstemon-go-player-data="handleMonstemonGoPlayer"
-          ></setup-step-monstemon-go>
+            @monster-hunt-player-data="handleMonsterHuntPlayer"
+          ></setup-step-monster-hunt>
         </v-stepper-items>
       </v-stepper>
     </v-col>
@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { Admin } from "~/types/index";
+import { MonsterHuntPlayer } from "~/types/index";
 
 export default {
   data() {
@@ -57,11 +57,10 @@ export default {
         },
         {
           icon: "mdi-ghost",
-          title: "Find Monsters",
-          label: "Scan the QR Code of monsters to identify them",
+          title: "Enter your Details",
+          label: "Ready to find some monsters?",
         },
       ],
-      adminId: null,
     };
   },
   mounted() {
@@ -78,14 +77,6 @@ export default {
       }
     },
   },
-  computed: {
-    admin() {
-      if (!this.adminId) {
-        return null;
-      }
-      return this.$store.getters.admin(this.adminId);
-    },
-  },
   methods: {
     nextStep(index) {
       if (index === this.availableSteps.length) {
@@ -94,9 +85,8 @@ export default {
         this.currentStep = index + 1;
       }
     },
-    async handleMonstemonGoPlayer(adminData: Admin) {
-      this.adminId = adminData.code;
-      this.$store.dispatch("persistUser", { adminId: this.adminId });
+    async handleMonsterHuntPlayer(playerData: MonsterHuntPlayer) {
+      this.$store.dispatch("persistUser", playerData);
     },
   },
 };

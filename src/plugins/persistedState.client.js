@@ -9,6 +9,7 @@ export default ({ store }) => {
       "hasPermissionWarningBeenRead",
       "eventLogs",
       "pendingLogIds",
+      "monsterHuntCluesIssued",
     ],
   })(store);
 };

@@ -30,6 +30,8 @@ export default {
           return this.$router.push(validEntity.path);
         case "stunt":
           return this.$router.push(validEntity.path);
+        case "monsterHuntMonster":
+          return this.$router.push(validEntity.path);
         case "patrol":
           return this.$router.push(validEntity.path);
       }
