@@ -131,7 +131,7 @@ export default {
           to: "/monster-hunt",
         },
         { title: "Scan QR Code", icon: "mdi-qrcode", to: "/scan" },
-        { title: "Data & Activity", icon: "mdi-refresh", to: "/data" },
+        { title: "Data & Activity", icon: "mdi-refresh", to: "/app" },
         {
           title: "Upload Photos",
           icon: "mdi-image-plus",

@@ -3,62 +3,6 @@
     <btn-block :btnBlocks="btnBlocks"></btn-block>
 
     <v-row>
-      <!-- <v-col cols="12" sm="6">
-        <client-only>
-          <template v-slot:placeholder>
-            <v-card>
-              <v-card-title class="text-h3">Scanned Codes</v-card-title>
-              <v-skeleton-loader
-                type="list-item-three-line@2"
-              ></v-skeleton-loader>
-            </v-card>
-          </template>
-          <v-card>
-            <v-card-title class="text-h3">Scanned Codes</v-card-title>
-
-            <v-card-text>
-              <v-list>
-                <v-list-item
-                  v-for="scannedCode in scannedCodes"
-                  v-bind:key="scannedCode.key"
-                >
-                  <v-list-item-content>
-                    <div class="d-flex justify-space-between align-center">
-                      <div>
-                        <div class="body-1">
-                          {{ scannedCode.entity.name }}
-                        </div>
-                        <div>
-                          <span class="text--secondary">Type:</span>
-                          <code>{{
-                            scannedCode.entity._type | capitalize
-                          }}</code>
-                        </div>
-                        <div>
-                          <span class="text--secondary">Time:</span>
-                          <code>{{ scannedCode.time | datetime }}</code>
-                        </div>
-                      </div>
-                      <v-chip>
-                        {{ scannedCode.ago }}
-                      </v-chip>
-                    </div>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item v-if="scannedCodes.length === 0">
-                  <i>No codes scanned</i>
-                </v-list-item>
-              </v-list>
-            </v-card-text>
-
-            <v-card-text v-if="scannedCodes.length !== 0">
-              <v-btn color="info" block text @click="clearScannedCodes">
-                Clear scanned codes
-              </v-btn>
-            </v-card-text>
-          </v-card>
-        </client-only>
-      </v-col> -->
       <v-col cols="12">
         <v-card>
           <v-card-title class="text-h3">Danger Area</v-card-title>
@@ -153,7 +97,7 @@ export default {
           subtitle: `${
             this.pendingIds ? this.pendingIds : "No"
           } requests pending`,
-          to: "/data/pending",
+          to: "/app/pending",
           colour: this.pendingIds === 0 ? "success" : "error",
         },
         {
@@ -169,16 +113,16 @@ export default {
           subtitle: `${
             this.scannedCodes ? this.scannedCodes : "No"
           } codes scanned`,
-          to: "/data/scanned",
+          to: "/app/scanned",
           colour: "black",
         },
       ];
 
       if (authorised(this.$store, ["app:seePrintingList"])) {
         blocks.push({
-          title: "Pinting list",
+          title: "Printing list",
           subtitle: "",
-          to: "/data/printing",
+          to: "/app/printing",
           colour: "blue",
         });
       }
@@ -190,17 +134,6 @@ export default {
     },
     scannedCodes() {
       return this.$store.getters.scannedCodes.length;
-    },
-    scannedCodes2(): ScannedCode {
-      return this.$store.getters.scannedCodes
-        .map((code) => ({
-          key: code.time,
-          time: new Date(code.time),
-          ago: this.$options.filters?.duration(new Date(code.time)),
-          entity: this.$store.getters.findById(code.code),
-        }))
-        .filter((x) => x.entity)
-        .reverse();
     },
   },
   mounted() {

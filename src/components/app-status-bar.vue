@@ -28,7 +28,7 @@
             <v-spacer></v-spacer>
 
             <!-- Pending request indicator -->
-            <v-btn icon small nuxt to="/data">
+            <v-btn icon small nuxt to="/app/pending">
               <v-icon v-if="countOfPendingLogIds > 0" color="red">
                 mdi-cloud-alert
               </v-icon>
