@@ -22,7 +22,11 @@
                     </v-icon>
                   </v-list-item-icon>
                   <v-list-item-title class="py-2">
-                    {{ issuedMonster.monster.name }}
+                    {{
+                      issuedMonster.scanned
+                        ? issuedMonster.monster.name
+                        : "...Unknown Monster"
+                    }}
                   </v-list-item-title>
                 </template>
                 <v-list-item

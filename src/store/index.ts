@@ -519,7 +519,7 @@ export const actions: ActionTree<RootState, RootState> = {
     };
     commit("collectClue", clue);
 
-    if (getters.monsterHuntClueRevealed(byMonster)) {
+    if (!getters.monsterHuntClueRevealed(byMonster)) {
       // This monster's clue has not been given previously,
       // but the monster was found. Show the clue anyway.
       const clue: MonsterHuntMonsterIssuedStored = {
