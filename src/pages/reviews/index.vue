@@ -121,10 +121,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.tab-title-left-align {
-  width: 100%;
-  text-align: left;
-}
-</style>
