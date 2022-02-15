@@ -3,6 +3,7 @@
     <lazy>
       <client-only>
         <vue-qr
+          :qid="codeEntity.code"
           :correctLevel="3"
           :text="qrCodeData"
           :size="500"
@@ -10,6 +11,7 @@
           :logoSrc="`/hh-qr-code-logo-192x192.png`"
           :logoScale="0.3"
           :logoCornerRadius="0"
+          :callback="renderComplete"
           class="qr-code-image"
           ref="qr-code"
         ></vue-qr>
@@ -26,10 +28,10 @@
           Print QR Code
         </v-btn>
 
-        <div v-if="codeEntity" ref="printarea" class="printarea d-none">
+        <div v-if="codeEntity" ref="printarea" class="d-none">
           <h1>Hoadley Hide 2022</h1>
           <h2>Monster Hunters</h2>
-          <div><img :src="cachedQrCodeDataString" alt="QR Code" /></div>
+          <div><img :src="imageDataUri" alt="QR Code" /></div>
           <pre>{{ codeEntity.code }}</pre>
           <h3>{{ codeEntity.name }}</h3>
           <p>
@@ -56,7 +58,7 @@ export default {
   data() {
     return {
       d: null as Printd | null,
-      cachedQrCodeDataString: "",
+      imageDataUri: "",
       printerLoading: false,
       cssText: `
         * {
@@ -95,11 +97,7 @@ export default {
       `,
     };
   },
-  mounted() {
-    if (this.$Printd) {
-      this.d = new this.$Printd();
-    }
-  },
+  mounted() {},
   computed: {
     qrCodeData() {
       if (this.url) {
@@ -117,17 +115,25 @@ export default {
   methods: {
     printQrCode() {
       this.printerLoading = true;
-      const codeEl = this.$refs["qr-code"]?.$el;
-      this.cachedQrCodeDataString = codeEl?.src;
+
       const printerEl = this.$refs["printarea"];
 
-      if (!this.d || !codeEl || !printerEl) {
+      if (!this.$Printd || !printerEl) {
         return;
       }
+
+      const printer = new this.$Printd();
       setTimeout(() => {
-        this.d?.print(printerEl, [this.cssText]);
+        printer?.print(printerEl, [this.cssText]);
         this.printerLoading = false;
       }, 1000);
+    },
+    renderComplete(dataUri, qid) {
+      this.imageDataUri = dataUri;
+      this.$emit("image-data", {
+        dataUri: dataUri,
+        entityCode: qid,
+      });
     },
   },
 };
