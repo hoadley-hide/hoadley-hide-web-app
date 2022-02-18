@@ -7,6 +7,13 @@
         <v-card-text>Patrol Number: #{{ patrol.patrolNumber }}</v-card-text>
       </v-card>
     </v-col>
+    <authorised :allow="['patrol:canCheckIn']">
+      <v-col cols="12" sm="6">
+        <v-btn block nuxt :to="`${patrol.path}/checkin`">
+          Check in Patrol
+        </v-btn>
+      </v-col>
+    </authorised>
     <authorised :allow="['authenticated']">
       <template v-slot:default="{ activeUser }">
         <v-col cols="12" sm="6" v-if="patrol.code === activeUser.code">

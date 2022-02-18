@@ -28,6 +28,7 @@ export function authorised(
     userScopes.push("stunt:canShare");
     userScopes.push("stunt:seeAll");
     userScopes.push("review:seeReferencingSelf");
+    userScopes.push("patrol:canCheckIn");
   }
 
   const normaliseScopes = userScopes.flatMap((userScope) => {

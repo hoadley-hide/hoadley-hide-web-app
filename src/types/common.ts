@@ -51,6 +51,7 @@ export type PermissionScope =
   | "monsterHunt:canShare"
   | "monsterHunt:seeAll"
   | "eventStage:seeAll"
+  | "patrol:canCheckIn"
   | "patrol:canScore"
   | "patrol:seeAll"
   | "stunt:canReview"
