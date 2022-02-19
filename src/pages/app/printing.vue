@@ -36,7 +36,7 @@
           <div ref="printarea" class="d-none">
             <div
               v-for="item in imageDataList"
-              :key="item.code"
+              :key="item.id"
               class="small-qr-code"
             >
               <h1>Hoadley Hide 2022</h1>
@@ -182,19 +182,20 @@ export default {
     },
     imageDataList() {
       interface ImageData {
+        id: string;
         code: string;
         image?: string;
         name: string;
       }
       const printableData = this.codeEntities.flatMap((entity): ImageData[] => {
-        const imageData: ImageData = {
-          code: entity.code,
-          image: this.entityImageData[entity.code],
-          name: entity.name,
-        };
-
         const arrayOfPrintable: ImageData[] = [];
         for (let i = 0; i < this.printableQuantity; i++) {
+          const imageData: ImageData = {
+            id: `${entity.code}-${i}`,
+            code: entity.code,
+            image: this.entityImageData[entity.code],
+            name: entity.name,
+          };
           arrayOfPrintable.push(imageData);
         }
 
