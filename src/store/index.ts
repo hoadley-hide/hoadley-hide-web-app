@@ -15,7 +15,7 @@ import {
   MonsterHuntPlayer,
   Patrol,
   QrCodeableEntity,
-  ReviewQuestion,
+  Question,
   ScannedCode,
   Stunt,
   WikiArticle,
@@ -30,7 +30,7 @@ export const state = () => ({
   eventStages: [] as EventStage[],
   monsterHuntMonsters: [] as MonsterHuntMonster[],
   patrols: [] as Patrol[],
-  reviewQuestions: [] as ReviewQuestion[],
+  questions: [] as Question[],
   stunts: [] as Stunt[],
   wikiArticles: [] as WikiArticle[],
   // Other Stuff
@@ -321,8 +321,8 @@ export const mutations: MutationTree<RootState> = {
   setPatrols: (state, patrols) => {
     Vue.set(state, "patrols", patrols);
   },
-  setReviewQuestions: (state, reviewQuestions) => {
-    Vue.set(state, "reviewQuestions", reviewQuestions);
+  setQuestions: (state, questions) => {
+    Vue.set(state, "questions", questions);
   },
   setStunts: (state, stunts) => {
     Vue.set(state, "stunts", stunts);
@@ -412,9 +412,9 @@ export const actions: ActionTree<RootState, RootState> = {
       mutation: "setPatrols",
     });
     await dispatch("initialiseEntity", {
-      path: "/api/review-questions",
-      dataKey: "reviewQuestions",
-      mutation: "setReviewQuestions",
+      path: "/api/questions",
+      dataKey: "questions",
+      mutation: "setQuestions",
     });
     await dispatch("initialiseEntity", {
       path: "/api/stunts",

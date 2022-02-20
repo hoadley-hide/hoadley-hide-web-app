@@ -21,7 +21,7 @@
           <!-- Questions -->
           <v-col
             cols="12"
-            v-for="question in reviewQuestions"
+            v-for="question in questions"
             v-bind:key="question.heading"
           >
             <review-question
@@ -73,8 +73,8 @@ export default {
     stunt() {
       return this.$store.getters.stunt(this.$route.params.slug);
     },
-    reviewQuestions() {
-      return this.$store.state.reviewQuestions;
+    questions() {
+      return this.$store.state.questions;
     },
     activeUser(): AppUserEntity | null {
       return this.$store.getters.user;

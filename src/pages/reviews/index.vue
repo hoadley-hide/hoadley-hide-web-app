@@ -34,7 +34,7 @@
                   </v-list-item-title>
                 </template>
                 <v-list-item
-                  v-for="question in reviewQuestions"
+                  v-for="question in questions"
                   v-bind:key="question.storageKey"
                 >
                   <v-list-item-content>
@@ -83,7 +83,7 @@
 <script lang="ts">
 import { authorised } from "~/common/authorisation";
 import { setBreadcrumbs } from "~/common/helper-factories";
-import { EventLog, ReviewQuestion } from "~/types";
+import { EventLog, Question } from "~/types";
 
 export default {
   data() {
@@ -109,8 +109,8 @@ export default {
 
       return [];
     },
-    reviewQuestions(): ReviewQuestion[] {
-      return this.$store.state.reviewQuestions;
+    questions(): Question[] {
+      return this.$store.state.questions;
     },
   },
   mounted() {

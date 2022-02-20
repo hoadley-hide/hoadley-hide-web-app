@@ -4,6 +4,6 @@ export * from "./entities/eventLog";
 export * from "./entities/eventStage";
 export * from "./entities/monsterHunt";
 export * from "./entities/patrol";
-export * from "./entities/reviewQuestion";
+export * from "./entities/question";
 export * from "./entities/stunt";
 export * from "./entities/wikiArticle";
