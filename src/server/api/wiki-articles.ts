@@ -24,7 +24,16 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       shortName: wikiArticle.shortName,
       slug: wikiArticle.slug,
       path: `/wiki/${wikiArticle.slug}`,
-      content: wikiArticle.content,
+      content: wikiArticle.content.map((content) => {
+        const h = content.html.match(/<h\d>(.+?)<\/h\d>/);
+        const heading = h ? h[1] : content.text.substring(0, 20);
+        return {
+          html: content.html.replace(/<h\d>.+?<\/h\d>/, ""),
+          text: content.text,
+          heading: heading,
+          tab: heading.replace(/[^a-zA-Z0-9-]/g, "-").toLowerCase(),
+        };
+      }),
       tags: wikiArticle.tags,
     })
   );

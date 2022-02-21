@@ -18,13 +18,27 @@
               :key="tagGroup.tagName"
             >
               <v-subheader>{{ tagGroup.tagName }}</v-subheader>
-              <v-list-item
+              <v-list-group
                 v-for="article in tagGroup.articles"
-                :key="article.name"
+                :key="article.slug"
                 :to="`/wiki/${article.slug}`"
               >
-                <span class="tab-title-left-align">{{ article.name }}</span>
-              </v-list-item>
+                <template v-slot:activator>
+                  <v-list-item-title>{{ article.name }}</v-list-item-title>
+                </template>
+                <v-list-item
+                  v-for="content in article.content"
+                  :key="content.text"
+                  :to="`${article.path}?tab=${content.tab}`"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-chevron-right</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title class="text--secondary">
+                    <i> {{ content.heading }} </i>
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list-group>
             </span>
           </v-list>
         </v-card-text>
@@ -72,3 +86,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.v-list-item__icon {
+  margin-right: 0px !important;
+}
+</style>

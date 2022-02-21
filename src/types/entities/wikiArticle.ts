@@ -8,7 +8,7 @@ export interface WikiArticle {
   shortName: string;
   slug: string;
   path: string;
-  content: RichText;
+  content: (RichText & { heading: string; tab: string })[];
   tags: string[];
 }
 
@@ -17,6 +17,6 @@ export interface WikiArticleRaw {
   name: string;
   shortName: string;
   slug: string;
-  content: RichText;
+  content: RichText[];
   tags: string[];
 }
