@@ -87,7 +87,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .v-list-item__icon {
   margin-right: 0px !important;
 }
