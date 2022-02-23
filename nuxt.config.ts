@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     meta: [],
     link: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-      { rel: "preload", as: "image", href: "/hh-qr-code-logo-192x192.png" },
+      { rel: "preload", as: "image", href: "/HH-2022-Logo-Rip-T.png" },
     ],
   },
 

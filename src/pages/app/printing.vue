@@ -87,18 +87,21 @@
 import { setBreadcrumbs } from "~/common/helper-factories";
 import { QrCodeableEntity, CodeEntity } from "~/types";
 
+type EntityType = QrCodeableEntity["_type"] | "setup";
+
 export default {
   data() {
     return {
       printerLoading: false,
-      entityType: "patrol" as QrCodeableEntity["_type"],
+      entityType: "patrol" as EntityType,
       entityTypes: [
         { label: "Admins", value: "admin" },
         { label: "Event Stage", value: "eventStage" },
         { label: "Monster Hunt Monsters", value: "monsterHuntMonster" },
         { label: "Patrols", value: "patrol" },
         { label: "Stunts", value: "stunt" },
-      ] as { label: string; value: QrCodeableEntity["_type"] }[],
+        { label: "Setups", value: "setup" },
+      ] as { label: string; value: EntityType }[],
       printableQuantity: 1,
       entityImageData: {},
       cssText: `
@@ -152,7 +155,7 @@ export default {
       ] as { label: string; value: number }[];
     },
     codeEntities(): CodeEntity[] {
-      let entities: QrCodeableEntity[] = [];
+      let entities: (QrCodeableEntity | CodeEntity)[] = [];
 
       switch (this.entityType) {
         case "admin":
@@ -169,6 +172,30 @@ export default {
           break;
         case "stunt":
           entities = this.$store.state.stunts;
+          break;
+        case "setup":
+          entities = [
+            {
+              code: "PATROL",
+              path: "user/patrol/setup",
+              name: "Setup your Patrol",
+            },
+            {
+              code: "STUNT",
+              path: "user/stunt/setup",
+              name: "Setup your Stunt",
+            },
+            {
+              code: "Anything Goes",
+              path: "user/ag/setup",
+              name: "Setup your Monster Hunt Player",
+            },
+            {
+              code: "ADMIN",
+              path: "user/admin/setup",
+              name: "Setup your Admin user",
+            },
+          ];
           break;
       }
 

@@ -8,7 +8,7 @@
           :text="qrCodeData"
           :size="500"
           :margin="20"
-          :logoSrc="`/hh-qr-code-logo-192x192.png`"
+          :logoSrc="`/HH-2022-Logo-Rip-T.png`"
           :logoScale="0.3"
           :logoCornerRadius="0"
           :callback="renderComplete"
