@@ -9,7 +9,7 @@
           :size="500"
           :margin="20"
           :logoSrc="`/HH-2022-Logo-Rip-T.png`"
-          :logoScale="0.3"
+          :logoScale="qrSize"
           :logoCornerRadius="0"
           :callback="renderComplete"
           class="qr-code-image"
@@ -99,6 +99,33 @@ export default {
   },
   mounted() {},
   computed: {
+    qrSize() {
+      const len = this.qrCodeData.length;
+      if (false) {
+      } else if (0 <= len && len <= 38) {
+        return 0.275;
+      } else if (39 <= len && len <= 57) {
+        return 0.3;
+      } else if (58 <= len && len <= 71) {
+        return 0.32;
+      } else if (72 <= len && len <= 83) {
+        return 0.291;
+      } else if (84 <= len && len <= 105) {
+        return 0.308;
+      } else if (106 <= len && len <= 125) {
+        return 0.323;
+      } else if (126 <= len && len <= 127) {
+        return 0.36;
+      } else if (128 <= len && len <= 148) {
+        return 0.334;
+      } else if (149 <= len && len <= 174) {
+        return 0.312;
+      } else if (175 <= len && len <= 200) {
+        return 0.294;
+      } else {
+        return 0.3;
+      }
+    },
     qrCodeData() {
       if (this.url) {
         return this.url;
