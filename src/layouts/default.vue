@@ -60,7 +60,12 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn to="/emergency" icon nuxt>
+      <v-btn
+        to="/emergency"
+        icon
+        nuxt
+        v-show="authorised(['app:seeEmergencyInfo'])"
+      >
         <v-icon>mdi-phone</v-icon>
       </v-btn>
     </v-app-bar>
@@ -110,7 +115,9 @@
 </template>
 
 <script lang="ts">
+import { authorised } from "~/common/authorisation";
 import { AppUserEntity } from "~/types";
+
 export default {
   data() {
     return {
@@ -219,6 +226,11 @@ export default {
     $route: function () {
       this.monsterAcronymIndex =
         (this.monsterAcronyms.length * Math.random()) | 0;
+    },
+  },
+  methods: {
+    authorised(scopes) {
+      return authorised(this.$store, scopes);
     },
   },
 };

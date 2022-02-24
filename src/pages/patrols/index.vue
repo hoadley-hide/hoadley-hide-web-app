@@ -4,7 +4,7 @@
       <v-card>
         <v-card-title class="text-h2">Patrols</v-card-title>
 
-        <v-card-text>Browse the patrols locations and teams.</v-card-text>
+        <v-card-text>Browse the patrols you have met so far.</v-card-text>
       </v-card>
     </v-col>
     <v-col cols="12">
@@ -18,6 +18,9 @@
             >
               <v-icon left>{{ patrol.icon }}</v-icon>
               <span class="tab-title-left-align">{{ patrol.name }}</span>
+            </v-list-item>
+            <v-list-item v-if="patrols.length === 0">
+              <i>You have not discovered any patrols</i>
             </v-list-item>
           </v-list>
           <v-btn block color="success" to="/scan">Open scanner</v-btn>

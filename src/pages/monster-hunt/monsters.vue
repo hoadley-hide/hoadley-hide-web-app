@@ -13,14 +13,26 @@
           <client-only>
             <v-list>
               <v-list-item
-                v-for="monsterHuntMonster in monsterHuntMonsters"
-                :key="monsterHuntMonster.name"
-                :to="`/monster-hunt/${monsterHuntMonster.slug}`"
+                v-for="data in monsterHuntMonsters"
+                :key="data.monster.name"
+                :to="`/monster-hunt/${data.monster.slug}`"
               >
-                <v-icon left>{{ monsterHuntMonster.icon }}</v-icon>
-                <span class="tab-title-left-align">
-                  {{ monsterHuntMonster.name }}
-                </span>
+                <v-list-item-content>
+                  <div class="d-flex justify-space-between align-center">
+                    <div>
+                      <div class="body-1">
+                        {{ data.monster.name }}
+                      </div>
+                      <div>
+                        <span class="text--secondary">Time:</span>
+                        <code>{{ data.scanned.time | datetime }}</code>
+                      </div>
+                    </div>
+                    <v-chip>
+                      {{ data.scanned.ago }}
+                    </v-chip>
+                  </div>
+                </v-list-item-content>
               </v-list-item>
               <v-list-item v-if="monsterHuntMonsters.length === 0">
                 <i>You have not discovered any Monsters</i>
@@ -29,6 +41,9 @@
           </client-only>
         </v-card-text>
       </v-card>
+    </v-col>
+    <v-col cols="12" sm="6">
+      <v-btn block nuxt to="/monster-hunt"> Back to Monster Hunt </v-btn>
     </v-col>
     <v-col cols="12">
       <v-btn block color="success" to="/scan">Open scanner</v-btn>
@@ -55,10 +70,18 @@ export default {
         return this.$store.state.monsterHuntMonsters;
       }
 
-      return this.$store.state.monsterHuntMonsters.filter(
-        (monsterHuntMonster: MonsterHuntMonster) =>
-          this.$store.getters.hasCodeBeenScanned(monsterHuntMonster.code)
-      );
+      return this.$store.state.monsterHuntMonsters
+        .map((monster: MonsterHuntMonster) => {
+          const scanned = this.$store.getters.hasCodeBeenScanned(monster.code);
+          return {
+            monster: monster,
+            scanned: {
+              time: new Date(scanned.time),
+              ago: this.$options.filters?.duration(new Date(scanned.time)),
+            },
+          };
+        })
+        .filter((monsterHuntMonsterData) => monsterHuntMonsterData.scanned);
     },
   },
   mounted() {

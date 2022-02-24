@@ -21,21 +21,16 @@
           </div>
           <div v-show="setupType === null">
             <v-divider></v-divider>
-            <!-- <btn-block :btnBlocks="signUpActions"></btn-block> -->
-            <v-list>
-              <v-list-item
-                v-for="action in signUpActions"
-                :key="action.to"
-                @click="handleActionClick(action.to)"
-              >
-                {{ action.title }}:
-                {{ action.subtitle }}
-              </v-list-item>
-            </v-list>
+            <v-container>
+              <btn-block
+                :btn-blocks="signUpActions"
+                @click-block="handleActionClick"
+              ></btn-block>
+            </v-container>
           </div>
         </v-card>
       </v-col>
-      <v-col cols="12" v-show="setupType !== null">
+      <v-col cols="12" v-if="setupType !== null">
         <setup-form-admin
           v-if="setupType === 'admin'"
           @complete="(code) => handleComplete('admin', code)"
@@ -104,10 +99,10 @@ export default {
 
       const entity: Entity = await this.$store.dispatch("validateCode", code);
 
-      if (!entity) {
-        return;
+      if (entity) {
+        this.$store.dispatch("recordCodeScan", entity);
+        this.preloadedCode = entity.code;
       }
-      this.preloadedCode = entity.code;
     },
     handleQueryProgress() {
       const progress = this.$route.query.progress ?? null;
@@ -122,10 +117,8 @@ export default {
         this.setupStep = progressSplit[1];
       }
     },
-    handleActionClick(to: string) {
-      const toSplit = to.split("/");
-
-      if (toSplit.length !== 4) {
+    handleActionClick(clickTarget: string) {
+      if (!clickTarget) {
         createAlert(this.$store, {
           heading: `Invalid setup action`,
           message: "Contact HHMT for assistance",
@@ -133,7 +126,7 @@ export default {
         return;
       }
 
-      this.setupType = toSplit[2];
+      this.setupType = clickTarget;
       this.setupStep = 1;
     },
 
@@ -159,6 +152,8 @@ export default {
       const entity: Entity | null = this.$store.getters.findByIdOrCode(
         this.preloadedCode ?? code
       );
+
+      this.clearSetup();
 
       this.$router.push(entity?.path ?? "/");
     },

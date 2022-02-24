@@ -7,6 +7,7 @@
           v-model="name"
           label="What's your name?"
           :rules="[rules.required]"
+          @keyup.enter="handleSubmit"
         ></v-text-field>
       </v-card-text>
     </v-card>

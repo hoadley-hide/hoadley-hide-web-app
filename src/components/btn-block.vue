@@ -10,6 +10,7 @@
         :color="btnBlock.colour"
         class="d-flex flex-column align-center justify-center px-4"
         height="200"
+        @click="handleClick(btnBlock.click)"
         :to="btnBlock.to"
       >
         <div
@@ -34,6 +35,13 @@
 export default {
   props: {
     btnBlocks: Array,
+  },
+  methods: {
+    handleClick(clickTarget) {
+      if (clickTarget) {
+        this.$emit("click-block", clickTarget);
+      }
+    },
   },
 };
 </script>

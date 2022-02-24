@@ -100,14 +100,7 @@ export default {
           to: "/app/pending",
           colour: this.pendingIds === 0 ? "success" : "error",
         },
-        {
-          title: "Reviews",
-          subtitle: authorised(this.$store, ["stunt:canReview"])
-            ? "See the reviews you have made"
-            : "See the reviews made about you",
-          to: "/reviews",
-          colour: "orange",
-        },
+
         {
           title: "QR Codes Scanned",
           subtitle: `${
@@ -117,6 +110,23 @@ export default {
           colour: "black",
         },
       ];
+
+      if (authorised(this.$store, ["stunt:canReview"])) {
+        blocks.push({
+          title: "Reviews",
+          subtitle: "See the reviews you have made",
+          to: "/reviews",
+          colour: "orange",
+        });
+      }
+      if (authorised(this.$store, ["app:seeReviewList"])) {
+        blocks.push({
+          title: "Reviews",
+          subtitle: "See the reviews made about you",
+          to: "/reviews",
+          colour: "orange",
+        });
+      }
 
       if (authorised(this.$store, ["app:seePrintingList"])) {
         blocks.push({

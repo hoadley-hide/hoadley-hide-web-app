@@ -148,7 +148,11 @@ export const getters: GetterTree<RootState, RootState> = {
         (issued) => issued.by?.id === monster.id
       );
 
-      return !hasGivenAClue;
+      if (hasGivenAClue) {
+        return false;
+      }
+
+      return true;
     },
   monsterHuntClueRevealed:
     (state) =>
@@ -516,9 +520,13 @@ export const actions: ActionTree<RootState, RootState> = {
   },
   async collectClue({ commit, getters }, byMonster: MonsterHuntMonster) {
     const forMonster =
-      getters.remainingMonsters[
-        (getters.remainingMonsters.length * Math.random()) | 0
+      getters.remainingClues[
+        (getters.remainingClues.length * Math.random()) | 0
       ];
+
+    if (!forMonster) {
+      return false;
+    }
 
     const clue: MonsterHuntMonsterIssuedStored = {
       by: byMonster,
@@ -535,5 +543,6 @@ export const actions: ActionTree<RootState, RootState> = {
       };
       commit("collectClue", clue);
     }
+    return true;
   },
 };

@@ -24,11 +24,12 @@ export function authorised(
   }
   if (user._type === "stunt") {
     // Default Stunt scopes.
+    userScopes.push("app:seeReviewList");
+    userScopes.push("patrol:canCheckIn");
     userScopes.push("patrol:canScore");
+    userScopes.push("review:seeReferencingSelf");
     userScopes.push("stunt:canShare");
     userScopes.push("stunt:seeAll");
-    userScopes.push("review:seeReferencingSelf");
-    userScopes.push("patrol:canCheckIn");
   }
 
   const normaliseScopes = userScopes.flatMap((userScope) => {

@@ -24,6 +24,7 @@ export interface EventStageSignUpAction {
   subtitle: string;
   colour: string;
   to: string;
+  click: string;
 }
 
 export interface EventStageDashboardAction {

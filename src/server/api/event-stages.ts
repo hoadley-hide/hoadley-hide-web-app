@@ -52,6 +52,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
               subtitle: action.subtitle ?? "",
               colour: action.colour ?? "",
               to: String(action.to ?? ""),
+              click: String(action.click ?? ""),
             })
           ) ?? [],
       },

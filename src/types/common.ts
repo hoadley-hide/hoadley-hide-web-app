@@ -47,6 +47,8 @@ export type QrCodeableEntity =
   | Stunt;
 export type PermissionScope =
   | "app:seePrintingList"
+  | "app:seeReviewList"
+  | "app:seeEmergencyInfo"
   | "authenticated"
   | "monsterHunt:canShare"
   | "monsterHunt:seeAll"

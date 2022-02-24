@@ -9,6 +9,24 @@
         <v-card-text v-html="monsterHuntMonster.description.html"></v-card-text>
       </v-card>
     </v-col>
+    <v-col cols="12" sm="6">
+      <v-card>
+        <v-card-title class="text-h4">Clue for this monster</v-card-title>
+        <v-card-text>
+          This is the clue which was for
+          {{ monsterHuntMonster.name }} and likely lead you here.
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-text
+          v-for="clue in monsterHuntMonster.clues"
+          :key="clue.text"
+          v-html="clue.html"
+        ></v-card-text>
+        <v-card-text v-if="monsterHuntMonster.clues.length === 0">
+          No clues defined. Talk to HHMT
+        </v-card-text>
+      </v-card>
+    </v-col>
     <v-col cols="12" sm="6" v-show="canCollectClue">
       <v-btn block color="warning" @click="collectClue"> Collect Clue </v-btn>
     </v-col>
@@ -68,13 +86,25 @@ export default {
     ]);
   },
   methods: {
-    collectClue() {
-      this.$store.dispatch("collectClue", this.monsterHuntMonster);
-      createAlert(this.$store, {
-        message: "Clue added to your app",
-        type: "success",
-      });
-      this.$router.push("/monster-hunt/clues");
+    async collectClue() {
+      const success = await this.$store.dispatch(
+        "collectClue",
+        this.monsterHuntMonster
+      );
+
+      if (success) {
+        createAlert(this.$store, {
+          message: "Clue added to your app",
+          type: "success",
+        });
+        this.$router.push("/monster-hunt/clues");
+      } else {
+        createAlert(this.$store, {
+          message: "You have already found all the clues",
+          type: "success",
+        });
+        this.$router.push("/monster-hunt");
+      }
     },
   },
 };

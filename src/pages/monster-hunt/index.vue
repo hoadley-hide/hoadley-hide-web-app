@@ -2,10 +2,25 @@
   <div>
     <v-row>
       <v-col cols="12" sm="6">
-        <v-card>
+        <v-card :color="remainingMonsters === 0 ? 'green' : ''">
           <v-card-title class="text-h2">Monster Hunt at AG</v-card-title>
 
-          <v-card-text>Identified Monsters for Hoadley Hide</v-card-text>
+          <v-card-text v-show="remainingMonsters !== 0">
+            With you're monster hunting expirence, you should be able to fine
+            and identify these Monsters in no time!
+            <br />
+            <strong>Remember:</strong> You only have till 3pm on Saturday
+          </v-card-text>
+          <v-card-text v-show="remainingMonsters === 0">
+            <span class="text-body-1 text-center"> Wow! I'm impressed! </span>
+            <br />
+            <br />
+            You've found all the monsters hiding around the Anything Goes
+            campsite!
+            <br />
+            We have a little reward so head over to the Hoadley Hide tent before
+            3pm to pick it up
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -32,7 +47,7 @@ export default {
             ? `${this.remainingMonsters} left to find`
             : "",
           to: "/monster-hunt/monsters",
-          colour: "purple",
+          colour: this.remainingMonsters > 0 ? "purple" : "green",
         },
         {
           title: "Discovered Clues",
