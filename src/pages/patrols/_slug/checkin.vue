@@ -24,28 +24,40 @@
           <v-col cols="12">
             <v-row tile>
               <v-col cols="12">
-                <v-text-field
-                  v-model="checkin['score1']"
-                  title="Score: team work"
-                ></v-text-field>
+                <v-slider
+                  v-model="checkin['planning']"
+                  label="Score: Planning"
+                  min="0"
+                  max="10"
+                  step="1"
+                ></v-slider>
               </v-col>
               <v-col cols="12">
-                <v-text-field
-                  v-model="checkin['score2']"
-                  title="Score: leadership"
-                ></v-text-field>
+                <v-slider
+                  v-model="checkin['teamwork']"
+                  label="Score: Team work"
+                  min="0"
+                  max="10"
+                  step="1"
+                ></v-slider>
               </v-col>
               <v-col cols="12">
-                <v-text-field
-                  v-model="checkin['score3']"
-                  title="Score: creativity"
-                ></v-text-field>
+                <v-slider
+                  v-model="checkin['leadership']"
+                  label="Score: Leadership"
+                  min="0"
+                  max="10"
+                  step="1"
+                ></v-slider>
               </v-col>
               <v-col cols="12">
-                <v-text-field
-                  v-model="checkin['score4']"
-                  title="Score: enthusiasm"
-                ></v-text-field>
+                <v-slider
+                  v-model="checkin['creativity']"
+                  label="Score: Creativity"
+                  min="0"
+                  max="10"
+                  step="1"
+                ></v-slider>
               </v-col>
             </v-row>
           </v-col>
