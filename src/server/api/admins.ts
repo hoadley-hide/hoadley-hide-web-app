@@ -20,7 +20,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       code: generateCode(EntityType.Admin, admin.id),
       name: admin.name,
       slug: admin.slug,
-      path: `/admins/${admin.slug}`,
+      path: `/`,
       permissions: admin.permissions,
     })
   );
