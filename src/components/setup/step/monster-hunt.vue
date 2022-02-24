@@ -2,26 +2,11 @@
   <v-stepper-content step="2">
     <v-card class="mb-12" tile>
       <v-card-title class="text-h4">Your Details</v-card-title>
-      <v-card-text> Fill in your details to get started </v-card-text>
-    </v-card>
-
-    <v-card class="mb-12" tile>
       <v-card-text>
         <v-text-field
           v-model="name"
           label="What's your name?"
           :rules="[rules.required]"
-        ></v-text-field>
-      </v-card-text>
-    </v-card>
-
-    <v-card class="mb-12" tile>
-      <v-card-text>
-        <v-text-field
-          v-model="rego"
-          label="Scout Membership number?"
-          :rules="[rules.required]"
-          hint="Pst. its on your name tag"
         ></v-text-field>
       </v-card-text>
     </v-card>

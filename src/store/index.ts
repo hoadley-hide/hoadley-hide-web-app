@@ -97,6 +97,13 @@ export const getters: GetterTree<RootState, RootState> = {
 
     return state.user ?? null;
   },
+  userSetupRequired: (_state, getters): boolean => {
+    if (getters.user) {
+      return false;
+    }
+
+    return true;
+  },
   activeEventStage: (state, getters) => {
     const activeStages = state.eventStages
       .filter((stage: EventStage) => {

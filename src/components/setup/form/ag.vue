@@ -25,18 +25,16 @@
         <v-stepper-items>
           <!-- Step 1 -->
           <setup-step-start
-            entity="admin"
+            entity="Anything Goes Player"
             :available-steps="availableSteps"
             @next-step="nextStep(1)"
           ></setup-step-start>
 
           <!-- Step 2 -->
-          <setup-step-scan-qr-code
-            entity="admin"
-            :step-active="currentStep === 2"
+          <setup-step-monster-hunt
             @next-step="nextStep(2)"
-            @admin-data="handleAdmin"
-          ></setup-step-scan-qr-code>
+            @monster-hunt-player-data="handleMonsterHuntPlayer"
+          ></setup-step-monster-hunt>
         </v-stepper-items>
       </v-stepper>
     </v-col>
@@ -44,8 +42,7 @@
 </template>
 
 <script lang="ts">
-import { setBreadcrumbs } from "~/common/helper-factories";
-import { Admin } from "~/types/index";
+import { MonsterHuntPlayer } from "~/types/index";
 
 export default {
   data() {
@@ -55,24 +52,17 @@ export default {
         {
           icon: "mdi-check",
           title: "Start",
-          label: "Welcome to Hoadley Hide",
+          label: "Welcome to Anything Goes",
         },
         {
-          icon: "mdi-qrcode",
-          title: "Scan QR Code",
-          label: "Scan your admin's QR Code",
+          icon: "mdi-ghost",
+          title: "Enter your Details",
+          label: "Ready to find some monsters?",
         },
       ],
-      adminId: null,
     };
   },
-  mounted() {
-    setBreadcrumbs(this.$store, [
-      { to: "/", label: "Home" },
-      { to: null, label: "User" },
-      { to: null, label: "Admin Setup" },
-    ]);
-  },
+  mounted() {},
   watch: {
     steps(val) {
       if (this.currentStep > val) {
@@ -80,25 +70,16 @@ export default {
       }
     },
   },
-  computed: {
-    admin() {
-      if (!this.adminId) {
-        return null;
-      }
-      return this.$store.getters.admin(this.adminId);
-    },
-  },
   methods: {
     nextStep(index) {
       if (index === this.availableSteps.length) {
-        this.$router.push(`/`);
+        this.$emit("complete", null);
       } else {
         this.currentStep = index + 1;
       }
     },
-    async handleAdmin(adminData: Admin) {
-      this.adminId = adminData.code;
-      this.$store.dispatch("persistUser", { adminId: this.adminId });
+    async handleMonsterHuntPlayer(playerData: MonsterHuntPlayer) {
+      this.$store.dispatch("persistUser", playerData);
     },
   },
 };

@@ -25,16 +25,30 @@
         <v-stepper-items>
           <!-- Step 1 -->
           <setup-step-start
-            entity="Anything Goes Player"
+            entity="patrol"
             :available-steps="availableSteps"
             @next-step="nextStep(1)"
           ></setup-step-start>
 
           <!-- Step 2 -->
-          <setup-step-monster-hunt
+          <setup-step-scan-qr-code
+            entity="patrol"
+            :step-active="currentStep === 2"
             @next-step="nextStep(2)"
-            @monster-hunt-player-data="handleMonsterHuntPlayer"
-          ></setup-step-monster-hunt>
+            @patrol-data="handlePatrol"
+          ></setup-step-scan-qr-code>
+
+          <!-- Step 3 -->
+          <setup-step-patrol-members
+            :patrol="patrol"
+            @next-step="nextStep(3)"
+          ></setup-step-patrol-members>
+
+          <!-- Step 4 -->
+          <setup-step-upload-photos
+            entity="patrol"
+            @next-step="nextStep(4)"
+          ></setup-step-upload-photos>
         </v-stepper-items>
       </v-stepper>
     </v-col>
@@ -42,8 +56,7 @@
 </template>
 
 <script lang="ts">
-import { setBreadcrumbs } from "~/common/helper-factories";
-import { MonsterHuntPlayer } from "~/types/index";
+import { Patrol } from "~/types/index";
 
 export default {
   data() {
@@ -53,23 +66,28 @@ export default {
         {
           icon: "mdi-check",
           title: "Start",
-          label: "Welcome to Anything Goes",
+          label: "Welcome to Hoadley Hide",
         },
         {
-          icon: "mdi-ghost",
-          title: "Enter your Details",
-          label: "Ready to find some monsters?",
+          icon: "mdi-qrcode",
+          title: "Scan QR Code",
+          label: "Scan your patrol's QR Code",
+        },
+        {
+          icon: "mdi-account-group",
+          title: "Confirm patrol members",
+          label: "Confirm all your patrol members are here",
+        },
+        {
+          icon: "mdi-camera",
+          title: "Take a photo",
+          label: "Take a photo of your patrol!",
         },
       ],
+      patrolId: null,
     };
   },
-  mounted() {
-    setBreadcrumbs(this.$store, [
-      { to: "/", label: "Home" },
-      { to: null, label: "User" },
-      { to: null, label: "Anything Goes Setup" },
-    ]);
-  },
+  mounted() {},
   watch: {
     steps(val) {
       if (this.currentStep > val) {
@@ -77,16 +95,25 @@ export default {
       }
     },
   },
+  computed: {
+    patrol() {
+      if (!this.patrolId) {
+        return null;
+      }
+      return this.$store.getters.patrol(this.patrolId);
+    },
+  },
   methods: {
     nextStep(index) {
       if (index === this.availableSteps.length) {
-        this.$router.push(`/`);
+        this.$emit("complete", this.patrol.code);
       } else {
         this.currentStep = index + 1;
       }
     },
-    async handleMonsterHuntPlayer(playerData: MonsterHuntPlayer) {
-      this.$store.dispatch("persistUser", playerData);
+    async handlePatrol(patrolData: Patrol) {
+      this.patrolId = patrolData.code;
+      this.$store.dispatch("persistUser", { patrolId: this.patrolId });
     },
   },
 };

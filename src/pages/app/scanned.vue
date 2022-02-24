@@ -82,5 +82,10 @@ export default {
       { to: null, label: "Scanned Codes" },
     ]);
   },
+  methods: {
+    async clearScannedCodes() {
+      this.$store.dispatch("clearScannedCodes");
+    },
+  },
 };
 </script>

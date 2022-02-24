@@ -25,24 +25,18 @@
         <v-stepper-items>
           <!-- Step 1 -->
           <setup-step-start
-            entity="stunt"
+            entity="admin"
             :available-steps="availableSteps"
             @next-step="nextStep(1)"
           ></setup-step-start>
 
           <!-- Step 2 -->
           <setup-step-scan-qr-code
-            entity="stunt"
+            entity="admin"
             :step-active="currentStep === 2"
             @next-step="nextStep(2)"
-            @stunt-data="handleStunt"
+            @admin-data="handleAdmin"
           ></setup-step-scan-qr-code>
-
-          <!-- Step 3 -->
-          <setup-step-upload-photos
-            entity="stunt"
-            @next-step="nextStep(3)"
-          ></setup-step-upload-photos>
         </v-stepper-items>
       </v-stepper>
     </v-col>
@@ -50,8 +44,7 @@
 </template>
 
 <script lang="ts">
-import { setBreadcrumbs } from "~/common/helper-factories";
-import { Patrol } from "~/types/index";
+import { Admin } from "~/types/index";
 
 export default {
   data() {
@@ -66,24 +59,13 @@ export default {
         {
           icon: "mdi-qrcode",
           title: "Scan QR Code",
-          label: "Scan your stunts's QR Code",
-        },
-        {
-          icon: "mdi-camera",
-          title: "Take a photo",
-          label: "Take a photo of your stunt team!",
+          label: "Scan your admin's QR Code",
         },
       ],
-      stuntId: null,
+      adminId: null,
     };
   },
-  mounted() {
-    setBreadcrumbs(this.$store, [
-      { to: "/", label: "Home" },
-      { to: null, label: "User" },
-      { to: null, label: "Stunt Setup" },
-    ]);
-  },
+  mounted() {},
   watch: {
     steps(val) {
       if (this.currentStep > val) {
@@ -92,24 +74,24 @@ export default {
     },
   },
   computed: {
-    stunt() {
-      if (!this.stuntId) {
+    admin() {
+      if (!this.adminId) {
         return null;
       }
-      return this.$store.getters.stunt(this.stuntId);
+      return this.$store.getters.admin(this.adminId);
     },
   },
   methods: {
     nextStep(index) {
       if (index === this.availableSteps.length) {
-        this.$router.push(`/stunts/${this.stunt.slug}`);
+        this.$emit("complete", this.admin.code);
       } else {
         this.currentStep = index + 1;
       }
     },
-    async handleStunt(stuntData: Patrol) {
-      this.stuntId = stuntData.code;
-      this.$store.dispatch("persistUser", { stuntId: this.stuntId });
+    async handleAdmin(adminData: Admin) {
+      this.adminId = adminData.code;
+      this.$store.dispatch("persistUser", { adminId: this.adminId });
     },
   },
 };

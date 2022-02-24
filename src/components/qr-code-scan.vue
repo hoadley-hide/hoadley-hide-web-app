@@ -74,6 +74,7 @@
             prefix="HH22:"
             :append-outer-icon="codeManual ? `mdi-check` : ``"
             @click:append-outer="validateManualInput"
+            @keyup.enter="validateManualInput"
             clearable
           ></v-text-field>
         </v-card-text>

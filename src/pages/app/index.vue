@@ -143,9 +143,6 @@ export default {
     ]);
   },
   methods: {
-    async clearScannedCodes() {
-      this.$store.dispatch("clearScannedCodes");
-    },
     async refreshData() {
       this.loading = true;
 

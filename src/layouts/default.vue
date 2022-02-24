@@ -68,9 +68,9 @@
     <v-main>
       <app-status-bar></app-status-bar>
 
-      <user-requires-setup></user-requires-setup>
+      <setup-user v-show="userSetupRequired"></setup-user>
 
-      <v-container>
+      <v-container v-show="!userSetupRequired">
         <Nuxt />
       </v-container>
     </v-main>
@@ -200,6 +200,19 @@ export default {
     },
     monsterAcronym() {
       return this.monsterAcronyms[this.monsterAcronymIndex];
+    },
+    userSetupRequired() {
+      const isPageSetup = [
+        "/user/admin/setup",
+        "/user/ag/setup",
+        "/user/patrol/setup",
+        "/user/stunt/setup",
+      ].includes(this.$route.path);
+      if (isPageSetup) {
+        return false;
+      }
+
+      return this.$store.getters.userSetupRequired;
     },
   },
   watch: {
