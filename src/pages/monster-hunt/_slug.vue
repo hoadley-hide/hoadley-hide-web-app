@@ -28,7 +28,9 @@
       </v-card>
     </v-col>
     <v-col cols="12" sm="6" v-show="canCollectClue">
-      <v-btn block color="warning" @click="collectClue"> Collect Clue </v-btn>
+      <v-btn block color="warning" @click="collectClue">
+        Collect Next Clue
+      </v-btn>
     </v-col>
     <v-col cols="12" sm="6">
       <v-btn block nuxt to="/monster-hunt/monsters">
