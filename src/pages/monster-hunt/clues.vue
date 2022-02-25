@@ -29,26 +29,30 @@
                     }}
                   </v-list-item-title>
                 </template>
+                <v-list-item v-if="issuedMonster.scanned">
+                  <v-list-item-content>
+                    <strong class="green--text">
+                      You've found
+                      {{ issuedMonster.monster.name }}! No need to keep looking.
+                    </strong>
+                  </v-list-item-content>
+                </v-list-item>
                 <v-list-item
                   v-for="clue in issuedMonster.monster.clues"
                   v-bind:key="clue.text"
                 >
                   <v-list-item-content>
-                    <v-list-item-text v-html="clue.html"></v-list-item-text>
+                    <span v-html="clue.html"></span>
                   </v-list-item-content>
                 </v-list-item>
-                <v-list-item v-if="issuedMonster.scanned">
-                  <strong class="green--text">
-                    You've found
-                    {{ issuedMonster.monster.name }}! No need to keep looking.
-                  </strong>
-                </v-list-item>
                 <v-list-item v-if="issuedMonster.monster.clues.length === 0">
-                  <i>
-                    Oop.. You did not find any clues for
-                    {{ issuedMonster.monster.name }}. Come see the Hoadley Hide
-                    Team to fix you up.
-                  </i>
+                  <v-list-item-content>
+                    <i>
+                      Oop.. You did not find any clues for
+                      {{ issuedMonster.monster.name }}. Come see the Hoadley
+                      Hide Team to fix you up.
+                    </i>
+                  </v-list-item-content>
                 </v-list-item>
               </v-list-group>
 
