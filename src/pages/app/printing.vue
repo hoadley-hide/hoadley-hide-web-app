@@ -177,22 +177,22 @@ export default {
           entities = [
             {
               code: "PATROL",
-              path: "user/patrol/setup",
+              path: "?progress=patrol-1",
               name: "Setup your Patrol",
             },
             {
               code: "STUNT",
-              path: "user/stunt/setup",
+              path: "?progress=stunt-1",
               name: "Setup your Stunt",
             },
             {
               code: "Anything Goes",
-              path: "user/ag/setup",
+              path: "?progress=ag-1",
               name: "Setup your Monster Hunt Player",
             },
             {
               code: "ADMIN",
-              path: "user/admin/setup",
+              path: "?progress=admin-1",
               name: "Setup your Admin user",
             },
           ];
