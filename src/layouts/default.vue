@@ -73,9 +73,29 @@
     <v-main>
       <app-status-bar></app-status-bar>
 
-      <setup-user v-show="userSetupRequired"></setup-user>
+      <setup-user v-show="clientLoaded && userSetupRequired"></setup-user>
 
-      <v-container v-show="!userSetupRequired">
+      <v-container
+        v-show="!clientLoaded"
+        class="text-center"
+        style="height: 70%"
+      >
+        <v-row style="height: 100%">
+          <v-col
+            align-self="center"
+            class="d-flex flex-column justify-center align-center"
+          >
+            <v-img
+              src="/HH-2022-Logo-Rip-T.png"
+              style="position: absolute; width: 50px"
+            ></v-img>
+            <v-progress-circular indeterminate color="red" size="100">
+            </v-progress-circular>
+          </v-col>
+        </v-row>
+      </v-container>
+
+      <v-container v-show="clientLoaded && !userSetupRequired">
         <Nuxt />
       </v-container>
     </v-main>
@@ -207,6 +227,12 @@ export default {
     },
     monsterAcronym() {
       return this.monsterAcronyms[this.monsterAcronymIndex];
+    },
+    clientLoaded() {
+      if (process.server) {
+        return false;
+      }
+      return true;
     },
     userSetupRequired() {
       const isPageSetup = [
