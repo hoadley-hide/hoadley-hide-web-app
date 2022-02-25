@@ -6,10 +6,11 @@
           <v-card-title class="text-h2">Monster Hunt at AG</v-card-title>
 
           <v-card-text v-show="remainingMonsters !== 0">
-            With you're monster hunting expirence, you should be able to fine
-            and identify these Monsters in no time!
+            Use your monster hunting experience to find and identify the
+            monsters!
             <br />
-            <strong>Remember:</strong> You only have till 3pm on Saturday
+            <strong>Remember:</strong> You only have until 3:00pm on Saturday so
+            make sure you find them quickly!
           </v-card-text>
           <v-card-text v-show="remainingMonsters === 0">
             <span class="text-body-1 text-center"> Wow! I'm impressed! </span>
