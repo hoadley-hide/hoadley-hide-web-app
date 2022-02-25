@@ -28,8 +28,16 @@
       </v-card>
     </v-col>
     <v-col cols="12" sm="6" v-show="canCollectClue">
-      <v-btn block color="warning" @click="collectClue">
-        Collect Next Clue
+      <v-btn
+        block
+        :color="allCluesCollected ? 'purple' : 'warning'"
+        @click="collectClue"
+      >
+        {{
+          allCluesCollected
+            ? "Confirm Monster Identification"
+            : "Collect Next Clue"
+        }}
       </v-btn>
     </v-col>
     <v-col cols="12" sm="6">
@@ -78,6 +86,9 @@ export default {
       return this.$store.getters.monsterHuntCanGiveClue(
         this.monsterHuntMonster
       );
+    },
+    allCluesCollected(): boolean {
+      return this.$store.getters.remainingClues.length === 0;
     },
   },
   mounted() {
