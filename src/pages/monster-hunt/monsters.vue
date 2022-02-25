@@ -70,18 +70,23 @@ export default {
         return this.$store.state.monsterHuntMonsters;
       }
 
-      return this.$store.state.monsterHuntMonsters
-        .map((monster: MonsterHuntMonster) => {
+      return this.$store.state.monsterHuntMonsters.flatMap(
+        (monster: MonsterHuntMonster) => {
           const scanned = this.$store.getters.hasCodeBeenScanned(monster.code);
-          return {
+          if (!scanned) {
+            return [];
+          }
+          const data = {
             monster: monster,
             scanned: {
               time: new Date(scanned.time),
               ago: this.$options.filters?.duration(new Date(scanned.time)),
             },
           };
-        })
-        .filter((monsterHuntMonsterData) => monsterHuntMonsterData.scanned);
+
+          return [data];
+        }
+      );
     },
   },
   mounted() {
