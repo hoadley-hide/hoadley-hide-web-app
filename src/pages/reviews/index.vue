@@ -5,6 +5,17 @@
         <v-card-title class="text-h2">Stunt Reviews</v-card-title>
 
         <v-card-text>List of reviews</v-card-text>
+        <v-card-text>
+          <v-btn
+            block
+            text
+            color="info"
+            @click="getReviews()"
+            :loading="loading.getReviews"
+          >
+            Refresh Data
+          </v-btn>
+        </v-card-text>
       </v-card>
     </v-col>
     <v-col cols="12">
@@ -15,7 +26,6 @@
               <v-list-group
                 v-for="review in reviews"
                 :key="review.deduplicationId"
-                no-action
               >
                 <template v-slot:activator>
                   <v-list-item-icon>
@@ -32,6 +42,11 @@
                     <div class="pl-4">reviews</div>
                     {{ review.referencedEntity.name }}
                   </v-list-item-title>
+                  <v-list-item-action v-show="$auth(['review:canDelete'])">
+                    <v-btn icon color="red" @click="handleDelete(review)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
                 </template>
                 <v-list-item
                   v-for="question in questions"
@@ -87,7 +102,9 @@ import { EventLog, Question } from "~/types";
 
 export default {
   data() {
-    return {};
+    return {
+      loading: {},
+    };
   },
   computed: {
     reviews(): EventLog[] {
@@ -104,7 +121,7 @@ export default {
       }
 
       if (authorised(this.$store, ["review:seeAll"])) {
-        return this.$store.state.reviews;
+        return this.$store.getters.reviewQuestions;
       }
 
       return [];
@@ -113,11 +130,29 @@ export default {
       return this.$store.state.questions;
     },
   },
-  mounted() {
+  async mounted() {
     setBreadcrumbs(this.$store, [
       { to: "/", label: "Home" },
       { to: null, label: "Reviews" },
     ]);
+
+    // await this.getReviews();
+  },
+  methods: {
+    async getReviews() {
+      this.loading.getReviews = true;
+      await this.$store.dispatch("fetchMyReviews");
+      this.loading.getReviews = false;
+    },
+    async handleDelete(review: EventLog) {
+      if (this.loading[review.deduplicationId]) {
+        return;
+      }
+
+      this.loading[review.deduplicationId] = true;
+      await this.$store.dispatch("deleteEventLog", review);
+      this.loading[review.deduplicationId] = false;
+    },
   },
 };
 </script>

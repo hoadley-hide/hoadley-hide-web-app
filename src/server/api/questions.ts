@@ -9,7 +9,6 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     storageKey
     questionFieldType
     questionGroup
-    reviewType
     description
     tickLabels
   }`;
@@ -24,7 +23,10 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       heading: question.heading,
       storageKey: question.storageKey,
       questionFieldType: question.questionFieldType,
-      questionGroup: question.questionGroup.replace("_", ":"),
+      questionGroup: question.questionGroup.replace(
+        "_",
+        ":"
+      ) as unknown as Question["questionGroup"],
       description: question.description,
       tickLabels: question.tickLabels,
     })

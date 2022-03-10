@@ -2,11 +2,15 @@ import Vue from "vue";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 import { AppAlert } from "~/common/alert";
 import { AppBreadcrumb } from "~/common/breadcrumb";
+import { createAlert } from "~/common/helper-factories";
+import { promiseTimeout } from "~/common/promise";
 import {
   AppUserEntity,
   Entity,
   EventLog,
   EventLogAugmented,
+  EventLogPersisted,
+  EventLogPersistedRaw,
   EventStage,
   GraphQL,
   MonsterHuntMonster,
@@ -89,6 +93,11 @@ export const getters: GetterTree<RootState, RootState> = {
     state.wikiArticles.find((wikiArticle) =>
       [wikiArticle.id, wikiArticle.slug, wikiArticle.code].includes(slugOrId)
     ),
+  reviewQuestions: (state) => {
+    return state.questions.filter(
+      (question) => question.questionGroup === "review:stunt"
+    );
+  },
   // User getters
   user: (state, getters): AppUserEntity | null => {
     if (!state.user) {
@@ -235,8 +244,8 @@ export const getters: GetterTree<RootState, RootState> = {
       return state.eventLogs.some(
         (eventLog) =>
           eventLog.type === "review:stunt" &&
-          eventLog.recordingEntity.id === getters.user?.id &&
-          eventLog.referencedEntity.id === stunt.id
+          eventLog.recordingEntity?.id === getters.user?.id &&
+          eventLog.referencedEntity?.id === stunt.id
       );
     },
   reviewsRecordedBySelf: (state, getters): EventLogAugmented[] => {
@@ -247,7 +256,7 @@ export const getters: GetterTree<RootState, RootState> = {
     const logs: EventLog[] = state.eventLogs.filter(
       (eventLog) =>
         eventLog.type === "review:stunt" &&
-        eventLog.recordingEntity.id === state.user?.id
+        eventLog.recordingEntity?.id === state.user?.id
     );
 
     return logs.map(
@@ -255,8 +264,12 @@ export const getters: GetterTree<RootState, RootState> = {
         deduplicationId: log.deduplicationId,
         eventName: log.eventName,
         type: log.type,
-        recordingEntity: getters.findById(log.recordingEntity.id),
-        referencedEntity: getters.findById(log.referencedEntity.id),
+        recordingEntity: log.recordingEntity
+          ? getters.findById(log.recordingEntity.id)
+          : null,
+        referencedEntity: log.referencedEntity
+          ? getters.findById(log.referencedEntity.id)
+          : null,
         data: log.data,
         isPersisted: !state.pendingLogIds.includes(log.deduplicationId),
       })
@@ -270,7 +283,7 @@ export const getters: GetterTree<RootState, RootState> = {
     const logs: EventLog[] = state.eventLogs.filter(
       (eventLog) =>
         eventLog.type === "review:stunt" &&
-        eventLog.referencedEntity.id === state.user?.id
+        eventLog.referencedEntity?.id === state.user?.id
     );
 
     return logs.map(
@@ -278,8 +291,37 @@ export const getters: GetterTree<RootState, RootState> = {
         deduplicationId: log.deduplicationId,
         eventName: log.eventName,
         type: log.type,
-        recordingEntity: getters.findById(log.recordingEntity.id),
-        referencedEntity: getters.findById(log.referencedEntity.id),
+        recordingEntity: log.recordingEntity
+          ? getters.findById(log.recordingEntity.id)
+          : null,
+        referencedEntity: log.referencedEntity
+          ? getters.findById(log.referencedEntity.id)
+          : null,
+        data: log.data,
+        isPersisted: !state.pendingLogIds.includes(log.deduplicationId),
+      })
+    );
+  },
+  pendingRequests: (state, getters): EventLogAugmented[] => {
+    if (!state.user) {
+      return [];
+    }
+
+    const logs: EventLog[] = state.eventLogs.filter((eventLog) =>
+      state.pendingLogIds.includes(eventLog.deduplicationId)
+    );
+
+    return logs.map(
+      (log): EventLogAugmented => ({
+        deduplicationId: log.deduplicationId,
+        eventName: log.eventName,
+        type: log.type,
+        recordingEntity: log.recordingEntity
+          ? getters.findById(log.recordingEntity.id)
+          : null,
+        referencedEntity: log.referencedEntity
+          ? getters.findById(log.referencedEntity.id)
+          : null,
         data: log.data,
         isPersisted: !state.pendingLogIds.includes(log.deduplicationId),
       })
@@ -293,6 +335,17 @@ export const mutations: MutationTree<RootState> = {
   },
   removeAlert: (state, appAlert: AppAlert) => {
     state.alerts.splice(state.alerts.indexOf(appAlert), 1);
+  },
+  setAlertTimeoutWrapper: (
+    state,
+    opts: {
+      appAlert: AppAlert;
+      callback: (alert: AppAlert) => void;
+      millis: number;
+    }
+  ) => {
+    // This setTimeout function needs to be wrapped by a mutation for VueX reasons.
+    opts.appAlert.setTimeout(opts.callback, opts.millis);
   },
   setBreadcrumbs: (state, breadcrumbs: AppBreadcrumb[]) => {
     Vue.set(state, "breadcrumbs", breadcrumbs);
@@ -362,7 +415,31 @@ export const mutations: MutationTree<RootState> = {
     // Record log dataset for immediate use in app.
     Vue.set(state.eventLogs, state.eventLogs.length, logData);
   },
+  addEventLog: (state, logData: EventLog) => {
+    const existingLog = state.eventLogs.find(
+      (log) => log.deduplicationId === logData.deduplicationId
+    );
+    if (existingLog) {
+      return;
+    }
+
+    Vue.set(state.eventLogs, state.eventLogs.length, logData);
+  },
   recordEventLogPersist: (state, opt: { deduplicationId: string }) => {
+    // Remove dedup id from the pending list.
+    state.pendingLogIds.splice(
+      state.pendingLogIds.indexOf(opt.deduplicationId),
+      1
+    );
+  },
+  recordEventLogDelete: (state, opt: { deduplicationId: string }) => {
+    // Remove request from the local log list.
+    state.eventLogs.splice(
+      state.eventLogs.findIndex(
+        (log) => log.deduplicationId === opt.deduplicationId
+      ),
+      1
+    );
     // Remove dedup id from the pending list.
     state.pendingLogIds.splice(
       state.pendingLogIds.indexOf(opt.deduplicationId),
@@ -382,9 +459,13 @@ export const actions: ActionTree<RootState, RootState> = {
 
     const alert: AppAlert = duplicateAlert ? duplicateAlert : appAlert;
 
-    alert.setTimeout((alert) => {
-      dispatch(`expireAlert`, alert);
-    }, 5000);
+    commit("setAlertTimeoutWrapper", {
+      appAlert: alert,
+      callback: (alert) => {
+        dispatch(`expireAlert`, alert);
+      },
+      millis: 5000,
+    });
 
     if (appAlert.deduplicate && duplicateAlert) {
       // Deduplication is enabled & the alert is a duplicate.
@@ -441,7 +522,7 @@ export const actions: ActionTree<RootState, RootState> = {
   async initialiseEntity({ commit }, { path, dataKey, mutation }) {
     type ResultType = GraphQL<
       string,
-      Stunt | EventStage | Patrol | WikiArticle | MonsterHuntMonster
+      Stunt[] | EventStage[] | Patrol[] | WikiArticle[] | MonsterHuntMonster[]
     >;
 
     try {
@@ -499,25 +580,122 @@ export const actions: ActionTree<RootState, RootState> = {
     }
   },
 
-  async persistEventLog({ commit }, logData: EventLog) {
-    commit("addEventLogRequest", logData);
+  async persistEventLog({ state, commit }, logData: EventLog) {
+    const existingLog = state.eventLogs.find(
+      (log) => log.deduplicationId === logData.deduplicationId
+    );
+    const isPending = state.pendingLogIds.includes(logData.deduplicationId);
+
+    if (!existingLog) {
+      commit("addEventLogRequest", logData);
+    }
+
+    if (existingLog && !isPending) {
+      // This has a been persisted, might be able to just return a success.
+      return { deduplicationId: existingLog.deduplicationId };
+    }
 
     try {
-      const res = await $fetch("/api/log", {
-        method: "POST",
-        body: logData,
-      });
+      const res = await promiseTimeout(
+        5000,
+        $fetch("/api/event", {
+          method: "POST",
+          body: logData,
+        })
+      );
 
-      console.log(res);
+      if (res.message === "Request timed out") {
+        throw res;
+      }
+
       commit("recordEventLogPersist", {
         deduplicationId: logData.deduplicationId,
       });
     } catch (e) {
       console.log(e);
+
+      await createAlert(this, {
+        heading: "Currently unable to record log to server",
+        message:
+          "But dont worry, we have saved it locally and you can try it again later",
+        type: "error",
+      });
+
+      throw new Error(`Retry Failed: ${e.message}`);
     }
 
-    return { deduplicationId: logData.deduplicationId };
+    return {
+      deduplicationId: logData.deduplicationId,
+    };
   },
+
+  async deleteEventLog({ state, commit }, logData: EventLog) {
+    const existingLog = state.eventLogs.find(
+      (log) => log.deduplicationId === logData.deduplicationId
+    );
+
+    if (!existingLog) {
+      createAlert(this, {
+        message: "Event log not currently loaded",
+        type: "error",
+      });
+      return;
+    }
+
+    try {
+      const result: GraphQL<"eventLog", EventLogPersisted> = await $fetch(
+        `/api/event/_id/${logData.deduplicationId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (result.data?.eventLog?.deduplicationId !== logData.deduplicationId) {
+        await createAlert(this, {
+          message: "Failed to delete event log entry",
+          type: "error",
+        });
+        return;
+      }
+      console.log(result);
+      commit("recordEventLogDelete", {
+        deduplicationId: logData.deduplicationId,
+      });
+
+      await createAlert(this, {
+        heading: `Event log deleted`,
+        message: `${logData.type} - ${logData.deduplicationId}`,
+        type: "success",
+      });
+    } catch (e) {
+      console.log(e);
+      await createAlert(this, {
+        message: "Failed to delete event log entry",
+        type: "error",
+      });
+    }
+  },
+
+  async fetchMyReviews({ commit, getters }) {
+    if (!getters.user) {
+      createAlert(this, { message: "Not logged in", type: "warning" });
+      return false;
+    }
+    try {
+      const result: GraphQL<"eventLogs", EventLog[]> = await $fetch(
+        `/api/event?user=${getters.user._type}:${getters.user.id}`
+      );
+      if (result?.data) {
+        result.data.eventLogs.forEach((log) => commit("addEventLog", log));
+      }
+    } catch (e) {
+      throw e;
+      // const res: ResultType = await (e as any).response;
+      // console.log(res);
+      // console.log(res.errors);
+    }
+  },
+
   async collectClue({ commit, getters }, byMonster: MonsterHuntMonster) {
     const forMonster =
       getters.remainingClues[

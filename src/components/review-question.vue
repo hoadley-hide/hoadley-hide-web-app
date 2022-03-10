@@ -7,10 +7,10 @@
           {{ question.description }}
         </v-card-subtitle>
       </v-col>
-      <v-col :cols="question.reviewType === 'Rating' ? 6 : 12">
+      <v-col :cols="question.questionFieldType === 'Rating' ? 6 : 12">
         <v-card-text>
           <v-slider
-            v-if="question.reviewType === 'Rating'"
+            v-if="question.questionFieldType === 'Rating'"
             v-model="data"
             min="1"
             :max="question.tickLabels.length"
@@ -21,11 +21,11 @@
             tick-size="4"
           ></v-slider>
           <v-text-field
-            v-else-if="question.reviewType === 'ShortAnswer'"
+            v-else-if="question.questionFieldType === 'ShortAnswer'"
             v-model="data"
           ></v-text-field>
           <v-textarea
-            v-else-if="question.reviewType === 'LongAnswer'"
+            v-else-if="question.questionFieldType === 'LongAnswer'"
             v-model="data"
             :placeholder="question.description"
             outlined

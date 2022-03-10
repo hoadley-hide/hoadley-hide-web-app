@@ -17,7 +17,17 @@
           </v-card>
         </v-col>
 
-        <v-form model="review">
+        <v-col v-if="stuntReviewCompleted" cols="12">
+          <v-card>
+            <v-card-text class="text-red">
+              You have already submitted a review for this stunt.
+            </v-card-text>
+
+            <v-btn block text nuxt :to="`${stunt.path}`">Back to Stunt</v-btn>
+          </v-card>
+        </v-col>
+
+        <v-form model="review" v-else>
           <!-- Questions -->
           <v-col
             cols="12"
@@ -67,6 +77,7 @@ export default {
   data() {
     return {
       review: {},
+      submissionInProgress: false,
     };
   },
   computed: {
@@ -74,10 +85,16 @@ export default {
       return this.$store.getters.stunt(this.$route.params.slug);
     },
     questions() {
-      return this.$store.state.questions;
+      return this.$store.getters.reviewQuestions;
     },
     activeUser(): AppUserEntity | null {
       return this.$store.getters.user;
+    },
+    stuntReviewCompleted(): boolean {
+      return (
+        !this.submissionInProgress &&
+        this.$store.getters.stuntReviewCompleted(this.stunt)
+      );
     },
   },
   mounted() {
@@ -90,6 +107,7 @@ export default {
   },
   methods: {
     async submitReview() {
+      this.submissionInProgress = true;
       if (!this.activeUser) {
         createAlert(this.$store, {
           message: "You are not logged in, you can not submit a review",
@@ -113,9 +131,14 @@ export default {
         data: this.review,
       };
 
-      await this.$store.dispatch("persistEventLog", logData);
+      try {
+        await this.$store.dispatch("persistEventLog", logData);
+      } catch (e) {
+        // alert should already have been made.
+      }
 
       this.$router.push(this.stunt.path);
+      this.submissionInProgress = false;
     },
   },
 };

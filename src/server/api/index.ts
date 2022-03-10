@@ -1,6 +1,6 @@
 import { RuntimeConfig } from "@/nuxt.config";
 import type { IncomingMessage, ServerResponse } from "http";
-import { GraphQL, RichText } from "~/types";
+import { GraphQL, GraphQLBasic, RichText } from "~/types";
 const baseUrl = process.env.CMS_URL || console.error("missing CMS_URL") || "";
 const apikey = process.env.CMS_KEY || console.error("missing CMS_KEY") || "";
 
@@ -57,12 +57,10 @@ export function safeRichText(richText: RichText | null): RichText {
   };
 }
 
-export async function simpleAllGraphQL<Raw, Data>(
-  key: string,
+export async function simpleGraphQL<RawData>(
   query: string,
-  variables: any,
-  mappingFn: (item: Raw) => Data
-): Promise<GraphQL<typeof key, Data[]>> {
+  variables: any
+): Promise<GraphQLBasic<RawData>> {
   let response: Response | null = null;
   try {
     response = await fetch(baseUrl, {
@@ -76,44 +74,87 @@ export async function simpleAllGraphQL<Raw, Data>(
       },
     });
   } catch (e) {
-    return Promise.resolve({
+    return {
       errors: [{ message: "An unknown error occurred: request failed" }],
       extensions: { requestId: "000000" },
-    });
+    };
   }
 
-  const result: GraphQL<typeof key, Raw | Raw[]> = await response.json();
+  const result: GraphQLBasic<RawData> = await response.json();
 
   if (!result) {
-    return Promise.resolve({
+    return {
       errors: [{ message: "An unknown error occurred: missing response" }],
       extensions: { requestId: "000000" },
-    });
+    };
   }
 
   if (result.errors) {
-    return Promise.resolve({
+    return {
       errors: result.errors,
       extensions: result.extensions,
-    });
+    };
   }
 
   if (!result.data) {
-    return Promise.resolve({
+    return {
       errors: [{ message: "An unknown error occurred: missing data" }],
       extensions: result.extensions,
-    });
+    };
   }
 
-  const queryData = result.data[key];
+  return { data: result.data };
+}
 
-  const returnable: Data[] = Array.isArray(queryData)
-    ? queryData.map(mappingFn)
-    : [mappingFn(queryData)];
+export async function simpleAllGraphQL<Raw, Data>(
+  key: string,
+  query: string,
+  variables: any,
+  mappingFn: (item: Raw) => Data
+): Promise<GraphQL<typeof key, Data[]>> {
+  interface RawData {
+    [datakey: typeof key]: Raw[];
+  }
+
+  let response: GraphQLBasic<RawData> = await simpleGraphQL<RawData>(
+    query,
+    variables
+  );
+
+  if (!response.data) {
+    return {
+      errors: response.errors,
+      extensions: response.extensions,
+    };
+  }
+
+  const queryData = response.data[key].map(mappingFn);
 
   return Promise.resolve({
     data: {
-      [key]: returnable,
+      [key]: queryData,
     },
   });
+}
+
+export async function body2Data<Data>(
+  req: IncomingMessage
+): Promise<Partial<Data>> {
+  if (process.env.NETLIFY === "true") {
+    return JSON.parse(req.body ?? "{}") ?? {};
+  } else {
+    return await new Promise((resolve) => {
+      var result: any[] = [];
+      req.on("data", function (chunk) {
+        console.error("RESPONSE DATA", chunk);
+        result.push(chunk);
+      });
+
+      req.on("end", function () {
+        console.error("RESPONSE END");
+        const output = Buffer.concat(result).toString("utf8");
+        resolve(JSON.parse(output));
+      });
+    });
+  }
 }

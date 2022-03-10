@@ -1,50 +1,103 @@
+import { useQuery } from "h3";
 import type { IncomingMessage, ServerResponse } from "http";
+import uuid4 from "uuid4";
 import {
   ConnectableEntity,
   EventLog,
-  EventLogPersisted,
   EventLogRaw,
   EventLogRawInput,
   ValidEventLogTypes,
 } from "~/types";
-import { makeError, nuxtConfig, simpleAllGraphQL } from ".";
-import uuid4 from "uuid4";
+import {
+  body2Data,
+  makeError,
+  nuxtConfig,
+  simpleAllGraphQL,
+  simpleGraphQL,
+} from "..";
 
 // Converts type strings from APP types to CMS types.
 const entityTypeMapping = {
+  admin: "Admin",
   patrol: "Patrol",
   stunt: "Stunt",
   monsterHuntMonster: "MonsterHuntMonster",
 };
-
 export default async (req: IncomingMessage, res: ServerResponse) => {
-  // Only allow POST requests.
-  if (req.method !== "POST") {
+  switch (req.method) {
+    case "GET":
+      return await handleGet(req, res);
+    case "POST":
+      return await handlePost(req, res);
+
+    default:
+      res.statusCode = 405;
+      return `405 Method Not Allowed`;
+  }
+};
+
+async function handleGet(req: IncomingMessage, res: ServerResponse) {
+  const query = useQuery(req);
+
+  console.log(query);
+
+  if (!query.user) {
     res.statusCode = 405;
-    return `405 Method Not Allowed`;
+    return `400 Bad Request`;
   }
 
+  const fields = `{
+    deduplicationId
+    eventName
+    type
+    recordingEntity {
+      __typename
+      ... on Admin { id }
+      ... on MonsterHuntMonster { id }
+      ... on Patrol { id }
+      ... on Stunt { id }
+    }
+    referencedEntity {
+      __typename
+      ... on MonsterHuntMonster { id }
+      ... on Patrol { id }
+      ... on Stunt { id }
+    }
+    data
+  }`;
+
+  const returnable = await simpleAllGraphQL<EventLogRaw, EventLog>(
+    "eventLogs",
+    `query($where: EventLogWhereInput!) {
+      eventLogs(where:$where) ${fields}
+    }`,
+    {
+      where: {
+        type: "review:stunt",
+        recordingEntitySearchable: query.user,
+      },
+    },
+    (log): EventLog => ({
+      deduplicationId: log.deduplicationId,
+      eventName: log.eventName,
+      type: log.type,
+      recordingEntity: log.recordingEntity,
+      referencedEntity: log.referencedEntity,
+      data: log.data,
+    })
+  );
+
+  res.statusCode = 200;
+  return returnable;
+}
+
+async function handlePost(req: IncomingMessage, res: ServerResponse) {
   // Parse request body.
-  let inputData: Partial<EventLog> = {};
+  // const testData = await useBody(req);
+  let inputData: Partial<EventLog> = await body2Data<EventLog>(req);
 
-  if (process.env.NETLIFY === "true") {
-    inputData = JSON.parse(req.body ?? "{}") ?? {};
-  } else {
-    inputData = await new Promise((resolve) => {
-      var result: any[] = [];
-      req.on("data", function (chunk) {
-        console.error("RESPONSE DATA", chunk);
-        result.push(chunk);
-      });
-
-      req.on("end", function () {
-        console.error("RESPONSE END");
-        const output = Buffer.concat(result).toString("utf8");
-        resolve(JSON.parse(output));
-      });
-    });
-  }
-  console.log(inputData);
+  // console.log("testData", testData);
+  console.log("inputData", inputData);
 
   // TODO: Move this logic to a common function to be validated in the UI too.
   // Confirm there is a valid deduplication ID.
@@ -68,15 +121,17 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
 
   // Recording Entity
   let recordingEntity: ConnectableEntity | null = null;
+  let recordingEntitySearchable: string | null = null;
   if (inputData.recordingEntity) {
     const recordingEntityType =
       entityTypeMapping[inputData.recordingEntity?._type ?? ""];
 
     if (!recordingEntityType) {
-      const error = `Recording Entity Type Invalid ${inputData.referencedEntity?._type}`;
+      const error = `Recording Entity Type Invalid ${inputData.recordingEntity?._type}`;
       return makeError(res, 400, error);
     }
 
+    recordingEntitySearchable = `${inputData.recordingEntity._type}:${inputData.recordingEntity.id}`;
     recordingEntity = {
       connect: {
         [recordingEntityType]: {
@@ -88,6 +143,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
 
   // Referenced Entity
   let referencedEntity: ConnectableEntity | null = null;
+  let referencedEntitySearchable: string | null = null;
   if (inputData.referencedEntity) {
     const referencedEntityType =
       entityTypeMapping[inputData.referencedEntity?._type ?? ""];
@@ -97,6 +153,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
       return makeError(res, 400, error);
     }
 
+    referencedEntitySearchable = `${inputData.referencedEntity._type}:${inputData.referencedEntity.id}`;
     referencedEntity = {
       connect: {
         [referencedEntityType]: {
@@ -111,7 +168,9 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
     eventName: inputData.eventName,
     type: inputData.type,
     recordingEntity: recordingEntity,
+    recordingEntitySearchable: recordingEntitySearchable,
     referencedEntity: referencedEntity,
+    referencedEntitySearchable: referencedEntitySearchable,
     data: inputData.data ?? {},
   };
 
@@ -136,30 +195,29 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
   }
   `;
 
-  const returnable = await simpleAllGraphQL<EventLogRaw, EventLogPersisted>(
-    "upsertEventLog",
-    query,
-    {
-      where: {
-        deduplicationId: logData.deduplicationId,
-      },
-      create: logData,
-      update: logData,
+  const response = await simpleGraphQL<{ upsertEventLog: EventLogRaw }>(query, {
+    where: {
+      deduplicationId: logData.deduplicationId,
     },
-    (eventLog): EventLogPersisted => ({
-      deduplicationId: eventLog.deduplicationId,
-    })
-  );
+    create: logData,
+    update: logData,
+  });
+
+  if (!response.data) {
+    return {
+      errors: response.errors,
+      extensions: response.extensions,
+    };
+  }
 
   res.statusCode = 200;
   return {
-    ...returnable,
     data: {
       eventLog: {
-        deduplicationId: returnable.data?.upsertEventLog[0].deduplicationId,
+        deduplicationId: response.data.upsertEventLog.deduplicationId,
       },
     },
   };
-};
+}
 
 // function validateDataStuntReview(data) {}

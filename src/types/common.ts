@@ -19,6 +19,12 @@ export interface GraphQL<K extends string, T> {
   extensions?: { requestId: string };
 }
 
+export interface GraphQLBasic<T extends Record<string, any>> {
+  data?: T;
+  errors?: { message: string }[];
+  extensions?: { requestId: string };
+}
+
 export interface ScannedCode {
   time: string;
   code: string;

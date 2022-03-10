@@ -6,7 +6,10 @@
       dense
       :type="alert.type"
     >
-      {{ alert.message }}
+      <div class="d-flex flex-column">
+        <strong v-if="alert.heading">{{ alert.heading }}</strong>
+        <span> {{ alert.message }} </span>
+      </div>
     </v-alert>
   </div>
 </template>

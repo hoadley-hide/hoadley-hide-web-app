@@ -27,8 +27,8 @@ export interface EventLog {
   deduplicationId: string;
   eventName: string;
   type: EventLogType;
-  recordingEntity: { _type: string; id: string };
-  referencedEntity: { _type: string; id: string };
+  recordingEntity: { _type: string; id: string } | null;
+  referencedEntity: { _type: string; id: string } | null;
   data: object;
 }
 
@@ -36,8 +36,8 @@ export interface EventLogRaw {
   deduplicationId: string;
   eventName: string;
   type: EventLogType;
-  recordingEntity: { _type: string; id: string };
-  referencedEntity: { _type: string; id: string };
+  recordingEntity: { _type: string; id: string } | null;
+  referencedEntity: { _type: string; id: string } | null;
   data: object;
 }
 
@@ -55,7 +55,9 @@ export interface EventLogRawInput {
   eventName: string;
   type: EventLogType;
   recordingEntity: ConnectableEntity | null;
+  recordingEntitySearchable: string | null;
   referencedEntity: ConnectableEntity | null;
+  referencedEntitySearchable: string | null;
   data: object;
 }
 
