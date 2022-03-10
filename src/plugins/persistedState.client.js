@@ -5,6 +5,7 @@ export default ({ store }) => {
     key: "hh-2022",
     paths: [
       "user", // wrap lines.
+      "impersonator",
       "scannedCodes",
       "hasPermissionWarningBeenRead",
       "eventLogs",

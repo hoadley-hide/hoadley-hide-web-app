@@ -80,7 +80,6 @@
 <script lang="ts">
 import { authorised } from "~/common/authorisation";
 import { createAlert, setBreadcrumbs } from "~/common/helper-factories";
-import { ScannedCode } from "~/types";
 
 export default {
   data() {
@@ -134,6 +133,18 @@ export default {
           subtitle: "",
           to: "/app/printing",
           colour: "blue",
+        });
+      }
+
+      if (
+        authorised(this.$store, ["app:seeDev"]) ||
+        this.$store.state.impersonator
+      ) {
+        blocks.push({
+          title: "Dev",
+          subtitle: "",
+          to: "/app/dev",
+          colour: "grey",
         });
       }
 

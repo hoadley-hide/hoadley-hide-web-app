@@ -5,12 +5,12 @@ import { AppBreadcrumb } from "~/common/breadcrumb";
 import { createAlert } from "~/common/helper-factories";
 import { promiseTimeout } from "~/common/promise";
 import {
+  Admin,
   AppUserEntity,
   Entity,
   EventLog,
   EventLogAugmented,
   EventLogPersisted,
-  EventLogPersistedRaw,
   EventStage,
   GraphQL,
   MonsterHuntMonster,
@@ -52,6 +52,7 @@ export const state = () => ({
   ],
   hasPermissionWarningBeenRead: false as boolean,
   user: null as AppUserEntity | null,
+  impersonator: null as Admin | null,
   eventLogs: [] as EventLog[],
   pendingLogIds: [] as string[],
 });
@@ -398,6 +399,9 @@ export const mutations: MutationTree<RootState> = {
   persistUser: (state, entity: AppUserEntity) => {
     Vue.set(state, "user", entity);
   },
+  persistImpersonator: (state, entity: Admin) => {
+    Vue.set(state, "impersonator", entity);
+  },
   collectClue: (state, clue: MonsterHuntMonsterIssuedStored) => {
     Vue.set(
       state.monsterHuntCluesIssued,
@@ -562,13 +566,35 @@ export const actions: ActionTree<RootState, RootState> = {
   },
 
   async persistUser(
-    { commit, getters },
-    opts:
+    { state, getters, commit },
+    opts: (
       | { adminId: string }
       | MonsterHuntPlayer
       | { patrolId: string }
       | { stuntId: string }
+      | Entity
+    ) & {
+      impersonate?: boolean;
+    }
   ) {
+    if (opts.impersonate && state.impersonator?._type === "admin") {
+      // No action requried, current impersonator is just changing user data.
+    } else if (opts.impersonate && getters.user?._type === "admin") {
+      commit("persistImpersonator", getters.user);
+    } else if (opts.impersonate === false && state.impersonator) {
+      commit("persistUser", state.impersonator);
+      commit("persistImpersonator", null);
+      return;
+    }
+
+    if ("id" in opts) {
+      const found = getters.findById(opts.id);
+      if (found) {
+        commit("persistUser", found);
+        return;
+      }
+    }
+
     if ("adminId" in opts) {
       commit("persistUser", getters.admin(opts.adminId));
     } else if ("_type" in opts && opts._type === "monsterHuntPlayer") {
