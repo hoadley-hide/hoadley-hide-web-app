@@ -50,6 +50,7 @@ export default defineNuxtConfig({
    */
   plugins: [
     { src: "~/plugins/filters.ts" },
+    { src: "~/plugins/authorisation.ts" },
     { src: "~/plugins/persistedState.client.js", mode: "client" },
     { src: "~/plugins/postMessageReceive.client.js", mode: "client" },
     { src: "~/plugins/printd.client.ts", mode: "client" },

@@ -1,67 +1,65 @@
 <template>
-  <v-row>
-    <authorised :allow="['stunt:canReview']">
-      <template v-slot:default>
+  <div>
+    <v-row v-show="$auth(['stunt:canReview'])">
+      <v-col cols="12">
+        <v-card>
+          <v-card-title class="text-h3">{{ stunt.name }}</v-card-title>
+
+          <v-card-subtitle class="text--secondary">
+            Review this stunt
+          </v-card-subtitle>
+
+          <v-card-text>
+            By giving us a review, you're helping shape Hoadley Hide into the
+            future.
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col v-if="stuntReviewCompleted" cols="12">
+        <v-card>
+          <v-card-text class="text-red">
+            You have already submitted a review for this stunt.
+          </v-card-text>
+
+          <v-btn block text nuxt :to="`${stunt.path}`">Back to Stunt</v-btn>
+        </v-card>
+      </v-col>
+
+      <v-form model="review" v-else>
+        <!-- Questions -->
+        <v-col
+          cols="12"
+          v-for="question in questions"
+          v-bind:key="question.heading"
+        >
+          <review-question
+            @input="(value) => (review[question.storageKey] = value)"
+            :question="question"
+          ></review-question>
+        </v-col>
+
+        <!-- Submit Review -->
         <v-col cols="12">
-          <v-card>
-            <v-card-title class="text-h3">{{ stunt.name }}</v-card-title>
-
-            <v-card-subtitle class="text--secondary">
-              Review this stunt
-            </v-card-subtitle>
-
-            <v-card-text>
-              By giving us a review, you're helping shape Hoadley Hide into the
-              future.
-            </v-card-text>
-          </v-card>
+          <v-btn block color="success" @click="submitReview">
+            Submit Review
+          </v-btn>
         </v-col>
+      </v-form>
+    </v-row>
+    <v-row v-show="$auth([], ['stunt:canReview'])">
+      <v-col cols="12">
+        <v-card>
+          <v-card-title class="text-h3">{{ stunt.name }}</v-card-title>
 
-        <v-col v-if="stuntReviewCompleted" cols="12">
-          <v-card>
-            <v-card-text class="text-red">
-              You have already submitted a review for this stunt.
-            </v-card-text>
-
-            <v-btn block text nuxt :to="`${stunt.path}`">Back to Stunt</v-btn>
-          </v-card>
-        </v-col>
-
-        <v-form model="review" v-else>
-          <!-- Questions -->
-          <v-col
-            cols="12"
-            v-for="question in questions"
-            v-bind:key="question.heading"
-          >
-            <review-question
-              @input="(value) => (review[question.storageKey] = value)"
-              :question="question"
-            ></review-question>
-          </v-col>
-
-          <!-- Submit Review -->
-          <v-col cols="12">
-            <v-btn block color="success" @click="submitReview">
-              Submit Review
-            </v-btn>
-          </v-col>
-        </v-form>
-      </template>
-      <template v-slot:blocked>
-        <v-col cols="12">
-          <v-card>
-            <v-card-title class="text-h3">{{ stunt.name }}</v-card-title>
-
-            <v-card-subtitle>Review this stunt</v-card-subtitle>
-            <v-card-text>
-              Why sir, are you here? You are not a patrol user. Buzz off.
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </template>
-    </authorised>
-  </v-row>
+          <v-card-subtitle>Review this stunt</v-card-subtitle>
+          <v-card-text>
+            Why sir, are you here? You are not a patrol user. Buzz off.
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script lang="ts">

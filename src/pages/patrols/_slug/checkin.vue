@@ -1,96 +1,94 @@
 <template>
-  <v-row>
-    <authorised :allow="['patrol:canCheckIn']">
-      <template v-slot:default>
-        <v-col cols="12">
-          <v-card>
-            <v-card-title class="text-h3">{{ patrol.name }}</v-card-title>
+  <div>
+    <v-row v-show="$auth(['stunt:canCheckIn'])">
+      <v-col cols="12">
+        <v-card>
+          <v-card-title class="text-h3">{{ patrol.name }}</v-card-title>
 
-            <v-card-subtitle class="text--secondary">
-              Checkin this patrol
-            </v-card-subtitle>
-          </v-card>
+          <v-card-subtitle class="text--secondary">
+            Checkin this patrol
+          </v-card-subtitle>
+        </v-card>
+      </v-col>
+
+      <v-form>
+        <!-- Questions -->
+        <v-col cols="12">
+          <v-time-picker
+            v-model="checkin['checkinTime']"
+            title="Check in Time"
+          ></v-time-picker>
         </v-col>
 
-        <v-form>
-          <!-- Questions -->
-          <v-col cols="12">
-            <v-time-picker
-              v-model="checkin['checkinTime']"
-              title="Check in Time"
-            ></v-time-picker>
-          </v-col>
-
-          <v-col cols="12">
-            <v-row tile>
-              <v-col cols="12">
-                <v-slider
-                  v-model="checkin['planning']"
-                  label="Score: Planning"
-                  min="0"
-                  max="10"
-                  step="1"
-                ></v-slider>
-              </v-col>
-              <v-col cols="12">
-                <v-slider
-                  v-model="checkin['teamwork']"
-                  label="Score: Team work"
-                  min="0"
-                  max="10"
-                  step="1"
-                ></v-slider>
-              </v-col>
-              <v-col cols="12">
-                <v-slider
-                  v-model="checkin['leadership']"
-                  label="Score: Leadership"
-                  min="0"
-                  max="10"
-                  step="1"
-                ></v-slider>
-              </v-col>
-              <v-col cols="12">
-                <v-slider
-                  v-model="checkin['creativity']"
-                  label="Score: Creativity"
-                  min="0"
-                  max="10"
-                  step="1"
-                ></v-slider>
-              </v-col>
-            </v-row>
-          </v-col>
-
-          <v-col cols="12">
-            <v-time-picker
-              v-model="checkin['checkoutTime']"
-              title="Check out Time"
-            ></v-time-picker>
-          </v-col>
-
-          <!-- Submit Checkin -->
-          <v-col cols="12">
-            <v-btn block color="success" @click="submitCheckin">
-              Submit Checkin
-            </v-btn>
-          </v-col>
-        </v-form>
-      </template>
-      <template v-slot:blocked>
         <v-col cols="12">
-          <v-card>
-            <v-card-title class="text-h3">{{ patrol.name }}</v-card-title>
-
-            <v-card-subtitle>Check-in this patrol</v-card-subtitle>
-            <v-card-text>
-              Why sir, are you here? You are not a stunt user. Buzz off.
-            </v-card-text>
-          </v-card>
+          <v-row tile>
+            <v-col cols="12">
+              <v-slider
+                v-model="checkin['planning']"
+                label="Score: Planning"
+                min="0"
+                max="10"
+                step="1"
+              ></v-slider>
+            </v-col>
+            <v-col cols="12">
+              <v-slider
+                v-model="checkin['teamwork']"
+                label="Score: Team work"
+                min="0"
+                max="10"
+                step="1"
+              ></v-slider>
+            </v-col>
+            <v-col cols="12">
+              <v-slider
+                v-model="checkin['leadership']"
+                label="Score: Leadership"
+                min="0"
+                max="10"
+                step="1"
+              ></v-slider>
+            </v-col>
+            <v-col cols="12">
+              <v-slider
+                v-model="checkin['creativity']"
+                label="Score: Creativity"
+                min="0"
+                max="10"
+                step="1"
+              ></v-slider>
+            </v-col>
+          </v-row>
         </v-col>
-      </template>
-    </authorised>
-  </v-row>
+
+        <v-col cols="12">
+          <v-time-picker
+            v-model="checkin['checkoutTime']"
+            title="Check out Time"
+          ></v-time-picker>
+        </v-col>
+
+        <!-- Submit Checkin -->
+        <v-col cols="12">
+          <v-btn block color="success" @click="submitCheckin">
+            Submit Checkin
+          </v-btn>
+        </v-col>
+      </v-form>
+    </v-row>
+    <v-row v-show="$auth([], ['stunt:canReview'])">
+      <v-col cols="12">
+        <v-card>
+          <v-card-title class="text-h3">{{ patrol.name }}</v-card-title>
+
+          <v-card-subtitle>Check-in this patrol</v-card-subtitle>
+          <v-card-text>
+            Why sir, are you here? You are not a stunt user. Buzz off.
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script lang="ts">

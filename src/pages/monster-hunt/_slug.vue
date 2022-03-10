@@ -45,25 +45,23 @@
         Back to Monster list
       </v-btn>
     </v-col>
-    <authorised :allow="['monsterHunt:canShare']">
-      <v-col cols="12" sm="6">
-        <v-card>
-          <v-card-title class="text-h4 d-flex flex-nowrap">
-            <v-icon left large>mdi-qrcode</v-icon>
-            <span>Share this stage</span>
-          </v-card-title>
-          <v-card-text class="d-flex justify-space-around">
-            <qr-code
-              :entity="{
-                code: monsterHuntMonster.code,
-                path: monsterHuntMonster.path,
-                name: monsterHuntMonster.name,
-              }"
-            ></qr-code>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </authorised>
+    <v-col cols="12" sm="6" v-show="$auth(['monsterHunt:canShare'])">
+      <v-card>
+        <v-card-title class="text-h4 d-flex flex-nowrap">
+          <v-icon left large>mdi-qrcode</v-icon>
+          <span>Share this stage</span>
+        </v-card-title>
+        <v-card-text class="d-flex justify-space-around">
+          <qr-code
+            :entity="{
+              code: monsterHuntMonster.code,
+              path: monsterHuntMonster.path,
+              name: monsterHuntMonster.name,
+            }"
+          ></qr-code>
+        </v-card-text>
+      </v-card>
+    </v-col>
   </v-row>
 </template>
 

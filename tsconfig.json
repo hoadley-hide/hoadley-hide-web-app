@@ -1,5 +1,4 @@
 {
-  "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
     "target": "esnext",
     "lib": ["dom", "es2015", "es2016"],

@@ -7,25 +7,21 @@
         <v-card-text>Patrol Number: #{{ patrol.patrolNumber }}</v-card-text>
       </v-card>
     </v-col>
-    <authorised :allow="['patrol:canCheckIn']">
-      <v-col cols="12" sm="6">
-        <v-btn block nuxt :to="`${patrol.path}/checkin`">
-          Check in Patrol
-        </v-btn>
-      </v-col>
-    </authorised>
-    <authorised :allow="['authenticated']">
-      <template v-slot:default="{ activeUser }">
-        <v-col cols="12" sm="6" v-if="patrol.code === activeUser.code">
-          <v-card>
-            <v-card-text>
-              <strong>This is your Patrol.</strong> You can share this QR code
-              with friends from other patrols!
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </template>
-    </authorised>
+    <v-col cols="12" sm="6" v-show="$auth(['patrol:canCheckIn'])">
+      <v-btn block nuxt :to="`${patrol.path}/checkin`"> Check in Patrol </v-btn>
+    </v-col>
+    <v-col
+      cols="12"
+      sm="6"
+      v-show="$useUser() && patrol.code === $useUser().code"
+    >
+      <v-card>
+        <v-card-text>
+          <strong>This is your Patrol.</strong> You can share this QR code with
+          friends from other patrols!
+        </v-card-text>
+      </v-card>
+    </v-col>
     <v-col cols="12" sm="6">
       <v-card>
         <v-card-title class="text-h4 d-flex flex-nowrap">

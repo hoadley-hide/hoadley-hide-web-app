@@ -10,9 +10,9 @@
 
       <v-divider></v-divider>
 
-      <authorised :allow="['authenticated']">
-        <template v-slot:default="{ activeUser }">
-          <v-list-item :to="activeUser.path">
+      <client-only>
+        <div v-if="$getUser()">
+          <v-list-item :to="$getUser().path">
             <v-list-item-icon>
               <v-icon>mdi-account-details</v-icon>
             </v-list-item-icon>
@@ -21,16 +21,15 @@
               <v-list-item-title>
                 Profile
                 <small class="text--secondary">
-                  ({{ activeUser._type | capitalize }})
+                  ({{ $getUser()._type | capitalize }})
                 </small>
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 
           <v-divider></v-divider>
-        </template>
-      </authorised>
-
+        </div>
+      </client-only>
       <v-list dense>
         <v-list-item
           v-for="item in items"
