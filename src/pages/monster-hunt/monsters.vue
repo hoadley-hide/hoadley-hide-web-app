@@ -25,7 +25,10 @@
                       </div>
                       <div>
                         <span class="text--secondary">Time:</span>
-                        <code>{{ data.scanned.time | datetime }}</code>
+                        <code v-if="data.scanned.time">
+                          {{ data.scanned.time | datetime }}
+                        </code>
+                        <code v-else>None</code>
                       </div>
                     </div>
                     <v-chip>
@@ -67,7 +70,24 @@ export default {
       }
 
       if (authorised(this.$store, ["monsterHunt:seeAll"])) {
-        return this.$store.state.monsterHuntMonsters;
+        return this.$store.state.monsterHuntMonsters.flatMap(
+          (monster: MonsterHuntMonster) => {
+            const scanned = this.$store.getters.hasCodeBeenScanned(
+              monster.code
+            );
+            const data = {
+              monster: monster,
+              scanned: {
+                time: scanned ? new Date(scanned.time) : null,
+                ago: scanned
+                  ? this.$options.filters?.duration(new Date(scanned.time))
+                  : "Not scanned",
+              },
+            };
+
+            return [data];
+          }
+        );
       }
 
       return this.$store.state.monsterHuntMonsters.flatMap(
