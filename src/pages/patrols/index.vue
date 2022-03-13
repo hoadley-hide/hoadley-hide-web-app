@@ -7,22 +7,34 @@
         <v-card-text>Browse the patrols you have met so far.</v-card-text>
       </v-card>
     </v-col>
+    <v-col cols="12" sm="6" v-show="$useUser((u) => u._type === 'patrol')">
+      <v-card>
+        <v-card-text>
+          <p>Hanging together with the gang.</p>
+          <v-btn block nuxt :to="$useUser((u) => u.path, '')">
+            View your Patrol
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-col>
     <v-col cols="12">
       <v-card>
         <v-card-text>
-          <v-list>
-            <v-list-item
-              v-for="patrol in patrols"
-              :key="patrol.title"
-              :to="`/patrols/${patrol.slug}`"
-            >
-              <v-icon left>{{ patrol.icon }}</v-icon>
-              <span class="tab-title-left-align">{{ patrol.name }}</span>
-            </v-list-item>
-            <v-list-item v-if="patrols.length === 0">
-              <i>You have not discovered any patrols</i>
-            </v-list-item>
-          </v-list>
+          <client-only>
+            <v-list>
+              <v-list-item
+                v-for="patrol in patrols"
+                :key="patrol.title"
+                :to="`/patrols/${patrol.slug}`"
+              >
+                <v-icon left>{{ patrol.icon }}</v-icon>
+                <span class="tab-title-left-align">{{ patrol.name }}</span>
+              </v-list-item>
+              <v-list-item v-if="patrols.length === 0">
+                <i>You have not discovered any patrols</i>
+              </v-list-item>
+            </v-list>
+          </client-only>
           <v-btn block color="success" to="/scan">Open scanner</v-btn>
         </v-card-text>
       </v-card>

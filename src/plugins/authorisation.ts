@@ -1,9 +1,23 @@
 import { authorised } from "~/common/authorisation";
-import { PermissionScope } from "~/types";
+import { AppUserEntity, PermissionScope } from "~/types";
 
 export default ({ store }, inject) => {
   inject("auth", (allow: PermissionScope[], block: PermissionScope[] = []) =>
     authorised(store, allow, block)
   );
-  inject("useUser", () => store.getters.user);
+  inject(
+    "useUser",
+    (callback: (user: AppUserEntity) => any, unauthorisedValue: string) => {
+      if (store.getters.user && !callback) {
+        //legacy
+        return store.getters.user;
+      }
+
+      if (callback && store.getters.user) {
+        return callback(store.getters.user);
+      }
+
+      return unauthorisedValue ?? false;
+    }
+  );
 };
