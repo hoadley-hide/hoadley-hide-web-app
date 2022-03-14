@@ -4,33 +4,56 @@
       <v-card>
         <v-card-title class="text-h3">Dev Links</v-card-title>
 
-        <v-card-text v-if="impersonator">
-          <v-btn block @click="deposter">
-            Return to being
-            {{ impersonator.name }} ({{ impersonator._type }})
-          </v-btn>
-        </v-card-text>
+        <client-only>
+          <v-card-text v-if="impersonator">
+            <v-btn block @click="deposter">
+              Return to being
+              {{ impersonator.name }} ({{ impersonator._type }})
+            </v-btn>
+          </v-card-text>
+        </client-only>
       </v-card>
     </v-col>
     <v-col cols="6" md="4" v-for="(entityList, key) in entities" :key="key">
       <v-card>
-        <v-card-title>
-          {{ key | capitalize }}
-        </v-card-title>
+        <v-card-text class="d-flex">
+          <span class="d-flex flex-column align-start">
+            <h4>{{ key | capitalize }}</h4>
+          </span>
+          <v-spacer></v-spacer>
+          <span class="d-flex flex-column btn-group">
+            <v-btn x-small color="primary" nuxt to="" disabled>View</v-btn>
+            <v-btn x-small color="green" @click="scanEntity(key, 'add')">
+              Scan All
+            </v-btn>
+            <v-btn x-small color="warning" @click="scanEntity(key, 'remove')">
+              Un-scan All
+            </v-btn>
+          </span>
+        </v-card-text>
+        <v-divider></v-divider>
         <v-card-text
           v-for="entity in entityList"
           :key="entity.code"
           class="d-flex"
         >
           <span class="d-flex flex-column align-start">
-            <code>Name</code>
             <p>{{ entity.name }}</p>
+
+            <p v-show="entityScanned(entity)" class="green--text">
+              <i>Has been scanned</i>
+            </p>
           </span>
           <v-spacer></v-spacer>
-          <v-btn x-small color="primary" nuxt :to="entity.path">View</v-btn>
-          <v-btn x-small color="secondary" nuxt @click="impersonate(entity)">
-            Impersonate
-          </v-btn>
+          <span class="d-flex flex-column btn-group">
+            <v-btn x-small color="primary" nuxt :to="entity.path">View</v-btn>
+            <v-btn x-small color="green" @click="toggleScan(entity)">
+              Toggle Scan
+            </v-btn>
+            <v-btn x-small color="secondary" @click="impersonate(entity)">
+              Impersonate
+            </v-btn>
+          </span>
         </v-card-text>
       </v-card>
     </v-col>
@@ -57,6 +80,11 @@ export default {
         monsterHuntMonster: this.$store.state.monsterHuntMonsters,
       };
     },
+    entityScanned() {
+      return (entity) => {
+        return this.$store.getters.hasCodeBeenScanned(entity.code);
+      };
+    },
     impersonator() {
       return this.$store.state.impersonator;
     },
@@ -69,6 +97,44 @@ export default {
     ]);
   },
   methods: {
+    async scanEntity(entityType: EntityType, action: "add" | "remove") {
+      for await (const entity of this.entities[entityType]) {
+        await this.toggleScan(entity, action);
+      }
+    },
+
+    async toggleScan(entity, action: "add" | "remove" | "toggle" = "toggle") {
+      const scanned = this.entityScanned(entity);
+
+      if (action === "add" && scanned) {
+        return;
+      }
+      if (action === "remove" && !scanned) {
+        return;
+      }
+
+      let actionable = action;
+      if (action === "toggle") {
+        actionable = scanned ? "remove" : "add";
+      }
+
+      if (actionable === "add") {
+        await this.$store.dispatch("recordCodeScan", entity);
+
+        await createAlert(this.$store, {
+          message: `Code ${entity.code} recorded as scanned`,
+          type: "success",
+        });
+      } else {
+        await this.$store.dispatch("removeCodeScan", entity.code);
+
+        await createAlert(this.$store, {
+          message: `Code ${entity.code} recorded as not scanned`,
+          type: "warning",
+        });
+      }
+    },
+
     async impersonate(entity) {
       await this.$store.dispatch("persistUser", {
         ...entity,
@@ -98,3 +164,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.btn-group > *:first-child {
+  border-radius: 4px 4px 0 0;
+}
+.btn-group > *:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+.btn-group > *:last-child {
+  border-radius: 0 0 4px 4px;
+}
+</style>

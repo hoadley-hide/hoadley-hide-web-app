@@ -21,12 +21,14 @@
           </div>
           <div v-show="setupType === null">
             <v-divider></v-divider>
-            <v-container>
-              <btn-block
-                :btn-blocks="signUpActions"
-                @click-block="handleActionClick"
-              ></btn-block>
-            </v-container>
+            <client-only>
+              <v-container>
+                <btn-block
+                  :btn-blocks="signUpActions"
+                  @click-block="handleActionClick"
+                ></btn-block>
+              </v-container>
+            </client-only>
           </div>
         </v-card>
       </v-col>

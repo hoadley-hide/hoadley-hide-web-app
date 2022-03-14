@@ -361,6 +361,15 @@ export const mutations: MutationTree<RootState> = {
     };
     Vue.set(state.scannedCodes, state.scannedCodes.length, scannedData);
   },
+  removeCodeScan: (state, code: string) => {
+    const scanned = state.scannedCodes.find((e) => e.code === code);
+    console.log(scanned);
+    if (!scanned) {
+      return;
+    }
+
+    state.scannedCodes.splice(state.scannedCodes.indexOf(scanned), 1);
+  },
   clearScannedCodes: (state) => {
     Vue.set(state, "scannedCodes", []);
     Vue.set(state, "monsterHuntCluesIssued", []);
@@ -461,23 +470,31 @@ export const actions: ActionTree<RootState, RootState> = {
       alert.equals(appAlert)
     );
 
-    const alert: AppAlert = duplicateAlert ? duplicateAlert : appAlert;
+    if (appAlert.deduplicate && duplicateAlert) {
+      // Deduplication is enabled & the alert is a duplicate.
+      // Don't add a new alert.
+
+      // Do extend time for existing alert.
+      commit("setAlertTimeoutWrapper", {
+        appAlert: duplicateAlert,
+        callback: (alert) => {
+          dispatch(`expireAlert`, alert);
+        },
+        millis: 5000,
+      });
+
+      return;
+    }
 
     commit("setAlertTimeoutWrapper", {
-      appAlert: alert,
+      appAlert: appAlert,
       callback: (alert) => {
         dispatch(`expireAlert`, alert);
       },
       millis: 5000,
     });
 
-    if (appAlert.deduplicate && duplicateAlert) {
-      // Deduplication is enabled & the alert is a duplicate.
-      // Don't add a new alert.
-      return;
-    }
-
-    commit("addAlert", alert);
+    commit("addAlert", appAlert);
   },
   async expireAlert({ commit }, appAlert: AppAlert) {
     commit("removeAlert", appAlert);
@@ -556,6 +573,9 @@ export const actions: ActionTree<RootState, RootState> = {
 
   async recordCodeScan({ commit }, lookup: Entity) {
     commit("recordCodeScan", lookup);
+  },
+  async removeCodeScan({ commit }, code: string) {
+    commit("removeCodeScan", code);
   },
   async clearScannedCodes({ commit }) {
     commit("clearScannedCodes");
