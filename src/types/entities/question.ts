@@ -11,6 +11,7 @@ export interface Question {
     | "checkpoint:voc:exit";
   description: string;
   tickLabels: string[];
+  sortOrder: number;
 }
 
 export interface QuestionRaw {
@@ -25,4 +26,5 @@ export interface QuestionRaw {
     | "checkpoint_voc_exit";
   description: string;
   tickLabels: string[];
+  sortOrder: number;
 }

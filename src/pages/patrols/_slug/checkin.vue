@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-row v-show="$auth(['stunt:canCheckIn'])">
+  <v-form model="checkin" class="checkin-form">
+    <v-row v-show="$auth(['patrol:canCheckPointStunt'])">
       <v-col cols="12">
         <v-card>
           <v-card-title class="text-h3">{{ patrol.name }}</v-card-title>
@@ -11,72 +11,32 @@
         </v-card>
       </v-col>
 
-      <v-form>
-        <!-- Questions -->
-        <v-col cols="12">
-          <v-time-picker
-            v-model="checkin['checkinTime']"
-            title="Check in Time"
-          ></v-time-picker>
-        </v-col>
+      <!-- Questions -->
+      <v-col
+        cols="12"
+        md="6"
+        v-for="question in questions"
+        v-bind:key="question.heading"
+      >
+        <review-question
+          @input="
+            (value) => {
+              checkin[question.storageKey] = value;
+              dataChanged(question);
+            }
+          "
+          :question="question"
+        ></review-question>
+      </v-col>
 
-        <v-col cols="12">
-          <v-row tile>
-            <v-col cols="12">
-              <v-slider
-                v-model="checkin['planning']"
-                label="Score: Planning"
-                min="0"
-                max="10"
-                step="1"
-              ></v-slider>
-            </v-col>
-            <v-col cols="12">
-              <v-slider
-                v-model="checkin['teamwork']"
-                label="Score: Team work"
-                min="0"
-                max="10"
-                step="1"
-              ></v-slider>
-            </v-col>
-            <v-col cols="12">
-              <v-slider
-                v-model="checkin['leadership']"
-                label="Score: Leadership"
-                min="0"
-                max="10"
-                step="1"
-              ></v-slider>
-            </v-col>
-            <v-col cols="12">
-              <v-slider
-                v-model="checkin['creativity']"
-                label="Score: Creativity"
-                min="0"
-                max="10"
-                step="1"
-              ></v-slider>
-            </v-col>
-          </v-row>
-        </v-col>
-
-        <v-col cols="12">
-          <v-time-picker
-            v-model="checkin['checkoutTime']"
-            title="Check out Time"
-          ></v-time-picker>
-        </v-col>
-
-        <!-- Submit Checkin -->
-        <v-col cols="12">
-          <v-btn block color="success" @click="submitCheckin">
-            Submit Checkin
-          </v-btn>
-        </v-col>
-      </v-form>
+      <!-- Submit Checkin -->
+      <v-col cols="12">
+        <v-btn block color="success" @click="submitCheckin">
+          Submit Checkin
+        </v-btn>
+      </v-col>
     </v-row>
-    <v-row v-show="$auth([], ['stunt:canReview'])">
+    <v-row v-show="!$auth(['patrol:canCheckPointStunt'])">
       <v-col cols="12">
         <v-card>
           <v-card-title class="text-h3">{{ patrol.name }}</v-card-title>
@@ -88,7 +48,7 @@
         </v-card>
       </v-col>
     </v-row>
-  </div>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -110,6 +70,12 @@ export default {
     patrol() {
       return this.$store.getters.patrol(this.$route.params.slug);
     },
+    questions() {
+      return this.$store.getters.checkpointStuntVisitQuestions.sort(
+        (a, b) => a.sortOrder - b.sortOrder
+      );
+    },
+
     activeUser(): AppUserEntity | null {
       return this.$store.getters.user;
     },

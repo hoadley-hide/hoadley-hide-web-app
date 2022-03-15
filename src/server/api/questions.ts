@@ -11,6 +11,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     questionGroup
     description
     tickLabels
+    sortOrder
   }`;
 
   const returnable = await simpleAllGraphQL<QuestionRaw, Question>(
@@ -24,11 +25,12 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       storageKey: question.storageKey,
       questionFieldType: question.questionFieldType,
       questionGroup: question.questionGroup.replace(
-        "_",
+        /_/g,
         ":"
       ) as unknown as Question["questionGroup"],
       description: question.description,
       tickLabels: question.tickLabels,
+      sortOrder: question.sortOrder,
     })
   );
 

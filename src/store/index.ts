@@ -99,6 +99,11 @@ export const getters: GetterTree<RootState, RootState> = {
       (question) => question.questionGroup === "review:stunt"
     );
   },
+  checkpointStuntVisitQuestions: (state) => {
+    return state.questions.filter(
+      (question) => question.questionGroup === "checkpoint:stunt:visit"
+    );
+  },
   // User getters
   user: (state, getters): AppUserEntity | null => {
     if (!state.user) {

@@ -10,6 +10,7 @@ export interface Stunt {
   icon: string;
   description: RichText;
   location: string;
+  stuntNumber: number;
 }
 
 export interface StuntRaw {
@@ -19,4 +20,5 @@ export interface StuntRaw {
   icon: string;
   description: RichText;
   location: string;
+  stuntNumber: number;
 }
