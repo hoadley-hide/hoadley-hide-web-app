@@ -35,7 +35,6 @@
 </template>
 
 <script lang="ts">
-import { authorised } from "~/common/authorisation";
 import { setBreadcrumbs } from "~/common/helper-factories";
 
 export default {
@@ -59,21 +58,21 @@ export default {
       ];
     },
     remainingMonsters(): number | null {
-      if (!authorised(this.$store, ["authenticated"])) {
+      if (!this.$useUser()) {
         return null;
       }
 
       return this.$store.getters.remainingMonsters.length;
     },
     remainingClues(): number | null {
-      if (!authorised(this.$store, ["authenticated"])) {
+      if (!this.$useUser()) {
         return null;
       }
 
       return this.$store.getters.remainingClues.length;
     },
     cluesIssued(): number | null {
-      if (!authorised(this.$store, ["authenticated"])) {
+      if (!this.$useUser()) {
         return null;
       }
 

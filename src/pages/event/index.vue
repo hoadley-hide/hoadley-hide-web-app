@@ -41,7 +41,6 @@
 </template>
 
 <script lang="ts">
-import { authorised } from "~/common/authorisation";
 import { setBreadcrumbs } from "~/common/helper-factories";
 import { EventStage } from "~/types";
 
@@ -51,11 +50,11 @@ export default {
   },
   computed: {
     eventStages() {
-      if (!authorised(this.$store, ["authenticated"])) {
+      if (!this.$useUser()) {
         return [];
       }
 
-      if (authorised(this.$store, ["eventStage:seeAll"])) {
+      if (this.$auth(["eventStage:seeAll"])) {
         return this.$store.state.eventStages;
       }
 

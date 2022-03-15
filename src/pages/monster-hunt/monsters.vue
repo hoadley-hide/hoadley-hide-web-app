@@ -55,7 +55,6 @@
 </template>
 
 <script lang="ts">
-import { authorised } from "~/common/authorisation";
 import { setBreadcrumbs } from "~/common/helper-factories";
 import { MonsterHuntMonster } from "~/types";
 
@@ -65,11 +64,11 @@ export default {
   },
   computed: {
     monsterHuntMonsters(): MonsterHuntMonster[] {
-      if (!authorised(this.$store, ["authenticated"])) {
+      if (!this.$useUser()) {
         return [];
       }
 
-      if (authorised(this.$store, ["monsterHunt:seeAll"])) {
+      if (this.$auth(["monsterHunt:seeAll"])) {
         return this.$store.state.monsterHuntMonsters.flatMap(
           (monster: MonsterHuntMonster) => {
             const scanned = this.$store.getters.hasCodeBeenScanned(

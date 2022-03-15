@@ -26,6 +26,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["./index.d.ts", "./**/*.ts", "./**/*.vue"],
+  "include": ["./**/*.ts", "./**/*.vue"],
   "exclude": [".nuxt", ".vscode", "dist", "dist.js", "node_modules"]
 }

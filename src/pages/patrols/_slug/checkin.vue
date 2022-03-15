@@ -1,6 +1,6 @@
 <template>
   <v-form model="checkin" class="checkin-form">
-    <v-row v-show="$auth(['patrol:canCheckPointStunt'])">
+    <v-row v-show="$auth(['patrol:canCheckpoint:stunt:visit'])">
       <v-col cols="12">
         <v-card>
           <v-card-title class="text-h3">{{ patrol.name }}</v-card-title>
@@ -63,6 +63,7 @@ export default {
   },
   data() {
     return {
+      checkInSessionUUID: "",
       checkin: {},
     };
   },
@@ -87,8 +88,14 @@ export default {
       { to: this.patrol.path, label: this.patrol.name },
       { to: null, label: "Check In" },
     ]);
+
+    this.initialiseCheckInSession();
   },
   methods: {
+    initialiseCheckInSession() {
+      this.checkInSessionUUID = uuid4();
+    },
+    async dataChanged(question) {},
     async submitCheckin() {
       if (!this.activeUser) {
         createAlert(this.$store, {

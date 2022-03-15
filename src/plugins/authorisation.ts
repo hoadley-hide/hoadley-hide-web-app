@@ -21,3 +21,13 @@ export default ({ store }, inject) => {
     }
   );
 };
+
+declare module "vue/types/vue" {
+  interface Vue {
+    $auth: (allow: PermissionScope[], block?: PermissionScope[]) => boolean;
+    $useUser: (
+      callback?: (user: AppUserEntity) => any,
+      unauthorisedValue?: string
+    ) => any;
+  }
+}

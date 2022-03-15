@@ -8,8 +8,8 @@ export default ({ store }, inject) => {
   );
 };
 
-declare module "@nuxt/types" {
-  interface Context {
+declare module "vue/types/vue" {
+  interface Vue {
     $createAlert: (options: AppAlertOptions) => Promise<void>;
   }
 }

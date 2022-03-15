@@ -27,8 +27,14 @@
                 :key="patrol.title"
                 :to="`/patrols/${patrol.slug}`"
               >
-                <v-icon left>{{ patrol.icon }}</v-icon>
-                <span class="tab-title-left-align">{{ patrol.name }}</span>
+                <v-list-item-content>
+                  <span>
+                    <v-chip small color="purple">
+                      #{{ patrol.patrolNumber }}
+                    </v-chip>
+                    {{ patrol.name }}
+                  </span>
+                </v-list-item-content>
               </v-list-item>
               <v-list-item v-if="patrols.length === 0">
                 <i>You have not discovered any patrols</i>
@@ -43,7 +49,6 @@
 </template>
 
 <script lang="ts">
-import { authorised } from "~/common/authorisation";
 import { setBreadcrumbs } from "~/common/helper-factories";
 import { Patrol } from "~/types";
 
@@ -53,11 +58,11 @@ export default {
   },
   computed: {
     patrols(): Patrol[] {
-      if (!authorised(this.$store, ["authenticated"])) {
+      if (!this.$useUser()) {
         return [];
       }
 
-      if (authorised(this.$store, ["patrol:seeAll"])) {
+      if (this.$auth(["patrol:seeAll"])) {
         return this.$store.state.patrols;
       }
 

@@ -11,7 +11,7 @@ export function authorised(
     return false;
   }
 
-  const userScopes: PermissionScope[] = ["authenticated"];
+  const userScopes: PermissionScope[] = [];
 
   // Set default or additional scopes.
   if (user._type === "admin") {
@@ -19,14 +19,18 @@ export function authorised(
   }
   if (user._type === "patrol") {
     // Default Patrol scopes.
+    userScopes.push("app:seeEmergencyInfo");
+    userScopes.push("patrol:canShare");
     userScopes.push("stunt:canReview");
     userScopes.push("review:seeRecordedBySelf");
   }
   if (user._type === "stunt") {
     // Default Stunt scopes.
+    userScopes.push("app:seeEmergencyInfo");
     userScopes.push("app:seeReviewList");
-    userScopes.push("patrol:canCheckPointStunt");
-    userScopes.push("patrol:canScore");
+    userScopes.push("patrol:canCheckpoint:stunt:visit");
+    userScopes.push("patrol:canShare");
+    userScopes.push("patrol:seeAll");
     userScopes.push("review:seeReferencingSelf");
     userScopes.push("stunt:canShare");
     userScopes.push("stunt:seeAll");

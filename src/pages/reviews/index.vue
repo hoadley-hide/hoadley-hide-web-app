@@ -96,7 +96,6 @@
 </template>
 
 <script lang="ts">
-import { authorised } from "~/common/authorisation";
 import { setBreadcrumbs } from "~/common/helper-factories";
 import { EventLog, Question } from "~/types";
 
@@ -108,19 +107,19 @@ export default {
   },
   computed: {
     reviews(): EventLog[] {
-      if (!authorised(this.$store, ["authenticated"])) {
+      if (!this.$useUser()) {
         return [];
       }
 
-      if (authorised(this.$store, ["review:seeRecordedBySelf"])) {
+      if (this.$auth(["review:seeRecordedBySelf"])) {
         return this.$store.getters.reviewsRecordedBySelf;
       }
 
-      if (authorised(this.$store, ["review:seeReferencingSelf"])) {
+      if (this.$auth(["review:seeReferencingSelf"])) {
         return this.$store.getters.reviewsReferencingSelf;
       }
 
-      if (authorised(this.$store, ["review:seeAll"])) {
+      if (this.$auth(["review:seeAll"])) {
         return this.$store.getters.reviewQuestions;
       }
 

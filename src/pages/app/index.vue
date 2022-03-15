@@ -78,7 +78,6 @@
 </template>
 
 <script lang="ts">
-import { authorised } from "~/common/authorisation";
 import { createAlert, setBreadcrumbs } from "~/common/helper-factories";
 
 export default {
@@ -110,7 +109,7 @@ export default {
         },
       ];
 
-      if (authorised(this.$store, ["stunt:canReview"])) {
+      if (this.$auth(["stunt:canReview"])) {
         blocks.push({
           title: "Reviews",
           subtitle: "See the reviews you have made",
@@ -118,7 +117,7 @@ export default {
           colour: "orange",
         });
       }
-      if (authorised(this.$store, ["app:seeReviewList"])) {
+      if (this.$auth(["app:seeReviewList"])) {
         blocks.push({
           title: "Reviews",
           subtitle: "See the reviews made about you",
@@ -127,7 +126,7 @@ export default {
         });
       }
 
-      if (authorised(this.$store, ["app:seePrintingList"])) {
+      if (this.$auth(["app:seePrintingList"])) {
         blocks.push({
           title: "Printing list",
           subtitle: "",
@@ -136,10 +135,7 @@ export default {
         });
       }
 
-      if (
-        authorised(this.$store, ["app:seeDev"]) ||
-        this.$store.state.impersonator
-      ) {
+      if (this.$auth(["app:seeDev"]) || this.$store.state.impersonator) {
         blocks.push({
           title: "Dev",
           subtitle: "",

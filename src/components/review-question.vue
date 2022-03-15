@@ -58,7 +58,7 @@
                   </v-list-item-icon>
                   <v-list-item-content>
                     <span>
-                      <v-chip small color="blue">
+                      <v-chip small color="red">
                         #{{ stunt.stuntNumber }}
                       </v-chip>
                       {{ stunt.name }}

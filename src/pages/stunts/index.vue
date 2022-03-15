@@ -33,7 +33,6 @@
 </template>
 
 <script lang="ts">
-import { authorised } from "~/common/authorisation";
 import { setBreadcrumbs } from "~/common/helper-factories";
 import { Stunt } from "~/types";
 
@@ -43,11 +42,11 @@ export default {
   },
   computed: {
     stunts(): Stunt[] {
-      if (!authorised(this.$store, ["authenticated"])) {
+      if (!this.$useUser()) {
         return [];
       }
 
-      if (authorised(this.$store, ["stunt:seeAll"])) {
+      if (this.$auth(["stunt:seeAll"])) {
         return this.$store.state.stunts;
       }
 

@@ -74,7 +74,6 @@
 </template>
 
 <script lang="ts">
-import { authorised } from "~/common/authorisation";
 import { setBreadcrumbs } from "~/common/helper-factories";
 import { MonsterHuntMonsterIssued } from "~/types";
 
@@ -84,13 +83,9 @@ export default {
   },
   computed: {
     issuedMonsters(): MonsterHuntMonsterIssued[] {
-      if (!authorised(this.$store, ["authenticated"])) {
+      if (!this.$useUser()) {
         return [];
       }
-
-      // if (authorised(this.$store, ["clue:seeAll"])) {
-      //   return this.$store.state.monsterHuntCluesIssued;
-      // }
 
       return this.$store.getters.monsterHuntCluesIssued;
     },
