@@ -124,10 +124,13 @@
 </template>
 
 <script lang="ts">
-import { Stunt } from "~/types";
+import { Question, Stunt } from "~/types";
+import { isValid } from "~/common/question";
 import { dateHelper } from "~/plugins/filters";
+
 export default {
   props: {
+    value: { type: [String, Number, Date] },
     question: Object,
   },
   data() {
@@ -139,17 +142,7 @@ export default {
   },
   computed: {
     hasError() {
-      if (this.question.questionFieldType === "Time") {
-        return typeof dateHelper(this.data) === "string";
-      } else if (this.question.questionFieldType === "StuntPicker") {
-        return !this.data;
-      } else if (this.question.questionFieldType === "StuntPicker") {
-        return !this.data;
-      } else if (this.question.questionFieldType === "ShortAnswer") {
-        return !this.data;
-      } else if (this.question.questionFieldType === "Rating") {
-        return this.countOfRatingChanges < 3 && this.data <= 1;
-      }
+      return !isValid(this.question, this.data);
     },
     stuntList() {
       return this.$store.state.stunts
@@ -158,10 +151,28 @@ export default {
     },
   },
   watch: {
+    value(newValue) {
+      const potentialDate = dateHelper(newValue);
+      if (typeof potentialDate !== "string") {
+        this.data = potentialDate.toJSDate();
+        return;
+      }
+      this.data = newValue;
+    },
     data() {
+      const question = this.question as Question;
+
+      if (question.questionFieldType === "Time") {
+        const potentialDate = dateHelper(this.data);
+        if (typeof potentialDate !== "string") {
+          this.$emit("input", potentialDate.toISO());
+
+          return;
+        }
+      }
       this.$emit("input", this.data);
 
-      if (this.question.questionFieldType === "Rating") {
+      if (question.questionFieldType === "Rating") {
         this.countOfRatingChanges++;
       }
     },

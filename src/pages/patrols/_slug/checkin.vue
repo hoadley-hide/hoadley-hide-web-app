@@ -1,6 +1,6 @@
 <template>
   <v-form model="checkin" class="checkin-form">
-    <v-row v-show="$auth(['patrol:canCheckpoint:stunt:visit'])">
+    <v-row v-if="$auth(['patrol:canCheckpoint:stunt:visit'])">
       <v-col cols="12">
         <v-card>
           <v-card-title class="text-h3">{{ patrol.name }}</v-card-title>
@@ -15,28 +15,40 @@
       <v-col
         cols="12"
         md="6"
-        v-for="question in questions"
+        v-for="(question, i) in questions"
         v-bind:key="question.heading"
       >
         <review-question
-          @input="
-            (value) => {
-              checkin[question.storageKey] = value;
-              dataChanged(question);
-            }
-          "
+          v-model="checkin[question.storageKey]"
           :question="question"
         ></review-question>
+
+        <v-btn
+          v-if="i % 2"
+          block
+          text
+          color="success"
+          class="mt-5"
+          @click="() => submitCheckin(true, true)"
+        >
+          Save &amp; Return later
+        </v-btn>
       </v-col>
 
       <!-- Submit Checkin -->
       <v-col cols="12">
-        <v-btn block color="success" @click="submitCheckin">
-          Submit Checkin
+        <v-btn
+          block
+          outlined
+          color="success"
+          :disabled="!formValid"
+          @click="() => submitCheckin(false, true)"
+        >
+          Submit now
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-show="!$auth(['patrol:canCheckPointStunt'])">
+    <v-row v-else>
       <v-col cols="12">
         <v-card>
           <v-card-title class="text-h3">{{ patrol.name }}</v-card-title>
@@ -52,8 +64,9 @@
 </template>
 
 <script lang="ts">
-import { createAlert, setBreadcrumbs } from "~/common/helper-factories";
-import { AppUserEntity, EventLog } from "~/types";
+import { setBreadcrumbs } from "~/common/helper-factories";
+import { isValid } from "~/common/question";
+import { AppUserEntity, Checkpoint, EventLog, Question } from "~/types";
 
 import uuid4 from "uuid4";
 
@@ -63,25 +76,35 @@ export default {
   },
   data() {
     return {
-      checkInSessionUUID: "",
       checkin: {},
+      progressDebouncer: null,
     };
   },
   computed: {
     patrol() {
       return this.$store.getters.patrol(this.$route.params.slug);
     },
-    questions() {
+    questions(): Question[] {
       return this.$store.getters.checkpointStuntVisitQuestions.sort(
         (a, b) => a.sortOrder - b.sortOrder
       );
     },
-
+    partialCheckpoint() {
+      return this.$store.getters["checkpoint/getPartial"](
+        this.patrol,
+        this.$useUser()
+      );
+    },
     activeUser(): AppUserEntity | null {
       return this.$store.getters.user;
     },
+    formValid(): boolean {
+      return this.questions.every((question) =>
+        isValid(question, this.checkin[question.storageKey])
+      );
+    },
   },
-  mounted() {
+  async mounted() {
     setBreadcrumbs(this.$store, [
       { to: "/", label: "Home" },
       { to: "/patrols", label: "Patrols" },
@@ -89,27 +112,89 @@ export default {
       { to: null, label: "Check In" },
     ]);
 
-    this.initialiseCheckInSession();
+    await this.initialiseCheckInSession();
+  },
+  watch: {
+    checkin: {
+      deep: true,
+      handler(value) {
+        this.dataChanged(value);
+      },
+    },
   },
   methods: {
-    initialiseCheckInSession() {
-      this.checkInSessionUUID = uuid4();
+    async initialiseCheckInSession() {
+      if (!this.patrol || !this.$useUser()) {
+        await this.$createAlert({
+          message: "Something went wrong, you might have to reload your page",
+          type: "error",
+        });
+        return;
+      }
+
+      // Get partial record out of the store.
+      const partialCheckpoint: Checkpoint | null = this.partialCheckpoint;
+
+      if (!partialCheckpoint) {
+        // There is no existing checkpoint.
+
+        this.checkin = this.questions.reduce((acc, question) => {
+          acc[question.storageKey] = "";
+          return acc;
+        }, {});
+
+        return;
+      }
+
+      // Rehydrate the form
+      this.checkin = JSON.parse(JSON.stringify(partialCheckpoint.data));
     },
-    async dataChanged(question) {},
-    async submitCheckin() {
-      if (!this.activeUser) {
-        createAlert(this.$store, {
+
+    async dataChanged(question) {
+      if (this.progressDebouncer) {
+        clearTimeout(this.progressDebouncer);
+      }
+
+      this.progressDebouncer = setTimeout(() => {
+        this.submitCheckin(true, false);
+      }, 500);
+    },
+
+    async submitCheckin(
+      inProgressSubmit: boolean = false,
+      close: boolean = false
+    ) {
+      if (!this.$useUser()) {
+        this.$createAlert({
           message: "You are not logged in, you can not check in a patrol",
         });
       }
       if (!this.patrol) {
-        createAlert(this.$store, {
+        this.$createAlert({
           message: "An internal error occurred, you can not check in a patrol",
         });
       }
 
+      const deduplicationId =
+        (this.partialCheckpoint as Checkpoint | null)?.id || uuid4();
+
+      const data: Checkpoint["data"] = JSON.parse(JSON.stringify(this.checkin));
+      data.type = "checkpoint:stunt:visit";
+
+      const checkpoint: Checkpoint = {
+        id: deduplicationId,
+        patrol: this.patrol,
+        recording: this.$useUser(),
+        data: data,
+      };
+
+      if (inProgressSubmit) {
+        // Add to inflight checkpoints
+        await this.$store.dispatch("checkpoint/addInflight", checkpoint);
+      }
+
       const logData: EventLog = {
-        deduplicationId: uuid4(),
+        deduplicationId: deduplicationId,
         eventName: this.$config.eventName,
         type: "checkpoint:stunt:visit",
         recordingEntity: {
@@ -117,12 +202,33 @@ export default {
           id: this.activeUser.id,
         },
         referencedEntity: { _type: this.patrol._type, id: this.patrol.id },
-        data: this.checkin,
+        data: data,
       };
 
       await this.$store.dispatch("persistEventLog", logData);
 
-      this.$router.push(this.patrol.path);
+      if (inProgressSubmit && close) {
+        // Do not run validation, just move on.
+        this.$router.push(this.patrol.path);
+      }
+
+      if (!inProgressSubmit) {
+        // Complete submission if it is valid.
+        if (this.formValid) {
+          // Remove from inflight checkpoints
+          await this.$store.dispatch("checkpoint/removeInflight", checkpoint);
+
+          this.$router.push(this.patrol.path);
+        } else {
+          this.$createAlert({
+            heading: "Some fields require attention",
+            message:
+              "Checkpoint can not be completed while fields require attention",
+            type: "warning",
+          });
+          return;
+        }
+      }
     },
   },
 };

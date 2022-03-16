@@ -17,6 +17,28 @@
         </v-card-text>
       </v-card>
     </v-col>
+    <v-col cols="12" v-if="inflightCheckpoints.length !== 0">
+      <v-card>
+        <v-card-title class="text-h4">In Progress Check Ins</v-card-title>
+        <v-card-text>
+          <v-list>
+            <v-list-item
+              v-for="checkpoint in inflightCheckpoints"
+              :key="checkpoint.id"
+              :to="`${checkpoint.patrol.path}/checkin`"
+            >
+              <v-list-item-content>
+                <chip-patrol :patrol="checkpoint.patrol"></chip-patrol>
+                <chip-stunt
+                  :stunt="checkpoint.recording"
+                  v-if="checkpoint.recording._type === 'stunt'"
+                ></chip-stunt>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+      </v-card>
+    </v-col>
     <v-col cols="12">
       <v-card>
         <v-card-text>
@@ -64,6 +86,9 @@ export default {
       return this.$store.state.patrols.filter((patrol: Patrol) =>
         this.$store.getters.hasCodeBeenScanned(patrol.code)
       );
+    },
+    inflightCheckpoints() {
+      return this.$store.getters["checkpoint/getPartials"](this.$useUser());
     },
   },
   mounted() {

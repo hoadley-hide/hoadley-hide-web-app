@@ -3,7 +3,12 @@ export interface Question {
   id: string;
   heading: string;
   storageKey: string;
-  questionFieldType: "Rating" | "LongAnswer" | "ShortAnswer" | "StuntPicker";
+  questionFieldType:
+    | "LongAnswer"
+    | "Rating"
+    | "ShortAnswer"
+    | "StuntPicker"
+    | "Time";
   questionGroup:
     | "review:stunt"
     | "checkpoint:stunt:visit"
@@ -18,7 +23,12 @@ export interface QuestionRaw {
   id: string;
   heading: string;
   storageKey: string;
-  questionFieldType: "Rating" | "LongAnswer" | "ShortAnswer" | "StuntPicker";
+  questionFieldType:
+    | "LongAnswer"
+    | "Rating"
+    | "ShortAnswer"
+    | "StuntPicker"
+    | "Time";
   questionGroup:
     | "review_stunt"
     | "checkpoint_stunt_visit"

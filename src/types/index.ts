@@ -1,4 +1,5 @@
 export * from "./common";
+export * from "./checkpoint";
 export * from "./entities/admin";
 export * from "./entities/eventLog";
 export * from "./entities/eventStage";

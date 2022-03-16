@@ -388,6 +388,7 @@ export const mutations: MutationTree<RootState> = {
     Vue.set(state, "eventLogs", []);
     Vue.set(state, "pendingLogIds", []);
     Vue.set(state, "monsterHuntCluesIssued", []);
+    Vue.set(state.checkpoint, "inflightCheckpoints", []);
   },
   // Entities
   setAdmins: (state, admins) => {

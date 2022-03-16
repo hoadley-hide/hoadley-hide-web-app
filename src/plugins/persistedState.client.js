@@ -4,13 +4,14 @@ export default ({ store }) => {
   createPersistedState({
     key: "hh-2022",
     paths: [
-      "user", // wrap lines.
-      "impersonator",
-      "scannedCodes",
-      "hasPermissionWarningBeenRead",
       "eventLogs",
-      "pendingLogIds",
+      "hasPermissionWarningBeenRead",
+      "impersonator",
+      "checkpoint.inflightCheckpoints",
       "monsterHuntCluesIssued",
+      "pendingLogIds",
+      "scannedCodes",
+      "user",
     ],
   })(store);
 };

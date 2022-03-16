@@ -84,7 +84,7 @@ Vue.filter(
       !showMonths &&
       !showDays &&
       !showHours &&
-      ~showMinutes;
+      !showMinutes;
 
     if (future && niceText && !lessThanOneMinute) {
       pp.push("in");

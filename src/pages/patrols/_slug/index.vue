@@ -12,6 +12,7 @@
     <v-col cols="12" sm="6" v-if="$auth(['patrol:canCheckpoint:stunt:visit'])">
       <v-btn
         block
+        outlined
         nuxt
         :to="`${patrol.path}/checkin`"
         :disabled="patrolCheckInStatus === 'complete'"
@@ -29,7 +30,7 @@
           patrolCheckInStatus === "incomplete"
             ? "Check in Patrol"
             : patrolCheckInStatus === "inflight"
-            ? "Continute Check in Patrol"
+            ? "Continute Check in of Patrol"
             : patrolCheckInStatus === "complete"
             ? "Already Checked in Patrol"
             : `Unknown status ${patrolCheckInStatus}`
