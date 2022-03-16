@@ -17,8 +17,12 @@
                 :key="stunt.title"
                 :to="`/stunts/${stunt.slug}`"
               >
-                <v-icon left>{{ stunt.icon }}</v-icon>
-                <span class="tab-title-left-align">{{ stunt.name }}</span>
+                <v-list-item-icon>
+                  <v-icon>{{ stunt.icon }}</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <chip-stunt :stunt="stunt"></chip-stunt>
+                </v-list-item-content>
               </v-list-item>
               <v-list-item v-if="stunts.length === 0">
                 <i>You have not discovered any stunts</i>

@@ -28,12 +28,7 @@
                 :to="`/patrols/${patrol.slug}`"
               >
                 <v-list-item-content>
-                  <span>
-                    <v-chip small color="purple">
-                      #{{ patrol.patrolNumber }}
-                    </v-chip>
-                    {{ patrol.name }}
-                  </span>
+                  <chip-patrol :patrol="patrol"></chip-patrol>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item v-if="patrols.length === 0">
