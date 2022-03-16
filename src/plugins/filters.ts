@@ -1,7 +1,9 @@
 import Vue from "vue";
 import { DateTime, Duration } from "luxon";
 
-const dateHelper = (inDate: Date | string | undefined): DateTime | string => {
+export const dateHelper = (
+  inDate: Date | string | undefined
+): DateTime | string => {
   if (!inDate) {
     return "";
   }
@@ -45,9 +47,9 @@ Vue.filter("datetime", function (inDate: Date | string | undefined) {
   }
 
   return dt.toLocaleString({
-    weekday: 'short',
-    hour: 'numeric',
-    minute: 'numeric',
+    weekday: "short",
+    hour: "numeric",
+    minute: "numeric",
   });
 });
 
@@ -65,7 +67,7 @@ Vue.filter(
     const future = d.milliseconds > 0;
 
     d = future ? d : d.negate();
-    d = d.shiftTo("years", "months", "days", "hours", "minutes");
+    d = d.shiftTo("years", "months", "days", "hours", "minutes", "seconds");
 
     const dur = d.toObject();
     let pp: string[] = [];
@@ -76,8 +78,15 @@ Vue.filter(
     const showHours = Number(dur.hours) > 0 && !showYears && !showMonths;
     const showMinutes =
       Number(dur.minutes) > 0 && !showYears && !showMonths && !showDays;
+    const lessThanOneMinute =
+      Number(dur.seconds) > 0 &&
+      !showYears &&
+      !showMonths &&
+      !showDays &&
+      !showHours &&
+      ~showMinutes;
 
-    if (future && niceText) {
+    if (future && niceText && !lessThanOneMinute) {
       pp.push("in");
     }
     if (showYears) {
@@ -95,7 +104,10 @@ Vue.filter(
     if (showMinutes) {
       pp.push(`${dur.minutes?.toFixed(0)}m`);
     }
-    if (!future && niceText) {
+    if (lessThanOneMinute) {
+      pp.push(`Just now`);
+    }
+    if (!future && niceText && !lessThanOneMinute) {
       pp.push("ago");
     }
     return pp.join(" ");
