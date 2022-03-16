@@ -105,7 +105,7 @@ export const getters: GetterTree<RootState, RootState> = {
     );
   },
   // User getters
-  user: (state, getters): AppUserEntity | null => {
+  user: (state): AppUserEntity | null => {
     if (!state.user) {
       return null;
     }
@@ -134,6 +134,8 @@ export const getters: GetterTree<RootState, RootState> = {
       });
     return activeStages[activeStages.length - 1];
   },
+
+  // Monster Hunt
   remainingMonsters: (state, getters) => {
     const remainingMonsters = state.monsterHuntMonsters.filter(
       (monster: MonsterHuntMonster) => {
@@ -343,7 +345,7 @@ export const mutations: MutationTree<RootState> = {
     state.alerts.splice(state.alerts.indexOf(appAlert), 1);
   },
   setAlertTimeoutWrapper: (
-    state,
+    _state,
     opts: {
       appAlert: AppAlert;
       callback: (alert: AppAlert) => void;
