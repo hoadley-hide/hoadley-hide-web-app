@@ -8,10 +8,10 @@
       </v-card>
     </v-col>
     <v-col cols="12" sm="6" v-show="$useUser((u) => u._type === 'patrol')">
-      <v-card>
+      <v-card color="indigo">
         <v-card-text>
-          <p>Hanging together with the gang.</p>
-          <v-btn block nuxt :to="$useUser((u) => u.path, '')">
+          <p class="text-h5">Hanging together with the gang.</p>
+          <v-btn block outlined nuxt :to="$useUser((u) => u.path, '')">
             View your Patrol
           </v-btn>
         </v-card-text>
