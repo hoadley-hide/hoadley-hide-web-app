@@ -113,8 +113,8 @@ export default {
   watch: {
     checkin: {
       deep: true,
-      handler(value) {
-        this.dataChanged(value);
+      handler() {
+        this.dataChanged();
       },
     },
   },
@@ -146,7 +146,7 @@ export default {
       this.checkin = JSON.parse(JSON.stringify(partialCheckpoint.data));
     },
 
-    async dataChanged(question) {
+    async dataChanged() {
       if (this.progressDebouncer) {
         clearTimeout(this.progressDebouncer);
       }
@@ -202,7 +202,14 @@ export default {
         data: data,
       };
 
-      await this.$store.dispatch("persistEventLog", logData);
+      try {
+        await this.$store.dispatch("persistEventLog", {
+          ...logData,
+          quiet: inProgressSubmit || !this.formValid,
+        });
+      } catch (e) {
+        // Alert already generated.
+      }
 
       if (inProgressSubmit && close) {
         // Do not run validation, just move on.

@@ -670,7 +670,10 @@ export const actions: ActionTree<RootState, RootState> = {
     }
   },
 
-  async persistEventLog({ state, commit }, logData: EventLog) {
+  async persistEventLog(
+    { state, commit },
+    logData: EventLog & { quiet?: boolean }
+  ) {
     const existingLog = state.eventLogs.find(
       (log) => log.deduplicationId === logData.deduplicationId
     );
@@ -708,6 +711,12 @@ export const actions: ActionTree<RootState, RootState> = {
     } catch (e) {
       console.log(e);
 
+      if (logData.quiet) {
+        return {
+          deduplicationId: logData.deduplicationId,
+        };
+      }
+
       await createAlert(this, {
         heading: "Currently unable to record log to server",
         message:
@@ -715,7 +724,7 @@ export const actions: ActionTree<RootState, RootState> = {
         type: "error",
       });
 
-      throw new Error(`Retry Failed: ${e.message}`);
+      throw new Error(`Event Log Failed: ${e.message}`);
     }
 
     return {
