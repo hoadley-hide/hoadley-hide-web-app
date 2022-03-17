@@ -63,8 +63,7 @@
 </template>
 
 <script lang="ts">
-import { createAlert, setBreadcrumbs } from "~/common/helper-factories";
-import { AppUserEntity, EventLog } from "~/types";
+import { EventLog } from "~/types";
 
 import uuid4 from "uuid4";
 
@@ -85,9 +84,6 @@ export default {
     questions() {
       return this.$store.getters.reviewQuestions;
     },
-    activeUser(): AppUserEntity | null {
-      return this.$store.getters.user;
-    },
     stuntReviewCompleted(): boolean {
       return (
         !this.submissionInProgress &&
@@ -96,7 +92,7 @@ export default {
     },
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: "/stunts", label: "Stunts" },
       { to: this.stunt.path, label: this.stunt.name },
@@ -106,13 +102,13 @@ export default {
   methods: {
     async submitReview() {
       this.submissionInProgress = true;
-      if (!this.activeUser) {
-        createAlert(this.$store, {
+      if (!this.$useUser()) {
+        await this.$createAlert({
           message: "You are not logged in, you can not submit a review",
         });
       }
       if (!this.stunt) {
-        createAlert(this.$store, {
+        await this.$createAlert({
           message: "An internal error occurred, you can not submit a review",
         });
       }
@@ -122,10 +118,10 @@ export default {
         version: new Date().toISOString(),
         eventName: this.$config.eventName,
         type: "review:stunt",
-        recordingEntity: {
-          _type: this.activeUser._type,
-          id: this.activeUser.id,
-        },
+        recordingEntity: this.$useUser(
+          (u) => ({ _type: u._type, id: u.id }),
+          undefined
+        ),
         referencedEntity: { _type: this.stunt._type, id: this.stunt.id },
         data: this.review,
       };

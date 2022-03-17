@@ -74,7 +74,6 @@
 </template>
 
 <script lang="ts">
-import { setBreadcrumbs } from "~/common/helper-factories";
 import { MonsterHuntMonsterIssued } from "~/types";
 
 export default {
@@ -91,7 +90,7 @@ export default {
     },
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: "/monster-hunt", label: "Monster Hunt" },
       { to: null, label: "Clues" },

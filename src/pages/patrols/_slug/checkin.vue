@@ -64,9 +64,8 @@
 </template>
 
 <script lang="ts">
-import { setBreadcrumbs } from "~/common/helper-factories";
 import { isValid } from "~/common/question";
-import { AppUserEntity, Checkpoint, EventLog, Question } from "~/types";
+import { Checkpoint, EventLog, Question } from "~/types";
 
 import uuid4 from "uuid4";
 
@@ -95,9 +94,6 @@ export default {
         this.$useUser()
       );
     },
-    activeUser(): AppUserEntity | null {
-      return this.$store.getters.user;
-    },
     formValid(): boolean {
       return this.questions.every((question) =>
         isValid(question, this.checkin[question.storageKey])
@@ -105,7 +101,7 @@ export default {
     },
   },
   async mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: "/patrols", label: "Patrols" },
       { to: this.patrol.path, label: this.patrol.name },
@@ -198,10 +194,10 @@ export default {
         version: new Date().toISOString(),
         eventName: this.$config.eventName,
         type: "checkpoint:stunt:visit",
-        recordingEntity: {
-          _type: this.activeUser._type,
-          id: this.activeUser.id,
-        },
+        recordingEntity: this.$useUser(
+          (u) => ({ _type: u._type, id: u.id }),
+          undefined
+        ),
         referencedEntity: { _type: this.patrol._type, id: this.patrol.id },
         data: data,
       };

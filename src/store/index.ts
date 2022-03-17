@@ -1,8 +1,7 @@
 import Vue from "vue";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
-import { AppAlert } from "~/common/alert";
+import { AppAlert, createAlert } from "~/common/alert";
 import { AppBreadcrumb } from "~/common/breadcrumb";
-import { createAlert } from "~/common/helper-factories";
 import { promiseTimeout } from "~/common/promise";
 import {
   Admin,

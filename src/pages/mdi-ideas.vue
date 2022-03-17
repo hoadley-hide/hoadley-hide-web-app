@@ -33,8 +33,6 @@
 </template>
 
 <script>
-import { setBreadcrumbs } from "~/common/helper-factories";
-
 export default {
   data() {
     return {
@@ -91,7 +89,7 @@ export default {
     };
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: null, label: "mdi suggestions" },
     ]);

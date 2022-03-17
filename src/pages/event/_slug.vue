@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import { setBreadcrumbs } from "~/common/helper-factories";
 import lazy from "~/components/lazy.vue";
 
 export default {
@@ -61,7 +60,7 @@ export default {
     },
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: "/event", label: "The Adventure" },
       { to: null, label: this.eventStage.name },

@@ -48,7 +48,6 @@
 </template>
 
 <script lang="ts">
-import { setBreadcrumbs } from "~/common/helper-factories";
 import { WikiArticle } from "~/types";
 
 export default {
@@ -79,7 +78,7 @@ export default {
     },
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: null, label: "Wiki" },
     ]);

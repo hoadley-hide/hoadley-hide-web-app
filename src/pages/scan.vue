@@ -10,7 +10,6 @@
 
 <script lang="ts">
 // https://gruhn.github.io/vue-qrcode-reader/
-import { setBreadcrumbs } from "~/common/helper-factories";
 import { Entity } from "~/types";
 
 export default {
@@ -18,7 +17,7 @@ export default {
     return {};
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: null, label: "Scan" },
     ]);

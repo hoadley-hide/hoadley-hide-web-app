@@ -44,7 +44,6 @@
 </template>
 
 <script lang="ts">
-import { createAlert, setBreadcrumbs } from "~/common/helper-factories";
 import { EventLog, EventLogAugmented } from "~/types";
 
 export default {
@@ -66,7 +65,7 @@ export default {
     },
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: "/app", label: "App" },
       { to: null, label: "Pending Requests" },
@@ -89,13 +88,13 @@ export default {
 
         await this.$store.dispatch("persistEventLog", logData);
 
-        createAlert(this.$store, {
+        await this.$createAlert({
           heading: `Request retry suceeded`,
           message: `${request.type} - ${request.deduplicationId}`,
           type: "success",
         });
       } catch (e) {
-        createAlert(this.$store, {
+        await this.$createAlert({
           heading: `Request retry failed`,
           message: `${request.type} - ${request.deduplicationId} - ${e?.message}`,
           type: "error",

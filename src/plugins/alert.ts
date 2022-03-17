@@ -1,5 +1,4 @@
-import { createAlert } from "~/common/helper-factories";
-import { AppAlertOptions } from "~/common/alert";
+import { AppAlertOptions, createAlert } from "~/common/alert";
 
 export default ({ store }, inject) => {
   inject(

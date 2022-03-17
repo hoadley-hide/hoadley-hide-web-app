@@ -61,7 +61,6 @@
 </template>
 
 <script lang="ts">
-import { createAlert, setBreadcrumbs } from "~/common/helper-factories";
 import { QrCodeableEntity } from "~/types";
 
 type EntityType = QrCodeableEntity["_type"];
@@ -90,7 +89,7 @@ export default {
     },
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: "/app", label: "App" },
       { to: null, label: "Dev" },
@@ -121,14 +120,14 @@ export default {
       if (actionable === "add") {
         await this.$store.dispatch("recordCodeScan", entity);
 
-        await createAlert(this.$store, {
+        await this.$createAlert({
           message: `Code ${entity.code} recorded as scanned`,
           type: "success",
         });
       } else {
         await this.$store.dispatch("removeCodeScan", entity.code);
 
-        await createAlert(this.$store, {
+        await this.$createAlert({
           message: `Code ${entity.code} recorded as not scanned`,
           type: "warning",
         });
@@ -141,7 +140,7 @@ export default {
         impersonate: true,
       });
 
-      await createAlert(this.$store, {
+      await this.$createAlert({
         message: `You are impersonating ${entity.name}`,
         type: "success",
       });
@@ -154,7 +153,7 @@ export default {
         impersonate: false,
       });
 
-      await createAlert(this.$store, {
+      await this.$createAlert({
         message: `Returning to ${this.$store.getters.user.name}`,
         type: "warning",
       });

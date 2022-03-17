@@ -51,6 +51,7 @@ export default defineNuxtConfig({
   plugins: [
     { src: "~/plugins/alert.ts" },
     { src: "~/plugins/authorisation.ts" },
+    { src: "~/plugins/breadcrumb.ts" },
     { src: "~/plugins/filters.ts" },
     { src: "~/plugins/persistedState.client.js", mode: "client" },
     { src: "~/plugins/postMessageReceive.client.js", mode: "client" },

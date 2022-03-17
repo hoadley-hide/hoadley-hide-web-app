@@ -57,7 +57,6 @@
 </template>
 
 <script lang="ts">
-import { createAlert } from "~/common/helper-factories";
 import { Entity, EventStage, EventStageSignUpAction } from "~/types";
 
 export default {
@@ -119,9 +118,9 @@ export default {
         this.setupStep = progressSplit[1];
       }
     },
-    handleActionClick(clickTarget: string) {
+    async handleActionClick(clickTarget: string) {
       if (!clickTarget) {
-        createAlert(this.$store, {
+        await this.$createAlert({
           heading: `Invalid setup action`,
           message: "Contact HHMT for assistance",
         });

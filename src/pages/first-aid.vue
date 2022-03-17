@@ -11,11 +11,9 @@
 </template>
 
 <script>
-import { setBreadcrumbs } from "~/common/helper-factories";
-
 export default {
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: null, label: "First Aid" },
     ]);

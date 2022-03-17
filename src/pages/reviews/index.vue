@@ -96,7 +96,6 @@
 </template>
 
 <script lang="ts">
-import { setBreadcrumbs } from "~/common/helper-factories";
 import { EventLog, Question } from "~/types";
 
 export default {
@@ -130,7 +129,7 @@ export default {
     },
   },
   async mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: null, label: "Reviews" },
     ]);

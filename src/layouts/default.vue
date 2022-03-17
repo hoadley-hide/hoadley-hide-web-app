@@ -12,7 +12,7 @@
 
       <client-only>
         <div v-if="$useUser()">
-          <v-list-item :to="$useUser().path">
+          <v-list-item :to="$useUser((u) => u.path, '')">
             <v-list-item-icon>
               <v-icon>mdi-account-details</v-icon>
             </v-list-item-icon>
@@ -21,7 +21,7 @@
               <v-list-item-title>
                 Profile
                 <small class="text--secondary">
-                  ({{ $useUser()._type | capitalize }})
+                  ({{ $useUser((u) => u._type, "") | capitalize }})
                 </small>
               </v-list-item-title>
             </v-list-item-content>

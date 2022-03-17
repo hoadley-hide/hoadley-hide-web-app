@@ -84,7 +84,6 @@
 </template>
 
 <script lang="ts">
-import { setBreadcrumbs } from "~/common/helper-factories";
 import { QrCodeableEntity, CodeEntity } from "~/types";
 
 type EntityType = QrCodeableEntity["_type"] | "setup";
@@ -233,7 +232,7 @@ export default {
     },
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: "/app", label: "App" },
       { to: null, label: "Printing List" },

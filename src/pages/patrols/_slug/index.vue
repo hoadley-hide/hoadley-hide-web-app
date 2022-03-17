@@ -70,8 +70,6 @@
 </template>
 
 <script lang="ts">
-import { setBreadcrumbs } from "~/common/helper-factories";
-
 export default {
   validate({ params, store }) {
     return store.getters.patrol(params.slug);
@@ -98,7 +96,7 @@ export default {
     },
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: "/patrols", label: "Patrols" },
       { to: null, label: this.patrol.name },

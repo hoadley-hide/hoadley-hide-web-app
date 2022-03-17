@@ -78,8 +78,6 @@
 </template>
 
 <script lang="ts">
-import { createAlert, setBreadcrumbs } from "~/common/helper-factories";
-
 export default {
   data() {
     return {
@@ -154,7 +152,7 @@ export default {
     },
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: null, label: "Data Activity" },
     ]);
@@ -163,8 +161,8 @@ export default {
     async refreshData() {
       this.loading = true;
 
-      const timeout = setTimeout(() => {
-        createAlert(this.$store, {
+      const timeout = setTimeout(async () => {
+        await this.$createAlert({
           message: "Unable to refresh the app data",
           type: "error",
         });

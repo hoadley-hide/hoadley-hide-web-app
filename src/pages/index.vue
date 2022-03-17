@@ -47,7 +47,6 @@
 </template>
 
 <script lang="ts">
-import { setBreadcrumbs } from "~/common/helper-factories";
 import { EventStage, EventStageDashboardAction } from "~/types";
 
 export default {
@@ -60,7 +59,7 @@ export default {
     },
   },
   mounted() {
-    setBreadcrumbs(this.$store, [{ to: null, label: "Home" }]);
+    this.$setBreadcrumbs([{ to: null, label: "Home" }]);
   },
 };
 </script>

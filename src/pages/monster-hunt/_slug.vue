@@ -66,7 +66,6 @@
 </template>
 
 <script lang="ts">
-import { createAlert, setBreadcrumbs } from "~/common/helper-factories";
 import { MonsterHuntMonster } from "~/types";
 
 export default {
@@ -90,7 +89,7 @@ export default {
     },
   },
   mounted() {
-    setBreadcrumbs(this.$store, [
+    this.$setBreadcrumbs([
       { to: "/", label: "Home" },
       { to: "/monster-hunt", label: "Monster Hunt" },
       { to: null, label: this.monsterHuntMonster.name },
@@ -104,13 +103,13 @@ export default {
       );
 
       if (success) {
-        createAlert(this.$store, {
+        await this.$createAlert({
           message: "Clue added to your app",
           type: "success",
         });
         this.$router.push("/monster-hunt/clues");
       } else {
-        createAlert(this.$store, {
+        await this.$createAlert({
           message: "You have already found all the clues",
           type: "success",
         });

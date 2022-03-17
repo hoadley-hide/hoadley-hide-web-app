@@ -1,3 +1,5 @@
+import { Store } from "vuex/types/index";
+
 export interface AppAlertOptions {
   heading?: string;
   message: string;
@@ -37,4 +39,8 @@ export class AppAlert {
     }
     this.timeout = setTimeout(callback, millis, this);
   }
+}
+
+export function createAlert(store: Store<any>, options: AppAlertOptions) {
+  store.dispatch(`addAlert`, new AppAlert(options));
 }
