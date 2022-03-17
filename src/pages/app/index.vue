@@ -154,7 +154,7 @@ export default {
   mounted() {
     this.$setBreadcrumbs([
       { to: "/", label: "Home" },
-      { to: null, label: "Data Activity" },
+      { to: null, label: "App & Data" },
     ]);
   },
   methods: {

@@ -21,8 +21,12 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-col>
+    <v-col cols="12" class="py-0"><!-- Force the row reset --></v-col>
     <v-col cols="12" sm="6">
-      <v-btn color="success" block nuxt to="/wiki">Back to Wiki</v-btn>
+      <v-btn block nuxt to="/wiki">Back to Wiki</v-btn>
+    </v-col>
+    <v-col cols="12" sm="6">
+      <v-btn block color="success" to="/scan">Open scanner</v-btn>
     </v-col>
   </v-row>
 </template>

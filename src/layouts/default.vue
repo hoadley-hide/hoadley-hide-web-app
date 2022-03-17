@@ -145,13 +145,13 @@ export default {
           icon: "mdi-account-group",
           to: "/patrols",
         },
-        {
-          title: "Monsters At AG",
-          icon: "mdi-ghost",
-          to: "/monster-hunt",
-        },
+        // {
+        //   title: "Monsters At AG",
+        //   icon: "mdi-ghost",
+        //   to: "/monster-hunt",
+        // },
         { title: "Scan QR Code", icon: "mdi-qrcode", to: "/scan" },
-        { title: "Data & Activity", icon: "mdi-refresh", to: "/app" },
+        { title: "App & Data", icon: "mdi-cloud", to: "/app" },
         {
           title: "Upload Photos",
           icon: "mdi-image-plus",

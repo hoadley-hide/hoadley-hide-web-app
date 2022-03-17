@@ -5,6 +5,9 @@
         <v-card-title class="text-h2">Scan QR code</v-card-title>
       </qr-code-scan>
     </v-col>
+    <v-col cols="12" sm="6">
+      <v-btn block nuxt to="/">Home</v-btn>
+    </v-col>
   </v-row>
 </template>
 

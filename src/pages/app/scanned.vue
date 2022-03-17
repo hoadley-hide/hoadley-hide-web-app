@@ -77,7 +77,7 @@ export default {
   mounted() {
     this.$setBreadcrumbs([
       { to: "/", label: "Home" },
-      { to: "/app", label: "App" },
+      { to: "/app", label: "App & Data" },
       { to: null, label: "Scanned Codes" },
     ]);
   },
