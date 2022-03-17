@@ -1,20 +1,30 @@
 <template>
   <v-row>
-    <v-col cols="12" sm="6">
+    <v-col cols="12" sm="6" md="4">
       <v-card>
         <v-card-title class="text-h3">Dev Links</v-card-title>
 
-        <client-only>
-          <v-card-text v-if="impersonator">
-            <v-btn block @click="deposter">
-              Return to being
-              {{ impersonator.name }} ({{ impersonator._type }})
-            </v-btn>
-          </v-card-text>
-        </client-only>
+        <v-card-text v-if="impersonator">
+          <v-btn block outlined color="purple" @click="deposter">
+            Return to being
+            {{ impersonator.name }} ({{ impersonator._type }})
+          </v-btn>
+          <p class="text-body-1 pt-5">
+            You are impersonating <br />
+            <i>
+              "{{ $useUser((u) => u.name) }}" ({{ $useUser((u) => u._type) }})
+            </i>
+          </p>
+        </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="6" md="4" v-for="(entityList, key) in entities" :key="key">
+    <v-col
+      cols="12"
+      sm="6"
+      md="4"
+      v-for="(entityList, key) in entities"
+      :key="key"
+    >
       <v-card>
         <v-card-text class="d-flex">
           <span class="d-flex flex-column align-start">
