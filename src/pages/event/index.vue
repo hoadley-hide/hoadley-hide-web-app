@@ -7,32 +7,48 @@
         <v-card-text>Where are we up to in Hoadley Hide?</v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12">
+    <v-col cols="12" sm="6">
       <v-card>
         <v-card-text>
-          <v-list>
-            <v-list-item
+          <v-timeline align-top dense>
+            <v-timeline-item
               v-for="stage in eventStages"
               :key="stage.name"
               :to="`/event/${stage.slug}`"
-              class="py-2"
+              :icon="stage.icon"
+              color="red darken-4"
+              fill-dot
             >
-              <div class="d-flex flex-column align-stretch" style="width: 100%">
-                <span class="subtitle-1 font-bold">{{ stage.name }}</span>
-                <div class="d-flex flex-nowrap justify-space-between">
-                  <span class="d-inline-block text-truncate font-italic">
-                    {{ stage.descriptionText }}
-                  </span>
-                  <div class="pl-3 text-no-wrap">
-                    {{ stage.startTime | datetime }}
+              <v-row class="pt-1" no-gutters>
+                <v-col cols="12">
+                  <strong>{{ stage.name }}</strong>
+                </v-col>
+                <v-col offset="1" cols="11" v-if="stage.showTime">
+                  <strong> {{ stage.startTime | datetime }} </strong>
+                </v-col>
+                <v-col offset="1" cols="11">
+                  <div class="text-caption text-truncate font-italic">
+                    {{ stage.description.text }}
                   </div>
-                </div>
-              </div>
-            </v-list-item>
-            <v-list-item v-if="eventStages.length === 0">
-              <i>You have not discovered any adventures</i>
-            </v-list-item>
-          </v-list>
+                </v-col>
+                <v-col
+                  offset="1"
+                  cols="11"
+                  v-if="stage.instructions.length > 0"
+                >
+                  <div class="orange--text">
+                    {{ stage.instructions.length }}
+                    {{
+                      stage.instructions.length === 1
+                        ? "instruction"
+                        : "instructions"
+                    }}
+                    for you to read
+                  </div>
+                </v-col>
+              </v-row>
+            </v-timeline-item>
+          </v-timeline>
         </v-card-text>
       </v-card>
     </v-col>

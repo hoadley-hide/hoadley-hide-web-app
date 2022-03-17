@@ -7,8 +7,10 @@ export interface EventStage {
   name: string;
   slug: string;
   path: string;
+  icon: string;
   description: RichText;
   startTime: string;
+  showTime: boolean;
   instructions: RichText[];
   autoShowAfterStartTime: boolean;
   stageActions: EventStageActions;
@@ -39,8 +41,10 @@ export interface EventStageRaw {
   id: string;
   name: string;
   slug: string;
+  icon: string;
   description: RichText;
   startTime: string;
+  showTime: boolean;
   instructions: RichText[];
   autoShowAfterStartTime: boolean;
   stageActions?: Partial<EventStageActions>;

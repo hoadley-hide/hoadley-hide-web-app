@@ -12,8 +12,10 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     id
     name
     slug
+    icon
     description { html text }
     startTime
+    showTime
     instructions { html text }
     autoShowAfterStartTime
     stageActions
@@ -30,8 +32,10 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       name: stage.name,
       slug: stage.slug,
       path: `/event/${stage.slug}`,
+      icon: stage.icon,
       description: stage.description,
       startTime: stage.startTime,
+      showTime: stage.showTime,
       instructions: stage.instructions,
       autoShowAfterStartTime: stage.autoShowAfterStartTime,
       stageActions: {
