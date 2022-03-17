@@ -12,41 +12,61 @@
         <v-card-text>
           <v-timeline align-top dense>
             <v-timeline-item
+              color="yellow"
+              fill-dot
+              v-if="nextEventStage"
+              :icon="nextStageIcon"
+              icon-color="black"
+            >
+              <v-card tile flat>
+                <v-row no-gutters>
+                  <v-col cols="12">
+                    <i>
+                      The next part of the Adventure starts
+                      {{ nextEventStage.startTime | duration }}
+                    </i>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-timeline-item>
+
+            <v-timeline-item
               v-for="stage in eventStages"
               :key="stage.name"
-              :to="`/event/${stage.slug}`"
               :icon="stage.icon"
               color="red darken-4"
               fill-dot
             >
-              <v-row class="pt-1" no-gutters>
-                <v-col cols="12">
-                  <strong>{{ stage.name }}</strong>
-                </v-col>
-                <v-col offset="1" cols="11" v-if="stage.showTime">
-                  <strong> {{ stage.startTime | datetime }} </strong>
-                </v-col>
-                <v-col offset="1" cols="11">
-                  <div class="text-caption text-truncate font-italic">
-                    {{ stage.description.text }}
-                  </div>
-                </v-col>
-                <v-col
-                  offset="1"
-                  cols="11"
-                  v-if="stage.instructions.length > 0"
-                >
-                  <div class="orange--text">
-                    {{ stage.instructions.length }}
-                    {{
-                      stage.instructions.length === 1
-                        ? "instruction"
-                        : "instructions"
-                    }}
-                    for you to read
-                  </div>
-                </v-col>
-              </v-row>
+              <v-card tile flat nuxt :to="stage.path">
+                <v-row no-gutters>
+                  <v-col cols="12">
+                    <strong>{{ stage.name }}</strong>
+                  </v-col>
+                  <v-col offset="1" cols="11" v-if="stage.showTime">
+                    <strong> {{ stage.startTime | datetime }} </strong>
+                  </v-col>
+                  <v-col offset="1" cols="11">
+                    <div class="text-caption text-truncate font-italic">
+                      {{ stage.description.text }}
+                    </div>
+                  </v-col>
+                  <v-col
+                    offset="1"
+                    cols="11"
+                    v-if="stage.instructions.length > 0"
+                  >
+                    <div class="orange--text">
+                      {{ stage.instructions.length }}
+                      {{
+                        stage.instructions.length === 1
+                          ? "instruction"
+                          : "instructions"
+                      }}
+                      for you to read
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-card>
             </v-timeline-item>
           </v-timeline>
         </v-card-text>
@@ -67,33 +87,35 @@ import { EventStage } from "~/types";
 
 export default {
   data() {
-    return {};
+    return {
+      nextStageIcons: [
+        "mdi-crosshairs-question",
+        "mdi-calendar-question",
+        "mdi-help-network-outline",
+        "mdi-map-marker-question-outline",
+        "mdi-progress-question",
+      ],
+    };
   },
   computed: {
-    eventStages() {
+    eventStages(): EventStage[] {
       if (!this.$useUser()) {
         return [];
       }
 
       if (this.$auth(["eventStage:seeAll"])) {
-        return this.$store.state.eventStages;
+        return this.$store.getters.eventStagesNewestFirst;
       }
 
-      return this.$store.state.eventStages
-        .filter((stage: EventStage) => {
-          const stageAlwaysShown =
-            stage.autoShowAfterStartTime &&
-            Date.parse(stage.startTime) < Date.now();
-
-          const codeScanned = this.$store.getters.hasCodeBeenScanned(
-            stage.code
-          );
-
-          return codeScanned || stageAlwaysShown;
-        })
-        .sort((a: EventStage, b: EventStage) => {
-          return Date.parse(b.startTime) - Date.parse(a.startTime);
-        });
+      return this.$store.getters.scannedEventStages;
+    },
+    nextEventStage(): EventStage {
+      return this.$store.getters.nextEventStage;
+    },
+    nextStageIcon() {
+      return this.nextStageIcons[
+        (this.nextStageIcons.length * Math.random()) | 0
+      ];
     },
   },
   mounted() {

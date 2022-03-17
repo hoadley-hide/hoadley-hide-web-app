@@ -118,22 +118,40 @@ export const getters: GetterTree<RootState, RootState> = {
 
     return true;
   },
-  activeEventStage: (state, getters) => {
-    const activeStages = state.eventStages
-      .filter((stage: EventStage) => {
-        const stageAlwaysShown =
-          stage.autoShowAfterStartTime &&
-          Date.parse(stage.startTime) < Date.now();
-
-        const codeScanned = getters.hasCodeBeenScanned(stage.code);
-        return codeScanned || stageAlwaysShown;
-      })
+  eventStagesOldestFirst: (state) => {
+    return state.eventStages
+      .map((x) => x)
       .sort((a: EventStage, b: EventStage) => {
         return Date.parse(a.startTime) - Date.parse(b.startTime);
       });
-    return activeStages[activeStages.length - 1];
   },
+  eventStagesNewestFirst: (_state, getters) => {
+    return getters.eventStagesOldestFirst.reverse();
+  },
+  scannedEventStages: (_state, getters) => {
+    return getters.eventStagesNewestFirst.filter((stage: EventStage) => {
+      const stageAlwaysShown =
+        stage.autoShowAfterStartTime &&
+        Date.parse(stage.startTime) < Date.now();
 
+      const codeScanned = getters.hasCodeBeenScanned(stage.code);
+      return codeScanned || stageAlwaysShown;
+    });
+  },
+  activeEventStage: (_state, getters) => {
+    return getters.scannedEventStages[0];
+  },
+  nextEventStage: (_state, getters) => {
+    const activeStageIndex = getters.eventStagesNewestFirst.indexOf(
+      getters.activeEventStage
+    );
+
+    if (activeStageIndex === -1) {
+      return null;
+    }
+
+    return getters.eventStagesNewestFirst[activeStageIndex - 1];
+  },
   // Monster Hunt
   remainingMonsters: (state, getters) => {
     const remainingMonsters = state.monsterHuntMonsters.filter(
