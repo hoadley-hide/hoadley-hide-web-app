@@ -447,19 +447,34 @@ export const mutations: MutationTree<RootState> = {
     );
   },
   addEventLogRequest: (state, logData: EventLog) => {
-    // Record dedup id as pending.
-    Vue.set(
-      state.pendingLogIds,
-      state.pendingLogIds.length,
-      logData.deduplicationId
-    );
+    // Record dedup id as pending is not already.
+    if (!state.pendingLogIds.includes(logData.deduplicationId)) {
+      Vue.set(
+        state.pendingLogIds,
+        state.pendingLogIds.length,
+        logData.deduplicationId
+      );
+    }
+
     // Record log dataset for immediate use in app.
+    const existingLogIndex = state.eventLogs.findIndex(
+      (log) => log.deduplicationId === logData.deduplicationId
+    );
+
+    // Replace existing entry if present.
+    if (existingLogIndex !== -1) {
+      Vue.set(state.eventLogs, existingLogIndex, logData);
+      return;
+    }
+
     Vue.set(state.eventLogs, state.eventLogs.length, logData);
   },
   addEventLog: (state, logData: EventLog) => {
     const existingLogIndex = state.eventLogs.findIndex(
       (log) => log.deduplicationId === logData.deduplicationId
     );
+
+    // Replace existing entry if present.
     if (existingLogIndex !== -1) {
       Vue.set(state.eventLogs, existingLogIndex, logData);
       return;
@@ -659,14 +674,18 @@ export const actions: ActionTree<RootState, RootState> = {
     const existingLog = state.eventLogs.find(
       (log) => log.deduplicationId === logData.deduplicationId
     );
+
+    // New version or new log entry.
+    const newVersion = existingLog?.version !== logData.version;
     const isPending = state.pendingLogIds.includes(logData.deduplicationId);
 
-    if (!existingLog) {
+    // Always update the data in memory.
+    if (newVersion) {
       commit("addEventLogRequest", logData);
     }
 
-    if (existingLog && !isPending) {
-      // This has a been persisted, might be able to just return a success.
+    if (!newVersion && isPending) {
+      // This current version has been persisted,  just return a success.
       return { deduplicationId: existingLog.deduplicationId };
     }
 

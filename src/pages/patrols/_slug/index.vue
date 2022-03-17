@@ -92,7 +92,7 @@ export default {
       if (!this.patrol) {
         return "incomplete";
       }
-      if (!this.$auth(["patrol:canCheckPointStunt"])) {
+      if (!this.$auth(["patrol:canCheckpoint:stunt:visit"])) {
         return "incomplete";
       }
 
