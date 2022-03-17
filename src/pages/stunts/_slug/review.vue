@@ -119,6 +119,7 @@ export default {
 
       const logData: EventLog = {
         deduplicationId: uuid4(),
+        version: new Date().toISOString(),
         eventName: this.$config.eventName,
         type: "review:stunt",
         recordingEntity: {

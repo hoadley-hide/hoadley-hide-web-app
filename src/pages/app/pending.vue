@@ -76,6 +76,7 @@ export default {
     async handleRetry(request: EventLogAugmented) {
       const logData: EventLog = {
         deduplicationId: request.deduplicationId,
+        version: new Date().toISOString(),
         eventName: request.eventName,
         type: request.type,
         recordingEntity: request.recordingEntity,

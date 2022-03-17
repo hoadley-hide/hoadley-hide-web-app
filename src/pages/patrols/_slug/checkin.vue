@@ -195,6 +195,7 @@ export default {
 
       const logData: EventLog = {
         deduplicationId: deduplicationId,
+        version: new Date().toISOString(),
         eventName: this.$config.eventName,
         type: "checkpoint:stunt:visit",
         recordingEntity: {

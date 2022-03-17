@@ -270,6 +270,7 @@ export const getters: GetterTree<RootState, RootState> = {
     return logs.map(
       (log): EventLogAugmented => ({
         deduplicationId: log.deduplicationId,
+        version: log.version,
         eventName: log.eventName,
         type: log.type,
         recordingEntity: log.recordingEntity
@@ -297,6 +298,7 @@ export const getters: GetterTree<RootState, RootState> = {
     return logs.map(
       (log): EventLogAugmented => ({
         deduplicationId: log.deduplicationId,
+        version: log.version,
         eventName: log.eventName,
         type: log.type,
         recordingEntity: log.recordingEntity
@@ -322,6 +324,7 @@ export const getters: GetterTree<RootState, RootState> = {
     return logs.map(
       (log): EventLogAugmented => ({
         deduplicationId: log.deduplicationId,
+        version: log.version,
         eventName: log.eventName,
         type: log.type,
         recordingEntity: log.recordingEntity
@@ -437,10 +440,11 @@ export const mutations: MutationTree<RootState> = {
     Vue.set(state.eventLogs, state.eventLogs.length, logData);
   },
   addEventLog: (state, logData: EventLog) => {
-    const existingLog = state.eventLogs.find(
+    const existingLogIndex = state.eventLogs.findIndex(
       (log) => log.deduplicationId === logData.deduplicationId
     );
-    if (existingLog) {
+    if (existingLogIndex !== -1) {
+      Vue.set(state.eventLogs, existingLogIndex, logData);
       return;
     }
 

@@ -6,6 +6,7 @@ import {
   EventLog,
   EventLogRaw,
   EventLogRawInput,
+  GraphQLBasic,
   ValidEventLogTypes,
 } from "~/types";
 import {
@@ -79,6 +80,7 @@ async function handleGet(req: IncomingMessage, res: ServerResponse) {
     },
     (log): EventLog => ({
       deduplicationId: log.deduplicationId,
+      version: log.version,
       eventName: log.eventName,
       type: log.type,
       recordingEntity: log.recordingEntity,
@@ -103,6 +105,12 @@ async function handlePost(req: IncomingMessage, res: ServerResponse) {
   // Confirm there is a valid deduplication ID.
   if (!inputData.deduplicationId || !uuid4.valid(inputData.deduplicationId)) {
     const error = `Event Log deduplicationId is invalid ${inputData.type}`;
+    return makeError(res, 400, error);
+  }
+
+  // Confirm there is a version.
+  if (!inputData.version) {
+    const error = `Event Log version is invalid ${inputData.type}`;
     return makeError(res, 400, error);
   }
 
@@ -165,6 +173,7 @@ async function handlePost(req: IncomingMessage, res: ServerResponse) {
 
   const logData: EventLogRawInput = {
     deduplicationId: inputData.deduplicationId,
+    version: inputData.version,
     eventName: inputData.eventName,
     type: inputData.type,
     recordingEntity: recordingEntity,
@@ -173,6 +182,29 @@ async function handlePost(req: IncomingMessage, res: ServerResponse) {
     referencedEntitySearchable: referencedEntitySearchable,
     data: inputData.data ?? {},
   };
+
+  const isLatest = await isLatestMessage(logData);
+
+  if (!isLatest.data) {
+    return {
+      errors: isLatest.errors,
+      extensions: isLatest.extensions,
+    };
+  }
+
+  if (isLatest.data.isLatest === false) {
+    // There are logs which are newer than my current version
+    // We should assume this log is redundant and should not be processed.
+
+    res.statusCode = 200;
+    return {
+      data: {
+        eventLog: {
+          deduplicationId: logData.deduplicationId,
+        },
+      },
+    };
+  }
 
   const query = `mutation (
     $where: EventLogWhereUniqueInput!,
@@ -221,3 +253,39 @@ async function handlePost(req: IncomingMessage, res: ServerResponse) {
 }
 
 // function validateDataStuntReview(data) {}
+
+async function isLatestMessage(
+  logData: EventLogRawInput
+): Promise<GraphQLBasic<{ isLatest: boolean }>> {
+  const query = `query($where: EventLogWhereInput!) {
+    eventLogs(where: $where) {
+      deduplicationId
+      version
+    }
+  }`;
+
+  // Get log events which are newer than the current data.
+  const response = await simpleGraphQL<{
+    eventLogs: { deduplicationId: string; version: string }[];
+  }>(query, {
+    where: {
+      deduplicationId: logData.deduplicationId,
+      version_gt: logData.version, // "2022-03-17T04:05:56+00:00",
+    },
+  });
+
+  if (!response.data) {
+    return {
+      errors: response.errors,
+      extensions: response.extensions,
+    };
+  }
+
+  if (response.data.eventLogs?.length > 0) {
+    // There are logs which are newer than my current version
+    // We should assume this log is redundant and should not be processed.
+    return { data: { isLatest: false } };
+  }
+
+  return { data: { isLatest: true } };
+}
