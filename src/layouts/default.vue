@@ -90,7 +90,9 @@
       </v-container>
 
       <v-container v-show="clientLoaded && !userSetupRequired">
-        <Nuxt />
+        <client-only>
+          <Nuxt />
+        </client-only>
       </v-container>
     </v-main>
 
