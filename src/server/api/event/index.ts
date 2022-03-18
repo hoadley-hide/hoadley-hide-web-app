@@ -240,6 +240,7 @@ async function handlePost(req: IncomingMessage, res: ServerResponse) {
   const isLatest = await isLatestMessage(logData);
 
   if (!isLatest.data) {
+    res.statusCode = 500;
     return {
       errors: isLatest.errors,
       extensions: isLatest.extensions,
@@ -290,6 +291,7 @@ async function handlePost(req: IncomingMessage, res: ServerResponse) {
   });
 
   if (!response.data) {
+    res.statusCode = 500;
     return {
       errors: response.errors,
       extensions: response.extensions,
