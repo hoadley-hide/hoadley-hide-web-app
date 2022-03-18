@@ -81,6 +81,7 @@ export default {
       { to: "/stunts", label: "Stunts" },
       { to: null, label: this.stunt.name },
     ]);
+    this.$store.dispatch("fetchMyEventLogs", { syncMode: "diff" });
   },
 };
 </script>

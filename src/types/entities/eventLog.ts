@@ -16,6 +16,7 @@ export const ValidEventLogTypes: EventLogType[] = [
 export interface EventLogAugmented {
   deduplicationId: string;
   version: string;
+  hash: string;
   eventName: string;
   type: EventLogType;
   recordingEntity: AppUserEntity | null;
@@ -27,6 +28,7 @@ export interface EventLogAugmented {
 export interface EventLog {
   deduplicationId: string;
   version: string;
+  hash: string;
   eventName: string;
   type: EventLogType;
   recordingEntity: { _type: string; id: string } | null;
@@ -37,6 +39,7 @@ export interface EventLog {
 export interface EventLogRaw {
   deduplicationId: string;
   version: string;
+  hash: string;
   eventName: string;
   type: EventLogType;
   recordingEntity: { _type: string; id: string } | null;
@@ -56,6 +59,7 @@ export interface EventLogPersistedRaw {
 export interface EventLogRawInput {
   deduplicationId: string;
   version: string;
+  hash: string;
   eventName: string;
   type: EventLogType;
   recordingEntity: ConnectableEntity | null;

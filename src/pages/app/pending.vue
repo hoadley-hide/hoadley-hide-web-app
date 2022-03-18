@@ -76,6 +76,7 @@ export default {
       const logData: EventLog = {
         deduplicationId: request.deduplicationId,
         version: new Date().toISOString(),
+        hash: request.hash,
         eventName: request.eventName,
         type: request.type,
         recordingEntity: request.recordingEntity,

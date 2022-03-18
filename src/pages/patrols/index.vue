@@ -101,6 +101,7 @@ export default {
       { to: "/", label: "Home" },
       { to: null, label: "Patrols" },
     ]);
+    this.$store.dispatch("fetchMyEventLogs", { syncMode: "diff" });
   },
 };
 </script>

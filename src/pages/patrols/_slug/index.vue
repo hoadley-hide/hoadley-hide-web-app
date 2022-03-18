@@ -108,6 +108,7 @@ export default {
       { to: "/patrols", label: "Patrols" },
       { to: null, label: this.patrol.name },
     ]);
+    this.$store.dispatch("fetchMyEventLogs", { syncMode: "diff" });
   },
 };
 </script>

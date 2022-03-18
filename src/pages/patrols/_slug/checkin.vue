@@ -66,7 +66,7 @@
 <script lang="ts">
 import { isValid } from "~/common/question";
 import { Checkpoint, EventLog, Question } from "~/types";
-
+import hasher from "object-hash";
 import uuid4 from "uuid4";
 
 export default {
@@ -84,9 +84,7 @@ export default {
       return this.$store.getters.patrol(this.$route.params.slug);
     },
     questions(): Question[] {
-      return this.$store.getters.checkpointStuntVisitQuestions.sort(
-        (a, b) => a.sortOrder - b.sortOrder
-      );
+      return this.$store.getters.checkpointStuntVisitQuestions;
     },
     partialCheckpoint() {
       return this.$store.getters["checkpoint/getPartial"](
@@ -192,6 +190,7 @@ export default {
       const logData: EventLog = {
         deduplicationId: deduplicationId,
         version: new Date().toISOString(),
+        hash: hasher(data),
         eventName: this.$config.eventName,
         type: "checkpoint:stunt:visit",
         recordingEntity: this.$useUser(

@@ -1,5 +1,6 @@
 import Vue from "vue";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
+import hasher from "object-hash";
 import { AppAlert, createAlert } from "~/common/alert";
 import { AppBreadcrumb } from "~/common/breadcrumb";
 import { promiseTimeout } from "~/common/promise";
@@ -12,6 +13,7 @@ import {
   EventLogPersisted,
   EventStage,
   GraphQL,
+  GraphQLBasic,
   MonsterHuntMonster,
   MonsterHuntMonsterIssued,
   MonsterHuntMonsterIssuedStored,
@@ -99,9 +101,9 @@ export const getters: GetterTree<RootState, RootState> = {
     );
   },
   checkpointStuntVisitQuestions: (state) => {
-    return state.questions.filter(
-      (question) => question.questionGroup === "checkpoint:stunt:visit"
-    );
+    return state.questions
+      .filter((question) => question.questionGroup === "checkpoint:stunt:visit")
+      .sort((a, b) => a.sortOrder - b.sortOrder);
   },
   // User getters
   user: (state): AppUserEntity | null => {
@@ -288,6 +290,7 @@ export const getters: GetterTree<RootState, RootState> = {
       (log): EventLogAugmented => ({
         deduplicationId: log.deduplicationId,
         version: log.version,
+        hash: log.hash,
         eventName: log.eventName,
         type: log.type,
         recordingEntity: log.recordingEntity
@@ -316,6 +319,7 @@ export const getters: GetterTree<RootState, RootState> = {
       (log): EventLogAugmented => ({
         deduplicationId: log.deduplicationId,
         version: log.version,
+        hash: log.hash,
         eventName: log.eventName,
         type: log.type,
         recordingEntity: log.recordingEntity
@@ -329,6 +333,36 @@ export const getters: GetterTree<RootState, RootState> = {
       })
     );
   },
+
+  checkpointStuntVisit: (state, getters): EventLogAugmented[] => {
+    if (!state.user) {
+      return [];
+    }
+
+    const logs: EventLog[] = state.eventLogs.filter(
+      (eventLog) => eventLog.type === "checkpoint:stunt:visit" // &&
+      // eventLog.referencedEntity?.id === state.user?.id
+    );
+
+    return logs.map(
+      (log): EventLogAugmented => ({
+        deduplicationId: log.deduplicationId,
+        version: log.version,
+        hash: log.hash,
+        eventName: log.eventName,
+        type: log.type,
+        recordingEntity: log.recordingEntity
+          ? getters.findById(log.recordingEntity.id)
+          : null,
+        referencedEntity: log.referencedEntity
+          ? getters.findById(log.referencedEntity.id)
+          : null,
+        data: log.data,
+        isPersisted: !state.pendingLogIds.includes(log.deduplicationId),
+      })
+    );
+  },
+
   pendingRequests: (state, getters): EventLogAugmented[] => {
     if (!state.user) {
       return [];
@@ -342,6 +376,7 @@ export const getters: GetterTree<RootState, RootState> = {
       (log): EventLogAugmented => ({
         deduplicationId: log.deduplicationId,
         version: log.version,
+        hash: log.hash,
         eventName: log.eventName,
         type: log.type,
         recordingEntity: log.recordingEntity
@@ -431,6 +466,15 @@ export const mutations: MutationTree<RootState> = {
   },
   setWikiArticles: (state, wikiArticles) => {
     Vue.set(state, "wikiArticles", wikiArticles);
+  },
+  setEventLogs: (state, logDatas: EventLog[]) => {
+    // Fetch currently pending requests.
+    const reservePending = state.pendingLogIds.map((pendingId) =>
+      state.eventLogs.find((log) => log.deduplicationId === pendingId)
+    );
+
+    // Replace state with currently pending logs and the new from the db.
+    Vue.set(state, "eventLogs", [...reservePending, ...logDatas]);
   },
   // User
   persistUser: (state, entity: AppUserEntity) => {
@@ -691,6 +735,7 @@ export const actions: ActionTree<RootState, RootState> = {
       // This current version has been persisted,  just return a success.
       return { deduplicationId: existingLog.deduplicationId };
     }
+    console.log("logData.quiet", logData.quiet);
 
     try {
       const res = await promiseTimeout(
@@ -776,6 +821,60 @@ export const actions: ActionTree<RootState, RootState> = {
         message: "Failed to delete event log entry",
         type: "error",
       });
+    }
+  },
+
+  async fetchMyEventLogs(
+    { state, commit, getters },
+    opts?: { syncMode: "full" | "diff" }
+  ) {
+    if (!getters.user) {
+      createAlert(this, { message: "Not logged in", type: "warning" });
+      return false;
+    }
+    try {
+      const urlParams = new URLSearchParams();
+      urlParams.set("user", `${getters.user._type}:${getters.user.id}`);
+
+      if (opts?.syncMode === "diff") {
+        urlParams.set(
+          "diff",
+          hasher(
+            state.eventLogs.map((log: EventLog) => log.hash),
+            { unorderedArrays: true }
+          )
+        );
+        urlParams.set(
+          "from",
+          new Date(
+            Math.max(
+              ...state.eventLogs.map((log: EventLog) => {
+                console.log(log);
+                return Date.parse(log.version);
+              })
+            )
+          ).toISOString()
+        );
+      }
+
+      const result: GraphQLBasic<{
+        eventLogs: EventLog[];
+        allResultsReturned: boolean;
+      }> = await $fetch(`/api/event?${urlParams.toString()}`);
+      if (!result?.data) {
+        return;
+      }
+
+      if (opts?.syncMode === "full" || result.data.allResultsReturned) {
+        commit("setEventLogs", result.data.eventLogs);
+      } else {
+        result.data.eventLogs.forEach((log) => commit("addEventLog", log));
+      }
+    } catch (e) {
+      throw e;
+      // const res: ResultType = await (e as any).response;
+      // console.log(res);
+      // console.log(res.errors);
     }
   },
 

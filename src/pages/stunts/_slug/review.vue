@@ -65,6 +65,7 @@
 <script lang="ts">
 import { EventLog } from "~/types";
 
+import hasher from "object-hash";
 import uuid4 from "uuid4";
 
 export default {
@@ -116,6 +117,7 @@ export default {
       const logData: EventLog = {
         deduplicationId: uuid4(),
         version: new Date().toISOString(),
+        hash: hasher(this.review),
         eventName: this.$config.eventName,
         type: "review:stunt",
         recordingEntity: this.$useUser(

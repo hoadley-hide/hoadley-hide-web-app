@@ -133,6 +133,15 @@ export default {
         });
       }
 
+      if (this.$auth(["app:seeDashboard"])) {
+        blocks.push({
+          title: "Dashboard",
+          subtitle: "See scores and stats",
+          to: "/dashboard",
+          colour: "purple darken-4",
+        });
+      }
+
       if (this.$auth(["app:seeDev"]) || this.$store.state.impersonator) {
         blocks.push({
           title: "Dev",

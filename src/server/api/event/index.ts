@@ -1,6 +1,7 @@
 import { useQuery } from "h3";
 import type { IncomingMessage, ServerResponse } from "http";
 import uuid4 from "uuid4";
+import hasher from "object-hash";
 import {
   ConnectableEntity,
   EventLog,
@@ -49,17 +50,19 @@ async function handleGet(req: IncomingMessage, res: ServerResponse) {
 
   const fields = `{
     deduplicationId
+    version
+    hash
     eventName
     type
     recordingEntity {
-      __typename
+      _type: __typename
       ... on Admin { id }
       ... on MonsterHuntMonster { id }
       ... on Patrol { id }
       ... on Stunt { id }
     }
     referencedEntity {
-      __typename
+      _type: __typename
       ... on MonsterHuntMonster { id }
       ... on Patrol { id }
       ... on Stunt { id }
@@ -74,13 +77,20 @@ async function handleGet(req: IncomingMessage, res: ServerResponse) {
     }`,
     {
       where: {
-        type: "review:stunt",
-        recordingEntitySearchable: query.user,
+        OR: [
+          {
+            recordingEntitySearchable: query.user,
+          },
+          {
+            referencedEntitySearchable: query.user,
+          },
+        ],
       },
     },
     (log): EventLog => ({
       deduplicationId: log.deduplicationId,
       version: log.version,
+      hash: log.hash,
       eventName: log.eventName,
       type: log.type,
       recordingEntity: log.recordingEntity,
@@ -89,8 +99,45 @@ async function handleGet(req: IncomingMessage, res: ServerResponse) {
     })
   );
 
+  if (!returnable.data) {
+    return {
+      errors: returnable.errors,
+      extensions: returnable.extensions,
+    };
+  }
+
+  let returnAllResults = false;
+
+  if (query.from && query.diff) {
+    const eventsBeforeTimestamp = returnable.data.eventLogs.filter(
+      (log) => Date.parse(log.version) < Date.parse(query.from)
+    );
+
+    const serverSideHashHash = hasher(
+      eventsBeforeTimestamp.map((log: EventLog) => log.hash),
+      { unorderedArrays: true }
+    );
+
+    if (serverSideHashHash !== query.diff) {
+      // Hashes do not match, client data does not match server's
+      returnAllResults = true;
+    }
+  }
+
+  const eventLogs =
+    returnAllResults || !query.from
+      ? returnable.data.eventLogs
+      : returnable.data.eventLogs.filter(
+          (log) => Date.parse(log.version) > Date.parse(query.from)
+        );
+
   res.statusCode = 200;
-  return returnable;
+  return {
+    data: {
+      eventLogs: eventLogs,
+      allResultsReturned: returnAllResults,
+    },
+  };
 }
 
 async function handlePost(req: IncomingMessage, res: ServerResponse) {
@@ -111,6 +158,12 @@ async function handlePost(req: IncomingMessage, res: ServerResponse) {
   // Confirm there is a version.
   if (!inputData.version) {
     const error = `Event Log version is invalid ${inputData.type}`;
+    return makeError(res, 400, error);
+  }
+
+  // Confirm there is a hash.
+  if (!inputData.hash) {
+    const error = `Event Log hash is invalid ${inputData.type}`;
     return makeError(res, 400, error);
   }
 
@@ -174,6 +227,7 @@ async function handlePost(req: IncomingMessage, res: ServerResponse) {
   const logData: EventLogRawInput = {
     deduplicationId: inputData.deduplicationId,
     version: inputData.version,
+    hash: inputData.hash,
     eventName: inputData.eventName,
     type: inputData.type,
     recordingEntity: recordingEntity,

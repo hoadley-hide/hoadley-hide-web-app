@@ -26,6 +26,7 @@ export function authorised(
   }
   if (user._type === "stunt") {
     // Default Stunt scopes.
+    userScopes.push("app:seeDashboard");
     userScopes.push("app:seeEmergencyInfo");
     userScopes.push("app:seeReviewList");
     userScopes.push("patrol:canCheckpoint:stunt:visit");

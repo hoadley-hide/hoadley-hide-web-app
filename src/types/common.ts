@@ -52,6 +52,7 @@ export type QrCodeableEntity =
   | Patrol
   | Stunt;
 export type PermissionScope =
+  | "app:seeDashboard"
   | "app:seeDev"
   | "app:seePrintingList"
   | "app:seeReviewList" // Deprecated
