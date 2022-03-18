@@ -740,7 +740,7 @@ export const actions: ActionTree<RootState, RootState> = {
     try {
       const res = await promiseTimeout(
         5000,
-        $fetch("/api/event/post", {
+        $fetch("/api/record", {
           method: "POST",
           body: logData,
         })

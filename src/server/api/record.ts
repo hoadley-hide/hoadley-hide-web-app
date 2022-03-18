@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { EventLog, EventLogRawInput, GraphQLBasic } from "~/types";
-import { body2Data, simpleGraphQL } from "..";
+import { body2Data, simpleGraphQL } from ".";
 
 // Converts type strings from APP types to CMS types.
 const entityTypeMapping = {
