@@ -1,22 +1,6 @@
-import { useQuery } from "h3";
 import type { IncomingMessage, ServerResponse } from "http";
-import uuid4 from "uuid4";
-import hasher from "object-hash";
-import {
-  ConnectableEntity,
-  EventLog,
-  EventLogRaw,
-  EventLogRawInput,
-  GraphQLBasic,
-  ValidEventLogTypes,
-} from "~/types";
-import {
-  body2Data,
-  makeError,
-  nuxtConfig,
-  simpleAllGraphQL,
-  simpleGraphQL,
-} from "..";
+import { EventLog, EventLogRawInput, GraphQLBasic } from "~/types";
+import { body2Data, simpleGraphQL } from "..";
 
 // Converts type strings from APP types to CMS types.
 const entityTypeMapping = {
@@ -28,8 +12,26 @@ const entityTypeMapping = {
 export default async (req: IncomingMessage, res: ServerResponse) => {
   // Parse request body.
   // const testData = await useBody(req);
-  let inputData: Partial<EventLog> = await body2Data<EventLog>(req);
+  // let inputData: Partial<EventLog> = await body2Data<EventLog>(req);
+  let inputData: Partial<EventLog> = {};
 
+  if (process.env.NETLIFY === "true") {
+    inputData = JSON.parse(req.body ?? "{}") ?? {};
+  } else {
+    inputData = await new Promise((resolve) => {
+      var result: any[] = [];
+      req.on("data", function (chunk) {
+        console.error("RESPONSE DATA", chunk);
+        result.push(chunk);
+      });
+
+      req.on("end", function () {
+        console.error("RESPONSE END");
+        const output = Buffer.concat(result).toString("utf8");
+        resolve(JSON.parse(output));
+      });
+    });
+  }
   res.statusCode = 200;
 
   return {
