@@ -140,7 +140,7 @@ export async function simpleAllGraphQL<Raw, Data>(
 export async function body2Data<Data>(
   req: IncomingMessage
 ): Promise<Partial<Data>> {
-  if (process.env.NETLIFY === "true") {
+  if (req.body || process.env.NETLIFY === "true") {
     return JSON.parse(req.body ?? "{}") ?? {};
   } else {
     return await new Promise((resolve) => {
