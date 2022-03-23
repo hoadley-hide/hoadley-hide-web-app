@@ -32,6 +32,27 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
   //   return `405 Method Not Allowed`;
   // }
 
+  let inputData = null;
+
+  if (process.env.NETLIFY === "true") {
+    inputData = JSON.parse(req.body ?? "{}") ?? {};
+  } else {
+    inputData = await new Promise((resolve) => {
+      var result: any[] = [];
+      req.on("data", function (chunk) {
+        console.error("RESPONSE DATA", chunk);
+        result.push(chunk);
+      });
+
+      req.on("end", function () {
+        console.error("RESPONSE END");
+        const output = Buffer.concat(result).toString("utf8");
+        resolve(JSON.parse(output));
+      });
+    });
+  }
+  console.log(inputData);
+
   const fields = `{
     id
     name
