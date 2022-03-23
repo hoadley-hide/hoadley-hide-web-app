@@ -34,23 +34,23 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
 
   let inputData = null;
 
-  // if (process.env.NETLIFY === "true") {
-  inputData = JSON.parse(req.body ?? "{}") ?? {};
-  // } else {
-  //   inputData = await new Promise((resolve) => {
-  //     var result: any[] = [];
-  //     req.on("data", function (chunk) {
-  //       console.error("RESPONSE DATA", chunk);
-  //       result.push(chunk);
-  //     });
+  if (req.body || process.env.NETLIFY === "true") {
+    inputData = JSON.parse(req.body ?? "{}") ?? {};
+  } else {
+    inputData = await new Promise((resolve) => {
+      var result: any[] = [];
+      req.on("data", function (chunk) {
+        console.error("RESPONSE DATA", chunk);
+        result.push(chunk);
+      });
 
-  //     req.on("end", function () {
-  //       console.error("RESPONSE END");
-  //       const output = Buffer.concat(result).toString("utf8");
-  //       resolve(JSON.parse(output));
-  //     });
-  //   });
-  // }
+      req.on("end", function () {
+        console.error("RESPONSE END");
+        const output = Buffer.concat(result).toString("utf8");
+        resolve(JSON.parse(output));
+      });
+    });
+  }
   console.log(inputData);
 
   const fields = `{
@@ -76,7 +76,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
   );
 
   res.statusCode = 200;
-  return { returnable, inputData, test: process.env.NETLIFY };
+  return { returnable, inputData, test: process.env };
 
   // // Parse request body.
   // let inputData: Partial<EventLog> = {};
