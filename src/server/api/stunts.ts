@@ -11,6 +11,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     description { html text }
     location
     stuntNumber
+    coordinates
   }`;
 
   const returnable = await simpleAllGraphQL<StuntRaw, Stunt>(
@@ -28,6 +29,9 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       description: stunt.description,
       location: stunt.location,
       stuntNumber: stunt.stuntNumber,
+      coordinates: stunt.coordinates
+        ? { x: stunt.coordinates.x, y: stunt.coordinates.y }
+        : {},
     })
   );
 

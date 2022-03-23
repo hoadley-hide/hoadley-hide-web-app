@@ -7,6 +7,9 @@
         <v-card-text>Browse the stunts locations and teams.</v-card-text>
       </v-card>
     </v-col>
+    <v-col cols="12" sm="6">
+      <stunt-map></stunt-map>
+    </v-col>
     <v-col cols="12">
       <v-card>
         <v-card-text>

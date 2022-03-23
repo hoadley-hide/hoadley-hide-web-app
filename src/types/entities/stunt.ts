@@ -11,6 +11,7 @@ export interface Stunt {
   description: RichText;
   location: string;
   stuntNumber: number;
+  coordinates?: Partial<{ x: number; y: number }>;
 }
 
 export interface StuntRaw {
@@ -21,4 +22,5 @@ export interface StuntRaw {
   description: RichText;
   location: string;
   stuntNumber: number;
+  coordinates?: Partial<{ x: number; y: number }>;
 }

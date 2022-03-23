@@ -22,6 +22,12 @@ export default defineNuxtConfig({
     link: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
       { rel: "preload", as: "image", href: "/HH-2022-Logo-Rip-T.png" },
+      {
+        rel: "preload",
+        type: "image/svg+xml",
+        as: "image",
+        href: "/Whole Site Secret.svg",
+      },
     ],
   },
 
