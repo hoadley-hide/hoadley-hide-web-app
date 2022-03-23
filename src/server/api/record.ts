@@ -76,7 +76,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
   );
 
   res.statusCode = 200;
-  return returnable;
+  return { returnable, inputData, test: process.env.NETLIFY };
 
   // // Parse request body.
   // let inputData: Partial<EventLog> = {};
