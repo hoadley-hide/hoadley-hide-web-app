@@ -48,7 +48,7 @@ export default defineNuxtConfig({
    ** Global CSS
    ** Doc: https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-css
    */
-  css: [],
+  css: ["~/static/style/materialdesignicons.min.css"],
 
   /*
    ** Plugins to load before mounting the App
@@ -70,6 +70,7 @@ export default defineNuxtConfig({
   vuetify: {
     customVariables: ["~/scss/variables.scss"],
     treeShake: true,
+    defaultAssets: false,
     theme: {
       dark: true,
     },
