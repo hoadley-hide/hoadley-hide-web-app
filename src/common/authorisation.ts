@@ -1,6 +1,14 @@
 import { Store } from "vuex";
 import { AppUserEntity, PermissionScope } from "~/types";
 
+export function funnySubStoreAuth(
+  getters: Store<any>["getters"],
+  allow: PermissionScope[],
+  block: PermissionScope[] = []
+) {
+  return authorised({ getters } as unknown as Store<any>, allow, block);
+}
+
 export function authorised(
   store: Store<any>,
   allow: PermissionScope[],

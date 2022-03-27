@@ -47,6 +47,7 @@
 
 <script lang="ts">
 import { Stunt } from "~/types";
+import { names as stunt } from "~/store/stunt";
 
 export default {
   data() {
@@ -54,17 +55,7 @@ export default {
   },
   computed: {
     stunts(): Stunt[] {
-      if (!this.$useUser()) {
-        return [];
-      }
-
-      if (this.$auth(["stunt:seeAll"])) {
-        return this.$store.state.stunts;
-      }
-
-      return this.$store.state.stunts.filter((stunt: Stunt) =>
-        this.$store.getters.hasCodeBeenScanned(stunt.code)
-      );
+      return this.$store.getters[stunt.getters.getStunts];
     },
   },
   mounted() {

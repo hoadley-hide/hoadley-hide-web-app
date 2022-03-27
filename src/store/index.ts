@@ -25,6 +25,7 @@ import {
   Stunt,
   WikiArticle,
 } from "~/types";
+import { names as stunt } from "~/store/stunt";
 
 export const state = () => ({
   // UI
@@ -36,7 +37,6 @@ export const state = () => ({
   monsterHuntMonsters: [] as MonsterHuntMonster[],
   patrols: [] as Patrol[],
   questions: [] as Question[],
-  stunts: [] as Stunt[],
   wikiArticles: [] as WikiArticle[],
   // Other Stuff
   scannedCodes: [] as QrCodeableEntity[],
@@ -86,10 +86,6 @@ export const getters: GetterTree<RootState, RootState> = {
   patrol: (state) => (slugOrId) =>
     state.patrols.find((patrol) =>
       [patrol.id, patrol.slug, patrol.code].includes(slugOrId)
-    ),
-  stunt: (state) => (slugOrId) =>
-    state.stunts.find((stunt) =>
-      [stunt.id, stunt.slug, stunt.code].includes(slugOrId)
     ),
   wikiArticle: (state) => (slugOrId) =>
     state.wikiArticles.find((wikiArticle) =>
@@ -229,7 +225,7 @@ export const getters: GetterTree<RootState, RootState> = {
       ...state.eventStages,
       ...state.monsterHuntMonsters,
       ...state.patrols,
-      ...state.stunts,
+      ...state.stunt.stunts,
       ...state.wikiArticles,
     ];
 
@@ -247,7 +243,7 @@ export const getters: GetterTree<RootState, RootState> = {
         ...state.eventStages,
         ...state.monsterHuntMonsters,
         ...state.patrols,
-        ...state.stunts,
+        ...state.stunt.stunts,
         ...state.wikiArticles,
       ];
 
@@ -461,9 +457,6 @@ export const mutations: MutationTree<RootState> = {
   setQuestions: (state, questions) => {
     Vue.set(state, "questions", questions);
   },
-  setStunts: (state, stunts) => {
-    Vue.set(state, "stunts", stunts);
-  },
   setWikiArticles: (state, wikiArticles) => {
     Vue.set(state, "wikiArticles", wikiArticles);
   },
@@ -617,11 +610,7 @@ export const actions: ActionTree<RootState, RootState> = {
       dataKey: "questions",
       mutation: "setQuestions",
     });
-    await dispatch("initialiseEntity", {
-      path: "/api/stunts",
-      dataKey: "stunts",
-      mutation: "setStunts",
-    });
+    await dispatch(stunt.actions.initialise);
     await dispatch("initialiseEntity", {
       path: "/api/wiki-articles",
       dataKey: "wikiArticles",
@@ -631,7 +620,7 @@ export const actions: ActionTree<RootState, RootState> = {
   async initialiseEntity({ commit }, { path, dataKey, mutation }) {
     type ResultType = GraphQL<
       string,
-      Stunt[] | EventStage[] | Patrol[] | WikiArticle[] | MonsterHuntMonster[]
+      EventStage[] | Patrol[] | WikiArticle[] | MonsterHuntMonster[]
     >;
 
     try {

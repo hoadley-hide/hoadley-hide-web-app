@@ -127,6 +127,7 @@
 import { Question, Stunt } from "~/types";
 import { isValid } from "~/common/question";
 import { dateHelper } from "~/plugins/filters";
+import { names as stunt } from "~/store/stunt";
 
 export default {
   props: {
@@ -144,10 +145,8 @@ export default {
     hasError() {
       return !isValid(this.question, this.data);
     },
-    stuntList() {
-      return this.$store.state.stunts
-        .map((s) => s) // clone array so the sort does not mutate the array in VueX.
-        .sort((a: Stunt, b: Stunt) => a.stuntNumber - b.stuntNumber);
+    stuntList(): Stunt[] {
+      return this.$store.getters[stunt.getters.getStunts];
     },
   },
   watch: {

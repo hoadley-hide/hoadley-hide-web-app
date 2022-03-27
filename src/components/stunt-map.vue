@@ -62,6 +62,7 @@
 
 <script lang="ts">
 import { Stunt } from "~/types";
+import { names as stunt } from "~/store/stunt";
 
 export default {
   data() {
@@ -95,11 +96,9 @@ export default {
   },
   computed: {
     stunts(): Stunt[] {
-      return this.$store.state.stunts
-        .filter((stunt: Stunt) => stunt.coordinates?.x && stunt.coordinates?.y)
-        .filter((stunt: Stunt) =>
-          this.$store.getters.hasCodeBeenScanned(stunt.code)
-        );
+      return this.$store.getters[stunt.getters.getStunts].filter(
+        (stunt: Stunt) => stunt.coordinates?.x && stunt.coordinates?.y
+      );
     },
   },
   methods: {

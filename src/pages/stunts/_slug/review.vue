@@ -63,7 +63,8 @@
 </template>
 
 <script lang="ts">
-import { EventLog } from "~/types";
+import { EventLog, Stunt } from "~/types";
+import { names as stunt } from "~/store/stunt";
 
 import hasher from "object-hash";
 import uuid4 from "uuid4";
@@ -79,8 +80,10 @@ export default {
     };
   },
   computed: {
-    stunt() {
-      return this.$store.getters.stunt(this.$route.params.slug);
+    stunt(): Stunt {
+      return this.$store.getters[stunt.getters.getStunt](
+        this.$route.params.slug
+      );
     },
     questions() {
       return this.$store.getters.reviewQuestions;

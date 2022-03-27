@@ -9,6 +9,8 @@
 </template>
 
 <script lang="ts">
+import { names as stunt } from "~/store/stunt";
+
 export default {
   props: ["entity", "stepActive"],
   methods: {
@@ -43,13 +45,16 @@ export default {
       this.$emit("next-step");
     },
     async lookupStunt(scannedData) {
-      const stunt = this.$store.getters.stunt(scannedData.code);
-      if (!stunt) {
+      const stuntData = this.$store.getters[stunt.getters.getStunt](
+        scannedData.code
+      );
+
+      if (!stuntData) {
         console.log("not a valid stunt");
         return;
       }
 
-      this.$emit("stunt-data", stunt);
+      this.$emit("stunt-data", stuntData);
       this.$emit("next-step");
     },
   },

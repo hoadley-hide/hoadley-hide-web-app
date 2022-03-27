@@ -50,7 +50,8 @@
 </template>
 
 <script lang="ts">
-import { Patrol } from "~/types/index";
+import { Stunt } from "~/types/index";
+import { names as stunt } from "~/store/stunt";
 
 export default {
   data() {
@@ -85,24 +86,24 @@ export default {
     },
   },
   computed: {
-    stunt() {
+    stunt(): Stunt | null {
       if (!this.stuntId) {
         return null;
       }
-      return this.$store.getters.stunt(this.stuntId);
+
+      return this.$store.getters[stunt.getters.getStunt](this.stuntId);
     },
   },
   methods: {
     nextStep(index) {
       if (index === this.availableSteps.length) {
-        this.$emit("complete", this.stunt.code);
+        this.$emit("complete", this.stunt?.code);
       } else {
         this.currentStep = index + 1;
       }
     },
-    async handleStunt(stuntData: Patrol) {
-      this.stuntId = stuntData.code;
-      this.$store.dispatch("persistUser", { stuntId: this.stuntId });
+    async handleStunt(stuntData: Stunt) {
+      this.$store.dispatch("persistUser", stuntData);
     },
   },
 };

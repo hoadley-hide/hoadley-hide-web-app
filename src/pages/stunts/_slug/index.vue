@@ -59,6 +59,7 @@
 
 <script lang="ts">
 import { Stunt } from "~/types";
+import { names as stunt } from "~/store/stunt";
 
 export default {
   validate({ params, store }) {
@@ -69,7 +70,9 @@ export default {
   },
   computed: {
     stunt(): Stunt[] {
-      return this.$store.getters.stunt(this.$route.params.slug);
+      return this.$store.getters[stunt.getters.getStunt](
+        this.$route.params.slug
+      );
     },
     stuntReviewCompleted(): boolean {
       return this.$store.getters.stuntReviewCompleted(this.stunt);
