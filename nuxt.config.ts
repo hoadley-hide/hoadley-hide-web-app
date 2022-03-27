@@ -7,7 +7,7 @@ const baseUrl = process.env.BRANCH
   ? process.env.BRANCH !== "main"
     ? `https://${process.env.BRANCH}--hoadley-hide.netlify.app`
     : "https://app.hoadleyhide.com.au"
-  : "https://localhost:3000";
+  : "http://localhost:3000";
 
 export default defineNuxtConfig({
   srcDir: "src/",

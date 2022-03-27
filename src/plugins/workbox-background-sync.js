@@ -54,7 +54,7 @@ workbox.routing.registerRoute(
   /\/api\/log/,
   new workbox.strategies.NetworkOnly({
     plugins: [
-      new workbox.backgroundSync.Plugin("hh-queue", {
+      new workbox.backgroundSync.BackgroundSyncPlugin("hh-queue", {
         maxRetentionTime: 60 * 24 * 5, // 5 Days (specified in minutes)
         onSync: onSync,
       }),
