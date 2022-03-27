@@ -57,6 +57,7 @@
 
 <script lang="ts">
 import { Patrol } from "~/types/index";
+import { names as patrol } from "~/store/patrol";
 
 export default {
   data() {
@@ -100,7 +101,7 @@ export default {
       if (!this.patrolId) {
         return null;
       }
-      return this.$store.getters.patrol(this.patrolId);
+      return this.$store.getters[patrol.getters.getPatrol](this.patrolId);
     },
   },
   methods: {
@@ -112,8 +113,7 @@ export default {
       }
     },
     async handlePatrol(patrolData: Patrol) {
-      this.patrolId = patrolData.code;
-      this.$store.dispatch("persistUser", { patrolId: this.patrolId });
+      this.$store.dispatch("persistUser", patrolData);
     },
   },
 };

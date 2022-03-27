@@ -1,9 +1,11 @@
+import hasher from "object-hash";
 import Vue from "vue";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
-import hasher from "object-hash";
 import { AppAlert, createAlert } from "~/common/alert";
 import { AppBreadcrumb } from "~/common/breadcrumb";
 import { promiseTimeout } from "~/common/promise";
+import { names as patrol } from "~/store/patrol";
+import { names as stunt } from "~/store/stunt";
 import {
   Admin,
   AppUserEntity,
@@ -25,7 +27,6 @@ import {
   Stunt,
   WikiArticle,
 } from "~/types";
-import { names as stunt } from "~/store/stunt";
 
 export const state = () => ({
   // UI
@@ -35,7 +36,6 @@ export const state = () => ({
   admins: [] as EventStage[],
   eventStages: [] as EventStage[],
   monsterHuntMonsters: [] as MonsterHuntMonster[],
-  patrols: [] as Patrol[],
   questions: [] as Question[],
   wikiArticles: [] as WikiArticle[],
   // Other Stuff
@@ -82,10 +82,6 @@ export const getters: GetterTree<RootState, RootState> = {
   monsterHuntMonster: (state) => (slugOrId) =>
     state.monsterHuntMonsters.find((monster) =>
       [monster.id, monster.slug, monster.code].includes(slugOrId)
-    ),
-  patrol: (state) => (slugOrId) =>
-    state.patrols.find((patrol) =>
-      [patrol.id, patrol.slug, patrol.code].includes(slugOrId)
     ),
   wikiArticle: (state) => (slugOrId) =>
     state.wikiArticles.find((wikiArticle) =>
@@ -224,7 +220,7 @@ export const getters: GetterTree<RootState, RootState> = {
       ...state.admins,
       ...state.eventStages,
       ...state.monsterHuntMonsters,
-      ...state.patrols,
+      ...state.patrol.patrols,
       ...state.stunt.stunts,
       ...state.wikiArticles,
     ];
@@ -242,7 +238,7 @@ export const getters: GetterTree<RootState, RootState> = {
         ...state.admins,
         ...state.eventStages,
         ...state.monsterHuntMonsters,
-        ...state.patrols,
+        ...state.patrol.patrols,
         ...state.stunt.stunts,
         ...state.wikiArticles,
       ];
@@ -451,9 +447,6 @@ export const mutations: MutationTree<RootState> = {
   setMonsterHuntMonsters: (state, monsterHuntMonsters) => {
     Vue.set(state, "monsterHuntMonsters", monsterHuntMonsters);
   },
-  setPatrols: (state, patrols) => {
-    Vue.set(state, "patrols", patrols);
-  },
   setQuestions: (state, questions) => {
     Vue.set(state, "questions", questions);
   },
@@ -600,11 +593,7 @@ export const actions: ActionTree<RootState, RootState> = {
       dataKey: "monsterHuntMonsters",
       mutation: "setMonsterHuntMonsters",
     });
-    await dispatch("initialiseEntity", {
-      path: "/api/patrols",
-      dataKey: "patrols",
-      mutation: "setPatrols",
-    });
+    await dispatch(patrol.actions.initialise);
     await dispatch("initialiseEntity", {
       path: "/api/questions",
       dataKey: "questions",
@@ -664,13 +653,7 @@ export const actions: ActionTree<RootState, RootState> = {
 
   async persistUser(
     { state, getters, commit },
-    opts: (
-      | { adminId: string }
-      | MonsterHuntPlayer
-      | { patrolId: string }
-      | { stuntId: string }
-      | Entity
-    ) & {
+    opts: ({ adminId: string } | MonsterHuntPlayer | Entity) & {
       impersonate?: boolean;
     }
   ) {
@@ -696,10 +679,6 @@ export const actions: ActionTree<RootState, RootState> = {
       commit("persistUser", getters.admin(opts.adminId));
     } else if ("_type" in opts && opts._type === "monsterHuntPlayer") {
       commit("persistUser", opts);
-    } else if ("patrolId" in opts) {
-      commit("persistUser", getters.patrol(opts.patrolId));
-    } else if ("stuntId" in opts) {
-      commit("persistUser", getters.stunt(opts.stuntId));
     }
   },
 

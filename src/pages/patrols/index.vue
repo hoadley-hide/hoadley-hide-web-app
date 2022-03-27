@@ -73,6 +73,7 @@
 
 <script lang="ts">
 import { Patrol } from "~/types";
+import { names as patrol } from "~/store/patrol";
 
 export default {
   data() {
@@ -80,17 +81,7 @@ export default {
   },
   computed: {
     patrols(): Patrol[] {
-      if (!this.$useUser()) {
-        return [];
-      }
-
-      if (this.$auth(["patrol:seeAll"])) {
-        return this.$store.state.patrols;
-      }
-
-      return this.$store.state.patrols.filter((patrol: Patrol) =>
-        this.$store.getters.hasCodeBeenScanned(patrol.code)
-      );
+      return this.$store.getters[patrol.getters.getPatrols];
     },
     inflightCheckpoints() {
       return this.$store.getters["checkpoint/getPartials"](this.$useUser());

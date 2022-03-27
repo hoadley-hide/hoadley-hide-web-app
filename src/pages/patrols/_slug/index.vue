@@ -77,16 +77,20 @@
 </template>
 
 <script lang="ts">
+import { names as patrol } from "~/store/patrol";
+
 export default {
   validate({ params, store }) {
-    return store.getters.patrol(params.slug);
+    return store.getters[patrol.getters.getPatrol](params.slug);
   },
   data() {
     return {};
   },
   computed: {
     patrol() {
-      return this.$store.getters.patrol(this.$route.params.slug);
+      return this.$store.getters[patrol.getters.getPatrol](
+        this.$route.params.slug
+      );
     },
     patrolCheckInStatus() {
       if (!this.patrol) {

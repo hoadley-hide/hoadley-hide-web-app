@@ -68,10 +68,11 @@ import { isValid } from "~/common/question";
 import { Checkpoint, EventLog, Question } from "~/types";
 import hasher from "object-hash";
 import uuid4 from "uuid4";
+import { names as patrol } from "~/store/patrol";
 
 export default {
   validate({ params, store }) {
-    return store.getters.patrol(params.slug);
+    return store.getters[patrol.getters.getPatrol](params.slug);
   },
   data() {
     return {
@@ -81,7 +82,9 @@ export default {
   },
   computed: {
     patrol() {
-      return this.$store.getters.patrol(this.$route.params.slug);
+      return this.$store.getters[patrol.getters.getPatrol](
+        this.$route.params.slug
+      );
     },
     questions(): Question[] {
       return this.$store.getters.checkpointStuntVisitQuestions;

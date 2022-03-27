@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import { names as stunt } from "~/store/stunt";
+import { names as patrol } from "~/store/patrol";
 
 export default {
   props: ["entity", "stepActive"],
@@ -35,13 +36,15 @@ export default {
       this.$emit("next-step");
     },
     async lookupPatrol(scannedData) {
-      const patrol = this.$store.getters.patrol(scannedData.code);
-      if (!patrol) {
+      const patrolData = this.$store[patrol.getters.getPatrol].patrol(
+        scannedData.code
+      );
+      if (!patrolData) {
         console.log("not a valid patrol");
         return;
       }
 
-      this.$emit("patrol-data", patrol);
+      this.$emit("patrol-data", patrolData);
       this.$emit("next-step");
     },
     async lookupStunt(scannedData) {

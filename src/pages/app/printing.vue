@@ -167,10 +167,10 @@ export default {
           entities = this.$store.state.monsterHuntMonsters;
           break;
         case "patrol":
-          entities = this.$store.state.patrols;
+          entities = this.$store.state.patrol.patrols;
           break;
         case "stunt":
-          entities = this.$store.state.stunts;
+          entities = this.$store.state.stunt.stunts;
           break;
         case "setup":
           entities = [

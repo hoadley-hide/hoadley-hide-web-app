@@ -83,8 +83,8 @@ export default {
     entities(): Record<EntityType, any> {
       return {
         admin: this.$store.state.admins,
-        patrol: this.$store.state.patrols,
-        stunt: this.$store.state.stunts,
+        patrol: this.$store.state.patrol.patrols,
+        stunt: this.$store.state.stunt.stunts,
         eventStage: this.$store.state.eventStages,
         monsterHuntMonster: this.$store.state.monsterHuntMonsters,
       };
