@@ -805,24 +805,23 @@ export const actions: ActionTree<RootState, RootState> = {
       urlParams.set("user", `${getters.user._type}:${getters.user.id}`);
 
       if (opts?.syncMode === "diff") {
-        urlParams.set(
-          "diff",
-          hasher(
-            state.eventLogs.map((log: EventLog) => log.hash),
-            { unorderedArrays: true }
-          )
+        const dates = state.eventLogs.map((log: EventLog) => {
+          try {
+            return Date.parse(log.version);
+          } catch {
+            return 0;
+          }
+        });
+
+        const hashValue = hasher(
+          state.eventLogs.map((log: EventLog) => log.hash),
+          { unorderedArrays: true }
         );
-        urlParams.set(
-          "from",
-          new Date(
-            Math.max(
-              ...state.eventLogs.map((log: EventLog) => {
-                console.log(log);
-                return Date.parse(log.version);
-              })
-            )
-          ).toISOString()
-        );
+
+        if (dates.length !== 0 && hashValue) {
+          urlParams.set("diff", hashValue);
+          urlParams.set("from", new Date(Math.max(...dates)).toISOString());
+        }
       }
 
       const result: GraphQLBasic<{

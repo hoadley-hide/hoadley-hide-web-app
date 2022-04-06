@@ -106,11 +106,11 @@ async function handleGet(req: IncomingMessage, res: ServerResponse) {
     };
   }
 
-  let returnAllResults = false;
+  let returnAllResults = true;
 
   if (query.from && query.diff) {
     const eventsBeforeTimestamp = returnable.data.eventLogs.filter(
-      (log) => Date.parse(log.version) < Date.parse(query.from)
+      (log) => Date.parse(log.version) <= Date.parse(query.from)
     );
 
     const serverSideHashHash = hasher(
@@ -118,9 +118,14 @@ async function handleGet(req: IncomingMessage, res: ServerResponse) {
       { unorderedArrays: true }
     );
 
-    if (serverSideHashHash !== query.diff) {
-      // Hashes do not match, client data does not match server's
-      returnAllResults = true;
+    console.log("serverHash", serverSideHashHash);
+    console.log("clientHash", query.diff);
+
+    // console.log(eventsBeforeTimestamp.map((log: EventLog) => log.hash));
+
+    if (serverSideHashHash === query.diff) {
+      // Hashes match, client data matchs server's
+      returnAllResults = false;
     }
   }
 
