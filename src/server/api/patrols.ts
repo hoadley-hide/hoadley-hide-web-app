@@ -97,7 +97,11 @@ async function handlePost(req: IncomingMessage, res: ServerResponse) {
     }
   }
 
-  const logData: Omit<PatrolInput, "_type"> = {
+  const logData: Omit<PatrolInput, "_type"> & { slug: string } = {
+    slug: inputData.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "-")
+      .replace(/--/g, "-"),
     name: inputData.name,
     patrolNumber: inputData.patrolNumber,
     members: inputData.members.map((m) => ({

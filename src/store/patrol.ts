@@ -88,12 +88,22 @@ export const actions: ActionTree<RootState, RootState> = {
         body: patrolData,
       });
       if (!result.data) {
+        await this.$createAlert({
+          heading: `Failed to update ${patrolData.patrolNumber}`,
+          message: result.errors?.map((e) => e.message).join(", "),
+          type: "error",
+        });
         commit("loadError", true);
         return;
       }
       commit("setPatrol", result.data.patrol);
       commit("loadError", false);
     } catch (e) {
+      await this.$createAlert({
+        heading: `Failed to update patrol ${patrolData.patrolNumber}`,
+        message: e,
+        type: "error",
+      });
       commit("loadError", true);
     }
   },
