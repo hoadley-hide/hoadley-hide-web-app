@@ -28,3 +28,16 @@ export interface PatrolRaw {
   patrolNumber: string;
   members: PatrolMemberRaw[];
 }
+
+export interface PatrolInput {
+  _type: "patrol";
+  name: string;
+  patrolNumber: string;
+  members: PatrolMemberInput[];
+}
+
+export interface PatrolMemberInput {
+  rego?: string;
+  fullname: string;
+  formation: string;
+}

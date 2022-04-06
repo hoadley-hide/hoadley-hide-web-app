@@ -63,6 +63,7 @@ export type PermissionScope =
   | "patrol:canCheckpoint:stunt:visit"
   | "patrol:canCheckpoint:voc:enter"
   | "patrol:canCheckpoint:voc:exit"
+  | "patrol:import"
   | "patrol:seeAll"
   | "patrol:canShare"
   | "stunt:canReview"

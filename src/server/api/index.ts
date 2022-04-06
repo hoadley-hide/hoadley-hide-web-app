@@ -143,7 +143,7 @@ export async function body2Data<Data>(
   if (req.body || process.env.NETLIFY === "true") {
     return JSON.parse(req.body ?? "{}") ?? {};
   } else {
-    return await new Promise((resolve) => {
+    return await new Promise((resolve, reject) => {
       var result: any[] = [];
       req.on("data", function (chunk) {
         console.error("RESPONSE DATA", chunk);
@@ -152,7 +152,15 @@ export async function body2Data<Data>(
 
       req.on("end", function () {
         console.error("RESPONSE END");
+
+        if (result.length === 0) {
+          // No data in the buffer. Return early.
+          resolve({});
+          return;
+        }
+
         const output = Buffer.concat(result).toString("utf8");
+
         resolve(JSON.parse(output));
       });
     });

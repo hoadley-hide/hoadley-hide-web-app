@@ -1,8 +1,7 @@
 import Vue from "vue";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 import { funnySubStoreAuth } from "~/common/authorisation";
-// import { authorised } from "~/common/authorisation";
-import { GraphQL, Patrol } from "~/types";
+import { GraphQL, Patrol, PatrolInput } from "~/types";
 
 export const names = {
   getters: {
@@ -14,6 +13,7 @@ export const names = {
   },
   actions: {
     initialise: "patrol/initialise",
+    upsertPatrol: "patrol/upsertPatrol",
   },
 };
 
@@ -28,7 +28,9 @@ export const getters: GetterTree<RootState, RootState> = {
   getPatrol: (state) => (slugOrCodeOrId: string) => {
     return (
       state.patrols.find((patrol) =>
-        [patrol.id, patrol.slug, patrol.code].includes(slugOrCodeOrId)
+        [patrol.id, patrol.slug, patrol.code, patrol.patrolNumber].includes(
+          slugOrCodeOrId
+        )
       ) ?? null
     );
   },
@@ -44,7 +46,7 @@ export const getters: GetterTree<RootState, RootState> = {
     }
 
     return patrols.sort(
-      (a: Patrol, b: Patrol) => a.patrolNumber - b.patrolNumber
+      (a: Patrol, b: Patrol) => Number(a.patrolNumber) - Number(b.patrolNumber)
     );
   },
 };
@@ -52,6 +54,13 @@ export const getters: GetterTree<RootState, RootState> = {
 export const mutations: MutationTree<RootState> = {
   loadError: (state, yes: boolean) => {
     Vue.set(state, "loadError", yes);
+  },
+  setPatrol: (state, patrol: Patrol) => {
+    const existingIndex = state.patrols.findIndex((e) => e.id === patrol.id);
+    if (existingIndex) {
+      return Vue.set(state.patrols, existingIndex, patrol);
+    }
+    Vue.set(state.patrols, state.patrols.length, patrol);
   },
   setPatrols: (state, patrols) => {
     Vue.set(state, "patrols", patrols);
@@ -67,6 +76,22 @@ export const actions: ActionTree<RootState, RootState> = {
         return;
       }
       commit("setPatrols", result.data.patrols);
+      commit("loadError", false);
+    } catch (e) {
+      commit("loadError", true);
+    }
+  },
+  async upsertPatrol({ commit }, patrolData: PatrolInput) {
+    try {
+      const result: GraphQL<"patrol", Patrol> = await $fetch("/api/patrols", {
+        method: "POST",
+        body: patrolData,
+      });
+      if (!result.data) {
+        commit("loadError", true);
+        return;
+      }
+      commit("setPatrol", result.data.patrol);
       commit("loadError", false);
     } catch (e) {
       commit("loadError", true);

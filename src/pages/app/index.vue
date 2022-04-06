@@ -142,6 +142,15 @@ export default {
         });
       }
 
+      if (this.$auth(["patrol:import"])) {
+        blocks.push({
+          title: "Import Patrols",
+          subtitle: "",
+          to: "/patrols/import",
+          colour: "purple",
+        });
+      }
+
       if (this.$auth(["app:seeDev"]) || this.$store.state.impersonator) {
         blocks.push({
           title: "Dev",
