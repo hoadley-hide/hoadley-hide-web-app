@@ -215,18 +215,6 @@ export const getters: GetterTree<RootState, RootState> = {
     return issuedClues;
   },
   // QR Codes
-  compiledCodes: (state) => {
-    const compiledCodes: Entity[] = [
-      ...state.admins,
-      ...state.eventStages,
-      ...state.monsterHuntMonsters,
-      ...state.patrol.patrols,
-      ...state.stunt.stunts,
-      ...state.wikiArticles,
-    ];
-
-    return compiledCodes;
-  },
   findById: (_state, getters) => getters.findByIdOrCode,
   findByIdOrCode:
     (state) =>
@@ -251,6 +239,7 @@ export const getters: GetterTree<RootState, RootState> = {
 
       return entity ?? null;
     },
+  // TODO: Move to event-log store.
   stuntReviewCompleted:
     (state, getters) =>
     (stunt: Stunt): boolean => {
@@ -267,6 +256,7 @@ export const getters: GetterTree<RootState, RootState> = {
           eventLog.referencedEntity?.id === stunt.id
       );
     },
+  // TODO: Move to event-log store.
   reviewsRecordedBySelf: (state, getters): EventLogAugmented[] => {
     if (!state.user) {
       return [];
@@ -296,6 +286,7 @@ export const getters: GetterTree<RootState, RootState> = {
       })
     );
   },
+  // TODO: Move to event-log store.
   reviewsReferencingSelf: (state, getters): EventLogAugmented[] => {
     if (!state.user) {
       return [];
@@ -326,6 +317,7 @@ export const getters: GetterTree<RootState, RootState> = {
     );
   },
 
+  // TODO: Move to event-log store.
   checkpointStuntVisit: (state, getters): EventLogAugmented[] => {
     if (!state.user) {
       return [];
@@ -355,6 +347,7 @@ export const getters: GetterTree<RootState, RootState> = {
     );
   },
 
+  // TODO: Move to event-log store.
   pendingRequests: (state, getters): EventLogAugmented[] => {
     if (!state.user) {
       return [];
@@ -629,10 +622,6 @@ export const actions: ActionTree<RootState, RootState> = {
     if (!code) {
       return null;
     }
-
-    // const matchedCode = getters.compiledCodes.find((route) => {
-    //   return route.code === code.toUpperCase();
-    // });
 
     return getters.findByIdOrCode(code) || null;
   },

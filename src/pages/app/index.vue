@@ -1,5 +1,20 @@
 <template>
   <div>
+    <v-row>
+      <v-col cols="12">
+        <v-btn
+          block
+          color="yellow"
+          large
+          nuxt
+          to="/timeline"
+          class="black--text text-h4"
+        >
+          View your Timeline
+        </v-btn>
+      </v-col>
+    </v-row>
+
     <btn-block :btnBlocks="btnBlocks"></btn-block>
 
     <v-row>

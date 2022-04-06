@@ -28,6 +28,7 @@ export function authorised(
   if (user._type === "patrol") {
     // Default Patrol scopes.
     userScopes.push("app:seeEmergencyInfo");
+    userScopes.push("patrol:canCheckpoint:walkpoint:capture");
     userScopes.push("patrol:canShare");
     userScopes.push("stunt:canReview");
     userScopes.push("review:seeRecordedBySelf");

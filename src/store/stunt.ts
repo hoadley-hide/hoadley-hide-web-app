@@ -8,6 +8,7 @@ export const names = {
   getters: {
     getStunt: "stunt/getStunt",
     getStunts: "stunt/getStunts",
+    scannedStunts: "stunt/scannedStunts",
   },
   mutations: {
     setStunts: "stunt/setStunts",
@@ -32,18 +33,19 @@ export const getters: GetterTree<RootState, RootState> = {
       ) ?? null
     );
   },
-  getStunts: (state, _getters, _rootState, rootGetters) => {
+  getStunts: (state, getters, _rootState, rootGetters) => {
     let stunts: Stunt[] = [];
 
     if (funnySubStoreAuth(rootGetters, ["stunt:seeAll"])) {
       stunts = [...state.stunts];
     } else {
-      stunts = state.stunts.filter((s) =>
-        rootGetters.hasCodeBeenScanned(s.code)
-      );
+      stunts = getters.scannedStunts;
     }
 
     return stunts.sort((a: Stunt, b: Stunt) => a.stuntNumber - b.stuntNumber);
+  },
+  scannedStunts: (state, _getters, _rootState, rootGetters) => {
+    return state.stunts.filter((s) => rootGetters.hasCodeBeenScanned(s.code));
   },
 };
 

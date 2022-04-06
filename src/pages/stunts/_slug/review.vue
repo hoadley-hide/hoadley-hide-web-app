@@ -71,7 +71,7 @@ import uuid4 from "uuid4";
 
 export default {
   validate({ params, store }) {
-    return store.getters.stunt(params.slug);
+    return store.getters[stunt.getters.getStunt](params.slug);
   },
   data() {
     return {

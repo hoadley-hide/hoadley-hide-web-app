@@ -57,12 +57,14 @@ export type PermissionScope =
   | "app:seePrintingList"
   | "app:seeReviewList" // Deprecated
   | "app:seeEmergencyInfo"
+  | "checkpoint:seeOthers"
   | "monsterHunt:canShare"
   | "monsterHunt:seeAll"
   | "eventStage:seeAll"
   | "patrol:canCheckpoint:stunt:visit"
   | "patrol:canCheckpoint:voc:enter"
   | "patrol:canCheckpoint:voc:exit"
+  | "patrol:canCheckpoint:walkpoint:capture"
   | "patrol:import"
   | "patrol:seeAll"
   | "patrol:canShare"
@@ -72,4 +74,5 @@ export type PermissionScope =
   | "review:seeRecordedBySelf"
   | "review:seeReferencingSelf"
   | "review:canDelete"
+  | "review:seeOthers"
   | "review:seeAll";
