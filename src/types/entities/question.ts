@@ -6,6 +6,7 @@ export interface Question {
   questionFieldType:
     | "LongAnswer"
     | "Rating"
+    | "VerticalRating"
     | "ShortAnswer"
     | "StuntPicker"
     | "Time";

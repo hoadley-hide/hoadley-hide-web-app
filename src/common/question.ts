@@ -10,6 +10,10 @@ export function isValid(question: Question, data: any): boolean {
     return !!data;
   } else if (question.questionFieldType === "ShortAnswer") {
     return !!data;
+  } else if (question.questionFieldType === "VerticalRating") {
+    return (
+      Number.isInteger(data) && 0 <= data && data <= question.tickLabels.length
+    );
   } else if (question.questionFieldType === "Rating") {
     return (
       Number.isInteger(data) && 0 <= data && data <= question.tickLabels.length

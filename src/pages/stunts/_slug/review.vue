@@ -34,7 +34,7 @@
           v-bind:key="question.heading"
         >
           <review-question
-            @input="(value) => (review[question.storageKey] = value)"
+            v-model="review[question.storageKey]"
             :question="question"
           ></review-question>
         </v-col>
@@ -102,6 +102,11 @@ export default {
       { to: this.stunt.path, label: this.stunt.name },
       { to: null, label: "Review" },
     ]);
+
+    this.review = this.questions.reduce((acc, question) => {
+      acc[question.storageKey] = "";
+      return acc;
+    }, {});
   },
   methods: {
     async submitReview() {
