@@ -2,11 +2,16 @@ import Vue from "vue";
 import { DateTime, Duration } from "luxon";
 
 export const dateHelper = (
-  inDate: Date | string | undefined
+  inDate: Date | DateTime | string | undefined
 ): DateTime | string => {
   if (!inDate) {
     return "";
   }
+
+  if (DateTime.isDateTime(inDate)) {
+    return inDate;
+  }
+
   let dt: DateTime;
 
   dt = DateTime.fromJSDate(inDate as Date);
@@ -53,66 +58,87 @@ Vue.filter("datetime", function (inDate: Date | string | undefined) {
   });
 });
 
-Vue.filter(
-  "duration",
-  function (inDate: string | Date, niceText: boolean = true) {
-    const dt: DateTime | string = dateHelper(inDate);
-    if (typeof dt === "string") {
-      return dt;
-    }
+export function durationFilter(
+  inDate: string | Date | DateTime,
+  options: boolean | { nice: boolean; long: boolean } = true
+) {
+  const niceText =
+    options === true || (typeof options === "object" && options?.nice);
+  const longText = typeof options === "object" && options?.long;
 
-    let d: Duration = dt.diffNow();
-
-    // Date is in the future.
-    const future = d.milliseconds > 0;
-
-    d = future ? d : d.negate();
-    d = d.shiftTo("years", "months", "days", "hours", "minutes", "seconds");
-
-    const dur = d.toObject();
-    let pp: string[] = [];
-
-    const showYears = Number(dur.years) > 0;
-    const showMonths = Number(dur.months) > 0;
-    const showDays = Number(dur.days) > 0 && !showYears;
-    const showHours = Number(dur.hours) > 0 && !showYears && !showMonths;
-    const showMinutes =
-      Number(dur.minutes) > 0 && !showYears && !showMonths && !showDays;
-    const lessThanOneMinute =
-      Number(dur.seconds) > 0 &&
-      !showYears &&
-      !showMonths &&
-      !showDays &&
-      !showHours &&
-      !showMinutes;
-
-    if (future && niceText && !lessThanOneMinute) {
-      pp.push("in");
-    }
-    if (showYears) {
-      pp.push(`${dur.years?.toFixed(0)}y`);
-    }
-    if (showMonths) {
-      pp.push(`${dur.months?.toFixed(0)}m`);
-    }
-    if (showDays) {
-      pp.push(`${dur.days?.toFixed(0)}d`);
-    }
-    if (showHours) {
-      pp.push(`${dur.hours?.toFixed(0)}h`);
-    }
-    if (showMinutes) {
-      pp.push(`${dur.minutes?.toFixed(0)}m`);
-    }
-    if (lessThanOneMinute) {
-      pp.push(`Just now`);
-    }
-    if (!future && niceText && !lessThanOneMinute) {
-      pp.push("ago");
-    }
-    return pp.join(" ");
+  const dt: DateTime | string = dateHelper(inDate);
+  if (typeof dt === "string") {
+    return dt;
   }
-);
+
+  let d: Duration = dt.diffNow();
+
+  // Date is in the future.
+  const future = d.milliseconds > 0;
+
+  d = future ? d : d.negate();
+  d = d.shiftTo("years", "months", "days", "hours", "minutes", "seconds");
+
+  const dur = d.toObject();
+  let pp: string[] = [];
+
+  const showYears = Number(dur.years) > 0;
+  const showMonths = Number(dur.months) > 0;
+  const showDays = Number(dur.days) > 0 && !showYears;
+  const showHours = Number(dur.hours) > 0 && !showYears && !showMonths;
+  const showMinutes =
+    Number(dur.minutes) > 0 && !showYears && !showMonths && !showDays;
+  const lessThanOneMinute =
+    Number(dur.seconds) > 0 &&
+    !showYears &&
+    !showMonths &&
+    !showDays &&
+    !showHours &&
+    !showMinutes;
+
+  const units = longText
+    ? {
+        y: " years",
+        m: " months",
+        d: " days",
+        h: " hours",
+        min: " minutes",
+      }
+    : {
+        y: "y",
+        m: "m",
+        d: "d",
+        h: "h",
+        min: "m",
+      };
+
+  if (future && niceText && !lessThanOneMinute) {
+    pp.push("in");
+  }
+  if (showYears) {
+    pp.push(`${dur.years?.toFixed(0)}${units.y}`);
+  }
+  if (showMonths) {
+    pp.push(`${dur.months?.toFixed(0)}${units.m}`);
+  }
+  if (showDays) {
+    pp.push(`${dur.days?.toFixed(0)}${units.d}`);
+  }
+  if (showHours) {
+    pp.push(`${dur.hours?.toFixed(0)}${units.h}`);
+  }
+  if (showMinutes) {
+    pp.push(`${dur.minutes?.toFixed(0)}${units.min}`);
+  }
+  if (lessThanOneMinute) {
+    pp.push(`Just now`);
+  }
+  if (!future && niceText && !lessThanOneMinute) {
+    pp.push("ago");
+  }
+  return pp.join(" ");
+}
+Vue.filter("duration", durationFilter);
 
 Vue.filter("capitalize", function (value: string | undefined) {
   if (!value) {

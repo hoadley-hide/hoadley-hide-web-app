@@ -39,6 +39,9 @@
         </v-card-text>
       </v-card>
     </v-col>
+    <v-col cols="12" sm="6">
+      <stats-patrols-met></stats-patrols-met>
+    </v-col>
     <v-col cols="12">
       <v-card>
         <v-card-text>

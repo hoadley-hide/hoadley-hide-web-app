@@ -10,6 +10,9 @@
     <v-col cols="12" sm="6">
       <stunt-map></stunt-map>
     </v-col>
+    <v-col cols="12" sm="6">
+      <stats-stunts-visited></stats-stunts-visited>
+    </v-col>
     <v-col cols="12">
       <v-card>
         <v-card-text>

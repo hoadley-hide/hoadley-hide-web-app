@@ -1,5 +1,7 @@
+import { DateTime, Duration } from "luxon";
 import Vue from "vue";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
+import { dateHelper, durationFilter } from "~/plugins/filters";
 import { Checkpoint, EventLog, Patrol, Stunt } from "~/types";
 
 export const state = () => ({
@@ -54,6 +56,43 @@ export const getters: GetterTree<RootState, RootState> = {
       }
       return "incomplete";
     },
+  checkpointStuntVisitDurations: (state, getters, rootState, rootGetters) => {
+    const logs = rootState.eventLogs.filter(
+      (eventLog: EventLog) => eventLog.type === "checkpoint:stunt:visit"
+    );
+
+    if (logs.length === 0) {
+      return { total: "---", average: "---" };
+    }
+    const durations = logs.map((eventLog: EventLog) => {
+      const checkInTime = dateHelper(eventLog.data?.["check-in-time"]);
+      const checkOutTime = dateHelper(eventLog.data?.["check-out-time"]);
+
+      if (typeof checkInTime === "string" || typeof checkOutTime === "string") {
+        return Duration.fromMillis(0);
+      }
+
+      return checkInTime.diff(checkOutTime);
+    });
+
+    const total: Duration = durations.reduce(
+      (total: Duration, duration: Duration) => total.plus(duration),
+      Duration.fromMillis(0)
+    );
+
+    const average = total.as("minutes") / logs.length;
+
+    return {
+      total: durationFilter(DateTime.now().plus(total), {
+        long: true,
+        nice: false,
+      }),
+      average: durationFilter(DateTime.now().plus({ minutes: average }), {
+        long: true,
+        nice: false,
+      }),
+    };
+  },
 };
 
 export const mutations: MutationTree<RootState> = {

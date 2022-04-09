@@ -8,6 +8,7 @@ export const names = {
     getPatrol: "patrol/getPatrol",
     getPatrols: "patrol/getPatrols",
     scannedPatrols: "patrol/scannedPatrols",
+    stats: "patrol/stats",
   },
   mutations: {
     setPatrols: "patrol/setPatrols",
@@ -50,6 +51,12 @@ export const getters: GetterTree<RootState, RootState> = {
   },
   scannedPatrols: (state, _getters, _rootState, rootGetters) => {
     return state.patrols.filter((p) => rootGetters.hasCodeBeenScanned(p.code));
+  },
+  stats: (state, getters) => {
+    return {
+      total: state.patrols.length,
+      scanned: getters.scannedPatrols.length,
+    };
   },
 };
 

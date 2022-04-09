@@ -9,6 +9,7 @@ export const names = {
     getStunt: "stunt/getStunt",
     getStunts: "stunt/getStunts",
     scannedStunts: "stunt/scannedStunts",
+    stats: "stunt/stats",
   },
   mutations: {
     setStunts: "stunt/setStunts",
@@ -46,6 +47,12 @@ export const getters: GetterTree<RootState, RootState> = {
   },
   scannedStunts: (state, _getters, _rootState, rootGetters) => {
     return state.stunts.filter((s) => rootGetters.hasCodeBeenScanned(s.code));
+  },
+  stats: (state, getters) => {
+    return {
+      total: state.stunts.length,
+      scanned: getters.scannedStunts.length,
+    };
   },
 };
 
