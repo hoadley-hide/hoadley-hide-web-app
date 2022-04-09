@@ -5,7 +5,7 @@
         <v-card-title class="text-h3">Emergency Contacts</v-card-title>
 
         <v-card-text>
-          <a href="tel:0419286499">
+          <a href="tel:0447281828">
             <v-icon>mdi-phone</v-icon>
             Call the Hoadley Hide Emergency Number
           </a>
