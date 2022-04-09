@@ -13,15 +13,7 @@
           ></v-select>
         </v-card-text>
         <v-card-text>
-          <v-btn
-            block
-            text
-            color="info"
-            @click="fetchMyEventLogs()"
-            :loading="loading.fetchLogs"
-          >
-            Refresh Data
-          </v-btn>
+          <refresh-data-btn></refresh-data-btn>
         </v-card-text>
       </v-card>
     </v-col>
@@ -99,7 +91,6 @@ interface Timeline {
 export default {
   data() {
     return {
-      loading: { fetchLogs: false },
       selectedDay: null,
       days: [
         { label: "Saturday", value: "saturday" },
@@ -264,15 +255,12 @@ export default {
     },
   },
   async mounted() {
-    this.$setBreadcrumbs([{ to: null, label: "Home" }]);
-    await this.fetchMyEventLogs();
+    this.$setBreadcrumbs([
+      { to: "/", label: "Home" },
+      { to: "/app", label: "App & Data" },
+      { to: null, label: "Timeline" },
+    ]);
   },
-  methods: {
-    async fetchMyEventLogs() {
-      this.$set(this.loading, "fetchLogs", true);
-      await this.$store.dispatch("fetchMyEventLogs", { syncMode: "diff" });
-      this.$set(this.loading, "fetchLogs", false);
-    },
-  },
+  methods: {},
 };
 </script>

@@ -6,15 +6,7 @@
 
         <v-card-text>List of reviews</v-card-text>
         <v-card-text>
-          <v-btn
-            block
-            text
-            color="info"
-            @click="getReviews()"
-            :loading="loading.getReviews"
-          >
-            Refresh Data
-          </v-btn>
+          <refresh-data-btn></refresh-data-btn>
         </v-card-text>
       </v-card>
     </v-col>
@@ -37,11 +29,11 @@
                       }}
                     </v-icon>
                   </v-list-item-icon>
-                  <v-list-item-title class="py-2">
-                    {{ review.recordingEntity.name }}
-                    <div class="pl-4">reviews</div>
-                    {{ review.referencedEntity.name }}
-                  </v-list-item-title>
+                  <v-list-item-content>
+                    <chip-patrol :patrol="review.recordingEntity">
+                    </chip-patrol>
+                    <chip-stunt :stunt="review.referencedEntity"> </chip-stunt>
+                  </v-list-item-content>
                   <v-list-item-action v-show="$auth(['review:canDelete'])">
                     <v-btn icon color="red" @click="handleDelete(review)">
                       <v-icon>mdi-delete</v-icon>
