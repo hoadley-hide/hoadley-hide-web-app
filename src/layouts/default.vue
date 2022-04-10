@@ -131,6 +131,8 @@
 </template>
 
 <script lang="ts">
+import { EventStage } from "~/types";
+
 export default {
   data() {
     return {
@@ -210,6 +212,14 @@ export default {
         document.querySelector("body")?.appendChild(newScriptTag);
       }
     });
+
+    this.$store.watch(
+      (_state, getters) => getters.activeEventStage,
+      (newActiveEventStage: EventStage) => {
+        this.$store.commit("setEventDay", newActiveEventStage.eventStageDay);
+      },
+      { immediate: true }
+    );
   },
   computed: {
     buildNumber() {

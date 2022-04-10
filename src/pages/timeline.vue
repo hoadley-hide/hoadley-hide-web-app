@@ -50,6 +50,17 @@
                 </v-row>
               </v-card>
             </v-timeline-item>
+            <v-timeline-item
+              v-if="timelines.length === 0"
+              icon="crosshairs-question"
+              fill-dot
+            >
+              <v-card tile flat>
+                <v-card-text>
+                  <span>You have not done anything...</span>
+                </v-card-text>
+              </v-card>
+            </v-timeline-item>
           </v-timeline>
         </v-card-text>
       </v-card>
@@ -91,10 +102,12 @@ interface Timeline {
 export default {
   data() {
     return {
-      selectedDay: null,
+      selectedDay: 5,
       days: [
-        { label: "Saturday", value: "saturday" },
-        { label: "Sunday", value: "sunday" },
+        { label: "Friday", value: 5, eventDay: "friday" },
+        { label: "Saturday", value: 6, eventDay: "saturday" },
+        { label: "Sunday", value: 0, eventDay: "sunday" },
+        { label: "Monday", value: 1, eventDay: "monday" },
       ],
     };
   },
@@ -109,6 +122,10 @@ export default {
 
       const sorted = timelines
         .filter((timeline) => timeline.time)
+        .filter(
+          (timeline) =>
+            new Date(Date.parse(timeline.time)).getDay() === this.selectedDay
+        )
         .sort((a: Timeline, b: Timeline) => {
           return Date.parse(b.time) - Date.parse(a.time);
         });
@@ -260,6 +277,15 @@ export default {
       { to: "/app", label: "App & Data" },
       { to: null, label: "Timeline" },
     ]);
+
+    const eventDay = this.days.find(
+      (day) =>
+        day.eventDay === this.$store.getters.activeEventStage.eventStageDay
+    );
+
+    if (eventDay) {
+      this.selectedDay = eventDay;
+    }
   },
   methods: {},
 };

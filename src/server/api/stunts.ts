@@ -10,6 +10,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     icon
     description { html text }
     location
+    eventStageDay
     stuntNumber
     coordinates
   }`;
@@ -28,6 +29,8 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       icon: stunt.icon,
       description: stunt.description,
       location: stunt.location,
+      eventStageDay:
+        stunt.eventStageDay.toLowerCase() as Stunt["eventStageDay"],
       stuntNumber: stunt.stuntNumber,
       coordinates: stunt.coordinates
         ? { x: stunt.coordinates.x, y: stunt.coordinates.y }

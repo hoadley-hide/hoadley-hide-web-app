@@ -16,6 +16,7 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
     description { html text }
     startTime
     showTime
+    eventStageDay
     instructions { html text }
     autoShowAfterStartTime
     stageActions
@@ -36,6 +37,8 @@ export default async (_req: IncomingMessage, res: ServerResponse) => {
       description: stage.description,
       startTime: stage.startTime,
       showTime: stage.showTime,
+      eventStageDay:
+        stage.eventStageDay.toLowerCase() as EventStage["eventStageDay"],
       instructions: stage.instructions,
       autoShowAfterStartTime: stage.autoShowAfterStartTime,
       stageActions: {

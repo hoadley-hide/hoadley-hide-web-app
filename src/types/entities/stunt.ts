@@ -10,6 +10,7 @@ export interface Stunt {
   icon: string;
   description: RichText;
   location: string;
+  eventStageDay: "friday" | "saturday" | "sunday" | "monday";
   stuntNumber: number;
   coordinates?: Partial<{ x: number; y: number }>;
 }
@@ -21,6 +22,7 @@ export interface StuntRaw {
   icon: string;
   description: RichText;
   location: string;
+  eventStageDay: "Friday" | "Saturday" | "Sunday" | "Monday";
   stuntNumber: number;
   coordinates?: Partial<{ x: number; y: number }>;
 }

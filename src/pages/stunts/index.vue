@@ -5,6 +5,8 @@
         <v-card-title class="text-h2">Stunts</v-card-title>
 
         <v-card-text>Browse the stunts locations and teams.</v-card-text>
+
+        <v-card-text><event-day-selector></event-day-selector></v-card-text>
       </v-card>
     </v-col>
     <v-col cols="12" sm="6">

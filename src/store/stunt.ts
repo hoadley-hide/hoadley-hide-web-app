@@ -43,14 +43,20 @@ export const getters: GetterTree<RootState, RootState> = {
       stunts = getters.scannedStunts;
     }
 
-    return stunts.sort((a: Stunt, b: Stunt) => a.stuntNumber - b.stuntNumber);
+    return stunts
+      .filter((stunt) => rootGetters.eventDayCheck(stunt.eventStageDay))
+      .sort((a: Stunt, b: Stunt) => a.stuntNumber - b.stuntNumber);
   },
   scannedStunts: (state, _getters, _rootState, rootGetters) => {
-    return state.stunts.filter((s) => rootGetters.hasCodeBeenScanned(s.code));
+    return state.stunts
+      .filter((stunt) => rootGetters.eventDayCheck(stunt.eventStageDay))
+      .filter((s) => rootGetters.hasCodeBeenScanned(s.code));
   },
-  stats: (state, getters) => {
+  stats: (state, getters, _rootState, rootGetters) => {
     return {
-      total: state.stunts.length,
+      total: state.stunts.filter((stunt) =>
+        rootGetters.eventDayCheck(stunt.eventStageDay)
+      ).length,
       scanned: getters.scannedStunts.length,
     };
   },

@@ -11,6 +11,7 @@ export interface EventStage {
   description: RichText;
   startTime: string;
   showTime: boolean;
+  eventStageDay: "friday" | "saturday" | "sunday" | "monday";
   instructions: RichText[];
   autoShowAfterStartTime: boolean;
   stageActions: EventStageActions;
@@ -45,6 +46,7 @@ export interface EventStageRaw {
   description: RichText;
   startTime: string;
   showTime: boolean;
+  eventStageDay: "Friday" | "Saturday" | "Sunday" | "Monday";
   instructions: RichText[];
   autoShowAfterStartTime: boolean;
   stageActions?: Partial<EventStageActions>;

@@ -56,6 +56,7 @@ export const state = () => ({
   impersonator: null as Admin | null,
   eventLogs: [] as EventLog[],
   pendingLogIds: [] as string[],
+  eventDay: "whole-event" as "whole-event" | "saturday" | "sunday",
 });
 
 export type RootState = ReturnType<typeof state>;
@@ -134,6 +135,12 @@ export const getters: GetterTree<RootState, RootState> = {
   },
   activeEventStage: (_state, getters) => {
     return getters.scannedEventStages[0];
+  },
+  eventDay: (state) => {
+    return state.eventDay;
+  },
+  eventDayCheck: (_state, getters) => (eventDay) => {
+    return getters.eventDay === "whole-event" || eventDay === getters.eventDay;
   },
   nextEventStage: (_state, getters) => {
     const activeStageIndex = getters.eventStagesNewestFirst.indexOf(
@@ -525,6 +532,16 @@ export const mutations: MutationTree<RootState> = {
       state.pendingLogIds.indexOf(opt.deduplicationId),
       1
     );
+  },
+
+  setEventDay: (state, eventDay: string) => {
+    const newEventDay = ["saturday", "sunday"].includes(eventDay)
+      ? eventDay
+      : "whole-event";
+
+    if (newEventDay !== state.eventDay) {
+      Vue.set(state, "eventDay", newEventDay);
+    }
   },
 };
 
