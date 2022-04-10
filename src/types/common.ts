@@ -7,6 +7,7 @@ import {
   Stunt,
   WikiArticle,
 } from ".";
+import { Walkpoint } from "./entities/walkpoint";
 
 export interface RichText {
   html: string;
@@ -43,6 +44,7 @@ export type Entity =
   | MonsterHuntPlayer
   | Patrol
   | Stunt
+  | Walkpoint
   | WikiArticle;
 export type AppUserEntity = Admin | MonsterHuntPlayer | Patrol | Stunt;
 export type QrCodeableEntity =
@@ -50,29 +52,31 @@ export type QrCodeableEntity =
   | EventStage
   | MonsterHuntMonster
   | Patrol
-  | Stunt;
+  | Stunt
+  | Walkpoint;
 export type PermissionScope =
   | "app:seeDashboard"
   | "app:seeDev"
+  | "app:seeEmergencyInfo"
   | "app:seePrintingList"
   | "app:seeReviewList" // Deprecated
-  | "app:seeEmergencyInfo"
   | "checkpoint:seeOthers"
+  | "eventStage:seeAll"
   | "monsterHunt:canShare"
   | "monsterHunt:seeAll"
-  | "eventStage:seeAll"
   | "patrol:canCheckpoint:stunt:visit"
   | "patrol:canCheckpoint:voc:enter"
   | "patrol:canCheckpoint:voc:exit"
   | "patrol:canCheckpoint:walkpoint:capture"
+  | "patrol:canShare"
   | "patrol:import"
   | "patrol:seeAll"
-  | "patrol:canShare"
+  | "review:canDelete"
+  | "review:seeAll"
+  | "review:seeOthers"
+  | "review:seeRecordedBySelf"
+  | "review:seeReferencingSelf"
   | "stunt:canReview"
   | "stunt:canShare"
   | "stunt:seeAll"
-  | "review:seeRecordedBySelf"
-  | "review:seeReferencingSelf"
-  | "review:canDelete"
-  | "review:seeOthers"
-  | "review:seeAll";
+  | "walkpoint:seeAll";

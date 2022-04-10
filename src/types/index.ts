@@ -1,5 +1,5 @@
-export * from "./common";
 export * from "./checkpoint";
+export * from "./common";
 export * from "./entities/admin";
 export * from "./entities/eventLog";
 export * from "./entities/eventStage";
@@ -7,4 +7,5 @@ export * from "./entities/monsterHunt";
 export * from "./entities/patrol";
 export * from "./entities/question";
 export * from "./entities/stunt";
+export * from "./entities/walkpoint";
 export * from "./entities/wikiArticle";

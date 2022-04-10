@@ -8,34 +8,14 @@
       </v-card>
     </v-col>
 
-    <!-- Check in patrol -->
+    <!-- Check in patrol: Stunt -->
     <v-col cols="12" sm="6" v-if="$auth(['patrol:canCheckpoint:stunt:visit'])">
-      <v-btn
-        block
-        outlined
-        nuxt
-        :to="`${patrol.path}/checkin`"
-        :disabled="patrolCheckInStatus === 'complete'"
-        :color="
-          patrolCheckInStatus === 'incomplete'
-            ? 'green'
-            : patrolCheckInStatus === 'inflight'
-            ? 'orange'
-            : patrolCheckInStatus === 'complete'
-            ? 'red'
-            : ''
-        "
-      >
-        {{
-          patrolCheckInStatus === "incomplete"
-            ? "Check in Patrol"
-            : patrolCheckInStatus === "inflight"
-            ? "Continute Check in of Patrol"
-            : patrolCheckInStatus === "complete"
-            ? "Already Checked in Patrol"
-            : `Unknown status ${patrolCheckInStatus}`
-        }}
-      </v-btn>
+      <checkpoint-stunt-visit :patrol="patrol"></checkpoint-stunt-visit>
+    </v-col>
+
+    <!-- Check in patrol: VOC -->
+    <v-col cols="12" sm="6" v-if="$auth(['patrol:canCheckpoint:voc'])">
+      <checkpoint-voc :patrol="patrol"></checkpoint-voc>
     </v-col>
 
     <!-- Your patrol (tm) -->
@@ -44,6 +24,22 @@
         <v-card-text>
           <strong>This is your Patrol.</strong> You can share this QR code with
           friends from other patrols!
+        </v-card-text>
+      </v-card>
+    </v-col>
+
+    <!-- Patrol Members -->
+    <v-col cols="12" sm="6">
+      <v-card>
+        <v-card-title class="text-h4">Patrol Members</v-card-title>
+        <v-card-text>
+          <v-list>
+            <v-list-item v-for="member in patrol.members">
+              <v-list-item-content>
+                <span>{{ member.fullname }} ({{ member.formation }})</span>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
         </v-card-text>
       </v-card>
     </v-col>
@@ -90,19 +86,6 @@ export default {
     patrol() {
       return this.$store.getters[patrol.getters.getPatrol](
         this.$route.params.slug
-      );
-    },
-    patrolCheckInStatus() {
-      if (!this.patrol) {
-        return "incomplete";
-      }
-      if (!this.$auth(["patrol:canCheckpoint:stunt:visit"])) {
-        return "incomplete";
-      }
-
-      return this.$store.getters["checkpoint/patrolCheckInStatus"](
-        this.patrol,
-        this.$useUser()
       );
     },
   },

@@ -2,7 +2,7 @@ import { DateTime, Duration } from "luxon";
 import Vue from "vue";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 import { dateHelper, durationFilter } from "~/plugins/filters";
-import { Checkpoint, EventLog, Patrol, Stunt } from "~/types";
+import { Checkpoint, EventLog, Patrol, Stunt, Walkpoint } from "~/types";
 
 export const state = () => ({
   inflightCheckpoints: [] as Checkpoint[],
@@ -54,6 +54,41 @@ export const getters: GetterTree<RootState, RootState> = {
       ) {
         return "complete";
       }
+      return "incomplete";
+    },
+
+  walkpointCheckInStatus:
+    (state, getters, rootState, rootGetters) =>
+    (
+      patrol: Patrol,
+      walkpoint: Walkpoint
+    ): "incomplete" | "complete" | "inflight" => {
+      if (!rootGetters.user) {
+        return "incomplete";
+      }
+
+      if (
+        state.inflightCheckpoints.some(
+          (checkpoint: Checkpoint) =>
+            checkpoint.data.type === "checkpoint:walkpoint:capture" &&
+            checkpoint.patrol.id === patrol.id &&
+            checkpoint.recording.id === walkpoint.id
+        )
+      ) {
+        return "inflight";
+      }
+
+      if (
+        rootState.eventLogs.some(
+          (eventLog: EventLog) =>
+            eventLog.type === "checkpoint:walkpoint:capture" &&
+            eventLog.referencedEntity?.id === walkpoint.id &&
+            eventLog.recordingEntity?.id === patrol.id
+        )
+      ) {
+        return "complete";
+      }
+
       return "incomplete";
     },
   checkpointStuntVisitDurations: (state, getters, rootState, rootGetters) => {

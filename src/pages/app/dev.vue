@@ -87,6 +87,7 @@ export default {
         stunt: this.$store.state.stunt.stunts,
         eventStage: this.$store.state.eventStages,
         monsterHuntMonster: this.$store.state.monsterHuntMonsters,
+        walkpoint: this.$store.state.walkpoint.walkpoints,
       };
     },
     entityScanned() {

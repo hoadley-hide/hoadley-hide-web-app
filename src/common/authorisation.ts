@@ -41,6 +41,7 @@ export function authorised(
     userScopes.push("patrol:canCheckpoint:stunt:visit");
     userScopes.push("patrol:canShare");
     userScopes.push("patrol:seeAll");
+    userScopes.push("walkpoint:seeAll");
     userScopes.push("review:seeReferencingSelf");
     userScopes.push("stunt:canShare");
     userScopes.push("stunt:seeAll");

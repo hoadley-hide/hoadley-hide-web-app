@@ -3,12 +3,14 @@ import { AppUserEntity, Entity } from "..";
 export type EventLogType =
   | "review:stunt"
   | "checkpoint:stunt:visit"
+  | "checkpoint:walkpoint:capture"
   | "checkpoint:voc:enter"
   | "checkpoint:voc:exit";
 
 export const ValidEventLogTypes: EventLogType[] = [
   "review:stunt",
   "checkpoint:stunt:visit",
+  "checkpoint:walkpoint:capture",
   "checkpoint:voc:enter",
   "checkpoint:voc:exit",
 ];

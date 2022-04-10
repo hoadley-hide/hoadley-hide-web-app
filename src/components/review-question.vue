@@ -49,7 +49,7 @@
             <v-list dense>
               <v-list-item-group v-model="data" active-class="green--text">
                 <v-list-item
-                  v-for="stunt in stuntList"
+                  v-for="stunt in points"
                   :key="stunt.code"
                   :value="stunt.code"
                 >
@@ -59,7 +59,12 @@
                   <v-list-item-content>
                     <span>
                       <v-chip small color="red">
-                        #{{ stunt.stuntNumber }}
+                        <span v-if="stunt.stuntNumber">
+                          #{{ stunt.stuntNumber }}
+                        </span>
+                        <span v-if="stunt.walkpointLetter">
+                          #{{ stunt.walkpointLetter }}
+                        </span>
                       </v-chip>
                       {{ stunt.name }}
                     </span>
@@ -124,10 +129,11 @@
 </template>
 
 <script lang="ts">
-import { Question, Stunt } from "~/types";
+import { Question, Stunt, Walkpoint } from "~/types";
 import { isValid } from "~/common/question";
 import { dateHelper } from "~/plugins/filters";
-import { names as stunt } from "~/store/stunt";
+import { names as stuntStore } from "~/store/stunt";
+import { names as walkpointStore } from "~/store/walkpoint";
 
 export default {
   props: {
@@ -146,7 +152,13 @@ export default {
       return !isValid(this.question, this.data);
     },
     stuntList(): Stunt[] {
-      return this.$store.getters[stunt.getters.getStunts];
+      return this.$store.getters[stuntStore.getters.getStunts];
+    },
+    walkpointList(): Walkpoint[] {
+      return this.$store.getters[walkpointStore.getters.getWalkpoints];
+    },
+    points() {
+      return this.stuntList.concat(this.walkpointList);
     },
   },
   watch: {

@@ -87,7 +87,7 @@ export const getters: GetterTree<RootState, RootState> = {
         "checkpoint:stunt:visit",
         "checkpoint:voc:enter",
         "checkpoint:voc:exit",
-        "checkpoint:walkpoint:collect",
+        "checkpoint:walkpoint:capture",
       ].includes(eventLog.type)
     );
 

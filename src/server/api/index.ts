@@ -26,7 +26,8 @@ export const EntityType = {
   MonsterHuntMonster: { prefix: "M", length: 5 },
   Patrol: { prefix: "P", length: 5 },
   Stunt: { prefix: "S", length: 5 },
-  WikiArticle: { prefix: "W", length: 5 },
+  WikiArticle: { prefix: "WIKI", length: 5 },
+  Walkpoint: { prefix: "W", length: 5 },
 };
 
 export function generateCode(entityType, id: string) {

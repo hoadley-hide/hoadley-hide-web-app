@@ -24,6 +24,7 @@ const entityTypeMapping = {
   patrol: "Patrol",
   stunt: "Stunt",
   monsterHuntMonster: "MonsterHuntMonster",
+  walkpoint: "Walkpoint",
 };
 export default async (req: IncomingMessage, res: ServerResponse) => {
   switch (req.method) {
@@ -60,12 +61,14 @@ async function handleGet(req: IncomingMessage, res: ServerResponse) {
       ... on MonsterHuntMonster { id }
       ... on Patrol { id }
       ... on Stunt { id }
+      ... on Walkpoint { id }
     }
     referencedEntity {
       _type: __typename
       ... on MonsterHuntMonster { id }
       ... on Patrol { id }
       ... on Stunt { id }
+      ... on Walkpoint { id }
     }
     data
   }`;

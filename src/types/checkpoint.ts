@@ -1,10 +1,10 @@
-import { Admin, Patrol, Stunt } from ".";
+import { Admin, Patrol, Stunt, Walkpoint } from ".";
 
 export interface Checkpoint {
   id: string;
-  recording: Stunt | Admin;
+  recording: Stunt | Admin | Walkpoint;
   patrol: Patrol;
-  data: CheckpointStuntVisit;
+  data: CheckpointStuntVisit | CheckpointWalkpointCapture;
 }
 
 interface CheckpointStuntVisit {
@@ -17,4 +17,21 @@ interface CheckpointStuntVisit {
   "score-planning": string;
   "score-attainment": string;
   "score-leadership": string;
+}
+
+export interface CheckpointWalkpointCapture {
+  type: "checkpoint:walkpoint:capture";
+  "walkpoint-capture-time": string;
+}
+
+interface CheckpointVocEnter {
+  type: "checkpoint:voc:enter";
+  "next-stunt": string;
+  "previous-stunt": string;
+}
+
+interface CheckpointVocExit {
+  type: "checkpoint:voc:exit";
+  "next-stunt": string;
+  "previous-stunt": string;
 }

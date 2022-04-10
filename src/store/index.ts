@@ -4,6 +4,7 @@ import { ActionTree, GetterTree, MutationTree } from "vuex";
 import { AppAlert, createAlert } from "~/common/alert";
 import { AppBreadcrumb } from "~/common/breadcrumb";
 import { promiseTimeout } from "~/common/promise";
+import { names as walkpoint } from "~/store/walkpoint";
 import { names as patrol } from "~/store/patrol";
 import { names as stunt } from "~/store/stunt";
 import {
@@ -96,6 +97,13 @@ export const getters: GetterTree<RootState, RootState> = {
   checkpointStuntVisitQuestions: (state) => {
     return state.questions
       .filter((question) => question.questionGroup === "checkpoint:stunt:visit")
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  },
+  checkpointWalkpointQuestions: (state) => {
+    return state.questions
+      .filter(
+        (question) => question.questionGroup === "checkpoint:walkpoint:capture"
+      )
       .sort((a, b) => a.sortOrder - b.sortOrder);
   },
   // User getters
@@ -235,6 +243,7 @@ export const getters: GetterTree<RootState, RootState> = {
         ...state.monsterHuntMonsters,
         ...state.patrol.patrols,
         ...state.stunt.stunts,
+        ...state.walkpoint.walkpoints,
         ...state.wikiArticles,
       ];
 
@@ -610,6 +619,7 @@ export const actions: ActionTree<RootState, RootState> = {
       mutation: "setQuestions",
     });
     await dispatch(stunt.actions.initialise);
+    await dispatch(walkpoint.actions.initialise);
     await dispatch("initialiseEntity", {
       path: "/api/wiki-articles",
       dataKey: "wikiArticles",

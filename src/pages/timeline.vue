@@ -83,9 +83,11 @@ import {
   Patrol,
   ScannedCode,
   Stunt,
+  Walkpoint,
 } from "~/types";
 import { names as stuntStore } from "~/store/stunt";
 import { names as patrolStore } from "~/store/patrol";
+import { names as walkpointStore } from "~/store/walkpoint";
 import { names as eventLogStore } from "~/store/event-log";
 import hasher from "object-hash";
 
@@ -119,6 +121,7 @@ export default {
       timelines.push(...this.checkpoints);
       timelines.push(...this.stunts);
       timelines.push(...this.patrols);
+      timelines.push(...this.walkpoints);
 
       const sorted = timelines
         .filter((timeline) => timeline.time)
@@ -191,6 +194,17 @@ export default {
             });
           }
 
+          if (eventLog.type === "checkpoint:walkpoint:capture") {
+            returnLogs.push({
+              icon: "mdi-hiking",
+              title: eventLog.referencedEntity?.name ?? "Unknown",
+              action: "Was Captured",
+              subtitle: `By ${eventLog.recordingEntity?.name}`,
+              colour: "light-blue darken-4",
+              time: eventLog.data?.["walkpoint-capture-time"] ?? "",
+              to: eventLog.referencedEntity?.path,
+            });
+          }
           return returnLogs;
         }
       );
@@ -266,6 +280,25 @@ export default {
             colour: "red darken-4",
             time: scanned?.time ?? "",
             to: stunt.path,
+          };
+        }
+      );
+    },
+
+    walkpoints(): Timeline[] {
+      return this.$store.getters[walkpointStore.getters.scannedWalkpoints].map(
+        (walkpoint: Walkpoint): Timeline => {
+          const scanned: ScannedCode | undefined =
+            this.$store.getters.hasCodeBeenScanned(walkpoint.code);
+
+          return {
+            icon: walkpoint.icon,
+            title: walkpoint.name,
+            action: "Scanned",
+            subtitle: walkpoint.description.text,
+            colour: "light-blue darken-4",
+            time: scanned?.time ?? "",
+            to: walkpoint.path,
           };
         }
       );
