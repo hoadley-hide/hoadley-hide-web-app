@@ -33,6 +33,7 @@ export default {
   data() {
     return {
       parentWidth: 100,
+      interval: null,
     };
   },
   mounted() {
@@ -43,11 +44,15 @@ export default {
     ]);
 
     this.fixWidth();
-    setInterval(this.fixWidth, 5000);
+    this.interval = setInterval(this.fixWidth, 5000);
   },
   methods: {
     fixWidth() {
-      this.parentWidth = this.$refs.iframe.parentElement.clientWidth;
+      if (this.$refs.iframe) {
+        this.parentWidth = this.$refs.iframe.parentElement.clientWidth;
+      } else {
+        clearInterval(this.interval);
+      }
     },
   },
 };
