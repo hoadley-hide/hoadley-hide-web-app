@@ -34,7 +34,7 @@
         <v-card-title class="text-h4">Patrol Members</v-card-title>
         <v-card-text>
           <v-list>
-            <v-list-item v-for="member in patrol.members">
+            <v-list-item v-for="member in patrol.members" :key="member.label">
               <v-list-item-content>
                 <span>{{ member.fullname }} ({{ member.formation }})</span>
               </v-list-item-content>

@@ -1,9 +1,5 @@
 <template>
   <div>
-    <!--
-      for use with the hand traced paths 
-      viewBox="36000 22000 6000 4000"
-    -->
     <svg
       class="svg-canvas"
       viewBox="0 0 4960 3507"
@@ -17,20 +13,30 @@
         <use xlink:href="/Whole Site Secret.svg#Map-Crown-Land" />
         <use v-if="showGrids" xlink:href="/Whole Site Secret.svg#Map-Grids" />
       </g>
-      <!-- <g id="tracks2">
-        <use xlink:href="/HH22-Map-for-Webapp.svg#tracks" />
-      </g> -->
       <g id="stunts">
         <circle
           v-for="stunt in stunts"
           :key="stunt.code"
           :cx="getX(stunt)"
           :cy="getY(stunt)"
-          r="50"
+          r="75"
           stroke="red"
           fill="red"
           stroke-width="10"
           @click="openOverlay(stunt)"
+        ></circle>
+      </g>
+      <g id="walkpoints">
+        <circle
+          v-for="walkpoint in walkpoints"
+          :key="walkpoint.code"
+          :cx="getX(walkpoint)"
+          :cy="getY(walkpoint)"
+          r="75"
+          stroke="blue"
+          fill="blue"
+          stroke-width="10"
+          @click="openOverlay(walkpoint)"
         ></circle>
       </g>
     </svg>
@@ -61,8 +67,9 @@
 </template>
 
 <script lang="ts">
-import { Stunt } from "~/types";
-import { names as stunt } from "~/store/stunt";
+import { Stunt, Walkpoint } from "~/types";
+import { names as stuntStore } from "~/store/stunt";
+import { names as walkpointStore } from "~/store/walkpoint";
 
 export default {
   data() {
@@ -96,23 +103,29 @@ export default {
   },
   computed: {
     stunts(): Stunt[] {
-      return this.$store.getters[stunt.getters.getStunts].filter(
+      return this.$store.getters[stuntStore.getters.getStunts].filter(
         (stunt: Stunt) => stunt.coordinates?.x && stunt.coordinates?.y
+      );
+    },
+    walkpoints(): Walkpoint[] {
+      return this.$store.getters[walkpointStore.getters.getWalkpoints].filter(
+        (walkpoint: Walkpoint) =>
+          walkpoint.coordinates?.x && walkpoint.coordinates?.y
       );
     },
   },
   methods: {
-    openOverlay(stunt: Stunt) {
+    openOverlay(entity: Stunt | Walkpoint) {
       this.overlayOpen = true;
-      this.overlay = stunt;
+      this.overlay = entity;
     },
     closeOverlay() {
       this.overlayOpen = false;
       this.overlay = null;
     },
 
-    getX(stunt: Stunt) {
-      if (!stunt.coordinates?.x) {
+    getX(entity: Stunt | Walkpoint) {
+      if (!entity.coordinates?.x) {
         return;
       }
 
@@ -121,12 +134,12 @@ export default {
         (this.mapping.svg.bottomRight.x - this.mapping.svg.topLeft.x);
 
       return (
-        (stunt.coordinates.x - this.mapping.sixfig.topLeft.x) / ratio +
+        (entity.coordinates.x - this.mapping.sixfig.topLeft.x) / ratio +
         this.mapping.svg.topLeft.x
       );
     },
-    getY(stunt: Stunt) {
-      if (!stunt.coordinates?.y) {
+    getY(entity: Stunt | Walkpoint) {
+      if (!entity.coordinates?.y) {
         return;
       }
 
@@ -135,7 +148,7 @@ export default {
         (this.mapping.svg.bottomRight.y - this.mapping.svg.topLeft.y);
 
       return (
-        (stunt.coordinates.y - this.mapping.sixfig.topLeft.y) / ratio +
+        (entity.coordinates.y - this.mapping.sixfig.topLeft.y) / ratio +
         this.mapping.svg.topLeft.y
       );
     },
@@ -156,6 +169,7 @@ export default {
   stroke-opacity: 1;
 }
 
+#importedtracks,
 #Map-Grids,
 #Map-Railway-Line,
 #Map-Crown-Land {

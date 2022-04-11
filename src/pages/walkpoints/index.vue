@@ -10,7 +10,7 @@
       <stats-walkpoints-visited class="mt-4"></stats-walkpoints-visited>
     </v-col>
     <v-col cols="12" sm="6">
-      <walkpoint-map></walkpoint-map>
+      <stunt-map></stunt-map>
     </v-col>
     <v-col cols="12">
       <v-card>

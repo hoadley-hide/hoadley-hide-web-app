@@ -29,6 +29,9 @@ export default {
     stats() {
       return this.$store.getters[stunt.getters.stats];
     },
+    checkpointDurations() {
+      return this.$store.getters["checkpoint/checkpointStuntVisitDurations"];
+    },
   },
 };
 </script>
