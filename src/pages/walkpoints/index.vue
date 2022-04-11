@@ -7,7 +7,7 @@
         <v-card-text><event-day-selector></event-day-selector></v-card-text>
       </v-card>
 
-      <stats-walkpoints-visited></stats-walkpoints-visited>
+      <stats-walkpoints-visited class="mt-4"></stats-walkpoints-visited>
     </v-col>
     <v-col cols="12" sm="6">
       <walkpoint-map></walkpoint-map>

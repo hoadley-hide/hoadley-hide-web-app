@@ -9,7 +9,7 @@
         <v-card-text><event-day-selector></event-day-selector></v-card-text>
       </v-card>
 
-      <stats-stunts-visited></stats-stunts-visited>
+      <stats-stunts-visited class="mt-4"></stats-stunts-visited>
     </v-col>
     <v-col cols="12" sm="6">
       <stunt-map></stunt-map>

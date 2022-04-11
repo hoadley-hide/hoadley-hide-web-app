@@ -7,7 +7,7 @@
         <v-card-text>Browse the patrols you have met so far.</v-card-text>
       </v-card>
 
-      <stats-patrols-met></stats-patrols-met>
+      <stats-patrols-met class="mt-4"></stats-patrols-met>
     </v-col>
     <v-col cols="12" sm="6" v-show="$useUser((u) => u._type === 'patrol')">
       <v-card color="indigo">
