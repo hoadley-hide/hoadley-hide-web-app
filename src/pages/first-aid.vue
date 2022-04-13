@@ -4,7 +4,14 @@
       <v-card>
         <v-card-title class="text-h2">First Aid</v-card-title>
 
-        <v-card-text> plz dont hurt your self </v-card-text>
+        <v-card-text>
+          If you have an emergency, call the
+          <a href="tel:0447281828">Hoadley Hide Emergency Number</a>
+        </v-card-text>
+
+        <v-card-text>
+          For less serve needs, make your way to the closest stunt.
+        </v-card-text>
       </v-card>
     </v-col>
     <v-col cols="12" class="py-0"><!-- Force the row reset --></v-col>
