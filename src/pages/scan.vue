@@ -36,6 +36,8 @@ export default {
           return this.$router.push(validEntity.path);
         case "patrol":
           return this.$router.push(validEntity.path);
+        case "walkpoint":
+          return this.$router.push(validEntity.path);
       }
     },
   },

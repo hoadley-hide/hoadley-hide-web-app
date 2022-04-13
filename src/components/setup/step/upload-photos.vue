@@ -26,7 +26,9 @@
       </v-card-text>
     </v-card>
 
-    <v-btn block color="primary" @click="$emit('next-step')">Snap!</v-btn>
+    <v-btn block color="primary" @click="$emit('next-step')">
+      Start Adventure
+    </v-btn>
   </v-stepper-content>
 </template>
 
