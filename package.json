@@ -1,6 +1,6 @@
 {
   "name": "hoadley-hide-web-app",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "This is a basic companion app to be used in conjunction with the Hoadley Hide Hiking event.",
   "author": "Hoadley Hide Management Team",
   "private": true,
