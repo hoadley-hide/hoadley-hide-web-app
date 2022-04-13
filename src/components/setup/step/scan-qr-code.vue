@@ -36,7 +36,7 @@ export default {
       this.$emit("next-step");
     },
     async lookupPatrol(scannedData) {
-      const patrolData = this.$store[patrol.getters.getPatrol].patrol(
+      const patrolData = this.$store.getters[patrol.getters.getPatrol](
         scannedData.code
       );
       if (!patrolData) {
