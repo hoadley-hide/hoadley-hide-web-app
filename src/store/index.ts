@@ -106,6 +106,11 @@ export const getters: GetterTree<RootState, RootState> = {
       )
       .sort((a, b) => a.sortOrder - b.sortOrder);
   },
+  checkpointVOCQuestions: (state) => (checkpointName) => {
+    return state.questions
+      .filter((question) => question.questionGroup === checkpointName)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  },
   // User getters
   user: (state): AppUserEntity | null => {
     if (!state.user) {

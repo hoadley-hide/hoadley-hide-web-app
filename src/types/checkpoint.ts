@@ -24,14 +24,16 @@ export interface CheckpointWalkpointCapture {
   "walkpoint-capture-time": string;
 }
 
-interface CheckpointVocEnter {
+export interface CheckpointVocEnter {
   type: "checkpoint:voc:enter";
-  "next-stunt": string;
-  "previous-stunt": string;
+  period: string;
+  "voc-previous-stunt": string;
+  "voc-check-in-time": string;
 }
 
-interface CheckpointVocExit {
+export interface CheckpointVocExit {
   type: "checkpoint:voc:exit";
-  "next-stunt": string;
-  "previous-stunt": string;
+  period: string;
+  "voc-next-stunt": string;
+  "voc-check-out-time": string;
 }
