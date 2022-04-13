@@ -160,6 +160,11 @@ export default {
 
       this.clearSetup();
 
+      this.$createAlert({
+        message: "Sign in complete",
+        type: "success",
+      });
+
       this.$router.push(entity?.path ?? "/");
     },
   },

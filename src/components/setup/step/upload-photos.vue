@@ -1,5 +1,5 @@
 <template>
-  <v-stepper-content step="4">
+  <v-stepper-content :step="step">
     <v-card class="mb-12" tile>
       <v-card-title class="text-h4">
         Take a photo of your {{ entity.toUpperCase() }}!
@@ -34,6 +34,6 @@
 
 <script lang="ts">
 export default {
-  props: ["entity"],
+  props: ["entity", "step"],
 };
 </script>

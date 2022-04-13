@@ -41,6 +41,7 @@
           <!-- Step 3 -->
           <setup-step-upload-photos
             entity="stunt"
+            step="3"
             @next-step="nextStep(3)"
           ></setup-step-upload-photos>
         </v-stepper-items>
