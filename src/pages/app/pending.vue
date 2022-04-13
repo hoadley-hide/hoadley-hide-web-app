@@ -33,7 +33,7 @@
             <v-list-item-content>
               <span>
                 <span>There are no pending requests.</span>
-                <span class="green--text text--darken-4">lov ya wok.</span>
+                <span class="green--text text--darken-4">lov ya work</span>
               </span>
             </v-list-item-content>
           </v-list-item>

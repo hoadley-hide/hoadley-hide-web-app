@@ -140,9 +140,14 @@ export default {
       items: [
         { title: "Home", icon: "mdi-home", to: "/" },
         { title: "Wiki", icon: "mdi-forum", to: "/wiki" },
+        {
+          title: "Your Timeline",
+          icon: "mdi-timeline-check",
+          to: "/app/timeline",
+        },
         { title: "The Adventure", icon: "mdi-shield-sword", to: "/event" },
         { title: "Stunts", icon: "mdi-map", to: "/stunts" },
-        { title: "Walkpoints", icon: "mdi-map", to: "/walkpoints" },
+        { title: "Walkpoints", icon: "mdi-hiking", to: "/walkpoints" },
         {
           title: "Patrols you've met",
           icon: "mdi-account-group",
