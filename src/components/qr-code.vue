@@ -17,7 +17,7 @@
         ></vue-qr>
 
         <v-btn
-          v-if="codeEntity"
+          v-if="codeEntity && $auth(['app:seePrintingList'])"
           block
           text
           color="warning"
