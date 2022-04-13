@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { Admin } from "~/types/index";
+import { Admin, Entity } from "~/types/index";
 
 export default {
   data() {
@@ -59,13 +59,15 @@ export default {
         {
           icon: "mdi-qrcode",
           title: "Scan QR Code",
-          label: "Scan your admin's QR Code",
+          label: "Scan your admin QR Code",
         },
       ],
       adminId: null,
     };
   },
-  mounted() {},
+  async mounted() {
+    await this.handleQueryCode();
+  },
   watch: {
     steps(val) {
       if (this.currentStep > val) {
@@ -82,16 +84,35 @@ export default {
     },
   },
   methods: {
+    async handleQueryCode() {
+      const code = this.$route.query.code ?? null;
+      if (!code) {
+        return;
+      }
+
+      const entity: Entity = await this.$store.dispatch("validateCode", code);
+
+      if (entity && entity._type === "admin") {
+        this.handleAdmin(entity);
+      }
+    },
     nextStep(index) {
+      if (index === 1 && this.patrolId !== null) {
+        // Admin is preloaded, dont ask again
+        this.$store.dispatch("persistUser", this.admin);
+
+        this.$emit("complete", this.admin.code);
+      }
+
       if (index === this.availableSteps.length) {
+        this.$store.dispatch("persistUser", this.admin);
         this.$emit("complete", this.admin.code);
       } else {
         this.currentStep = index + 1;
       }
     },
     async handleAdmin(adminData: Admin) {
-      this.adminId = adminData.code;
-      this.$store.dispatch("persistUser", { adminId: this.adminId });
+      this.adminId = adminData.id;
     },
   },
 };

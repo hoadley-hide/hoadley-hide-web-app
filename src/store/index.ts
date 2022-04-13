@@ -444,6 +444,7 @@ export const mutations: MutationTree<RootState> = {
   },
   resetApp: (state) => {
     Vue.set(state, "user", null);
+    Vue.set(state, "impersonator", null);
     Vue.set(state, "scannedCodes", []);
     Vue.set(state, "hasPermissionWarningBeenRead", false);
     Vue.set(state, "eventLogs", []);

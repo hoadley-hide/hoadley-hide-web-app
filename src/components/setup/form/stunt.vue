@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { Stunt } from "~/types/index";
+import { Stunt, Entity } from "~/types/index";
 import { names as stunt } from "~/store/stunt";
 
 export default {
@@ -77,7 +77,9 @@ export default {
       stuntId: null,
     };
   },
-  mounted() {},
+  async mounted() {
+    await this.handleQueryCode();
+  },
   watch: {
     steps(val) {
       if (this.currentStep > val) {
@@ -95,15 +97,34 @@ export default {
     },
   },
   methods: {
+    async handleQueryCode() {
+      const code = this.$route.query.code ?? null;
+      if (!code) {
+        return;
+      }
+
+      const entity: Entity = await this.$store.dispatch("validateCode", code);
+
+      if (entity && entity._type === "stunt") {
+        this.handleStunt(entity);
+      }
+    },
     nextStep(index) {
+      if (index === 1 && this.stuntId !== null) {
+        // Stunt is preloaded, dont ask again
+        this.currentStep = index + 2;
+        return;
+      }
+
       if (index === this.availableSteps.length) {
+        this.$store.dispatch("persistUser", this.stunt);
         this.$emit("complete", this.stunt?.code);
       } else {
         this.currentStep = index + 1;
       }
     },
     async handleStunt(stuntData: Stunt) {
-      this.$store.dispatch("persistUser", stuntData);
+      this.stuntId = stuntData.id;
     },
   },
 };

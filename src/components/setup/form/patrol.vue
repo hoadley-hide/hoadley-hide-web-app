@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { Patrol } from "~/types/index";
+import { Patrol, Entity } from "~/types/index";
 import { names as patrol } from "~/store/patrol";
 
 export default {
@@ -88,7 +88,9 @@ export default {
       patrolId: null,
     };
   },
-  mounted() {},
+  async mounted() {
+    await this.handleQueryCode();
+  },
   watch: {
     steps(val) {
       if (this.currentStep > val) {
@@ -105,15 +107,34 @@ export default {
     },
   },
   methods: {
+    async handleQueryCode() {
+      const code = this.$route.query.code ?? null;
+      if (!code) {
+        return;
+      }
+
+      const entity: Entity = await this.$store.dispatch("validateCode", code);
+
+      if (entity && entity._type === "patrol") {
+        this.handlePatrol(entity);
+      }
+    },
     nextStep(index) {
+      if (index === 1 && this.patrolId !== null) {
+        // Patrol is preloaded, dont ask again
+        this.currentStep = index + 2;
+        return;
+      }
+
       if (index === this.availableSteps.length) {
+        this.$store.dispatch("persistUser", this.patrol);
         this.$emit("complete", this.patrol.code);
       } else {
         this.currentStep = index + 1;
       }
     },
     async handlePatrol(patrolData: Patrol) {
-      this.$store.dispatch("persistUser", patrolData);
+      this.patrolId = patrolData.id;
     },
   },
 };

@@ -103,6 +103,10 @@ export default {
       if (entity) {
         this.$store.dispatch("recordCodeScan", entity);
         this.preloadedCode = entity.code;
+
+        if (["admin", "patrol", "stunt"].includes(entity._type)) {
+          this.handleActionClick(entity._type);
+        }
       }
     },
     handleQueryProgress() {
