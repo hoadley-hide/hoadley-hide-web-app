@@ -158,7 +158,20 @@ export default {
       return this.$store.getters[walkpointStore.getters.getWalkpoints];
     },
     points() {
-      return this.stuntList.concat(this.walkpointList);
+      const Voc: Walkpoint = {
+        _type: "walkpoint",
+        id: "",
+        code: "VOC",
+        name: "VOC",
+        slug: "",
+        path: "",
+        icon: "mdi-tent",
+        description: { html: "", text: "" },
+        eventStageDay: "friday",
+        walkpointLetter: "",
+        coordinates: {},
+      };
+      return [Voc].concat(this.stuntList).concat(this.walkpointList);
     },
   },
   watch: {
