@@ -142,6 +142,7 @@ export default {
         { title: "Wiki", icon: "mdi-forum", to: "/wiki" },
         { title: "The Adventure", icon: "mdi-shield-sword", to: "/event" },
         { title: "Stunts", icon: "mdi-map", to: "/stunts" },
+        { title: "Walkpoints", icon: "mdi-map", to: "/walkpoints" },
         {
           title: "Patrols you've met",
           icon: "mdi-account-group",

@@ -96,9 +96,10 @@ export default {
       entityTypes: [
         { label: "Admins", value: "admin" },
         { label: "Event Stage", value: "eventStage" },
-        { label: "Monster Hunt Monsters", value: "monsterHuntMonster" },
         { label: "Patrols", value: "patrol" },
         { label: "Stunts", value: "stunt" },
+        { label: "Walkpoints", value: "walkpoint" },
+        { label: "Monster Hunt Monsters", value: "monsterHuntMonster" },
         { label: "Setups", value: "setup" },
       ] as { label: string; value: EntityType }[],
       printableQuantity: 1,
@@ -171,6 +172,9 @@ export default {
           break;
         case "stunt":
           entities = this.$store.state.stunt.stunts;
+          break;
+        case "walkpoint":
+          entities = this.$store.state.walkpoint.walkpoints;
           break;
         case "setup":
           entities = [
