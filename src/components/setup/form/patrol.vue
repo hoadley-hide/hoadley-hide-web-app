@@ -46,6 +46,7 @@
 
           <!-- Step 4 -->
           <setup-step-upload-photos
+            step="4"
             entity="patrol"
             @next-step="nextStep(4)"
           ></setup-step-upload-photos>
