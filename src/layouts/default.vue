@@ -139,14 +139,14 @@ export default {
       drawer: false,
       items: [
         { title: "Home", icon: "mdi-home", to: "/" },
-        { title: "Wiki", icon: "mdi-forum", to: "/wiki" },
+        { title: "Scan QR Code", icon: "mdi-qrcode", to: "/scan" },
         {
           title: "Your Timeline",
           icon: "mdi-timeline-check",
-          to: "/app/timeline",
+          to: "/timeline",
         },
         { title: "The Adventure", icon: "mdi-shield-sword", to: "/event" },
-        { title: "Stunts", icon: "mdi-map", to: "/stunts" },
+        { title: "Stunts", icon: "mdi-map-clock", to: "/stunts" },
         { title: "Walkpoints", icon: "mdi-hiking", to: "/walkpoints" },
         {
           title: "Patrols you've met",
@@ -158,13 +158,13 @@ export default {
         //   icon: "mdi-ghost",
         //   to: "/monster-hunt",
         // },
-        { title: "Scan QR Code", icon: "mdi-qrcode", to: "/scan" },
-        { title: "App & Data", icon: "mdi-cloud", to: "/app" },
         {
           title: "Upload Photos",
           icon: "mdi-image-plus",
           href: "https://cloud.snowdrift.com.au/s/ogsYfAe4Er4cDa9",
         },
+        { title: "App & Data", icon: "mdi-cloud", to: "/app" },
+        { title: "Wiki", icon: "mdi-information", to: "/wiki" },
       ],
       monsterAcronymIndex: 0,
     };
