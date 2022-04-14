@@ -97,11 +97,12 @@ export default {
       }
     },
     nextStep(index) {
-      if (index === 1 && this.patrolId !== null) {
+      if (index === 1 && this.adminId !== null) {
         // Admin is preloaded, dont ask again
         this.$store.dispatch("persistUser", this.admin);
 
         this.$emit("complete", this.admin.code);
+        return;
       }
 
       if (index === this.availableSteps.length) {
