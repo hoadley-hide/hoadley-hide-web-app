@@ -28,6 +28,12 @@ export default defineNuxtConfig({
         as: "image",
         href: "/Whole Site Secret.svg",
       },
+      {
+        rel: "stylesheet",
+        type: "text/css",
+        // href: "https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css",
+        href: "/materialdesignicons.min.css",
+      },
     ],
   },
 
@@ -72,6 +78,7 @@ export default defineNuxtConfig({
     treeShake: true,
     defaultAssets: {
       font: false,
+      icons: false,
     },
     theme: {
       dark: true,
