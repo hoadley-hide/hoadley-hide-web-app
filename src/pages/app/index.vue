@@ -166,6 +166,20 @@ export default {
         });
       }
 
+      if (
+        this.$auth([
+          "patrol:canCheckpoint:voc:enter",
+          "patrol:canCheckpoint:voc:exit",
+        ])
+      ) {
+        blocks.push({
+          title: "VOCCCCC",
+          subtitle: "",
+          to: "/voc",
+          colour: "purple lighten-4",
+        });
+      }
+
       if (this.$auth(["app:seeDev"]) || this.$store.state.impersonator) {
         blocks.push({
           title: "Dev",
